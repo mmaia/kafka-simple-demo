@@ -21,6 +21,6 @@ public class MockStocksApplication {
 
 	@PostConstruct
 	public void executeParser() throws Exception {
-		csvParser.readCSV();
+		csvParser.readCSVAsBeans();
 	}
 }

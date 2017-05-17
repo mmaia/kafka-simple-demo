@@ -3,18 +3,18 @@ package com.codespair.kafka.mockstocks.model;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.math.BigDecimal;
-import java.time.Year;
+/**
+ * Wrapper model to csv files with stock detail information per exchange
+ */
 
 @Data
 @Slf4j
 public class StockDetail {
-
     private String symbol;
     private String name;
-    private Exchange exchange;
-    private BigDecimal marketCap;
-    private Year ipoYear;
+    private String lastSale;
+    private String marketCap;
+    private String ipoYear;
     private String sector;
     private String industry;
     private String summaryQuote;
