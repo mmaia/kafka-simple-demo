@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Wrapper model to csv files with stock detail information per exchange
+ * Wrapper model to csv files with stock detail information per exchange, hence all fields mapped to strings to simplify.
  */
 
 @Data

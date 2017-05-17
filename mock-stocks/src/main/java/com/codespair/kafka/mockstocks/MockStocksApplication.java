@@ -7,20 +7,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Slf4j
 @SpringBootApplication
 public class MockStocksApplication {
-
-	@Autowired
-	private CSVParser csvParser;
-
 	public static void main(String[] args) {
 		SpringApplication.run(MockStocksApplication.class, args);
-	}
-
-	@PostConstruct
-	public void executeParser() throws Exception {
-		csvParser.readCSVAsBeans();
 	}
 }
