@@ -50,12 +50,18 @@
 			<version>1.16.16</version>
 		</dependency>
 
-
 		<!-- opencsv, used to read csv files and load into objects in memory -->
 		<dependency>
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>3.9</version>
+		</dependency>
+
+		<!-- used to generate random data -->
+		<dependency>
+			<groupId>org.fluttercode.datafactory</groupId>
+			<artifactId>datafactory</artifactId>
+			<version>0.8</version>
 		</dependency>
 
 	</dependencies>
