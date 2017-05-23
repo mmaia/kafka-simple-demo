@@ -21,12 +21,12 @@ public class CSVParser {
     public Map loadExchangeCSV(String filePath) throws Exception {
         File resource = new ClassPathResource(filePath).getFile();
         CSVReader reader = new CSVReader(new FileReader(resource));
-        ColumnPositionMappingStrategy<StockDetail> strat = new ColumnPositionMappingStrategy<>();
-        strat.setType(StockDetail.class);
+        ColumnPositionMappingStrategy<StockDetail> loadStrategy = new ColumnPositionMappingStrategy<>();
+        loadStrategy.setType(StockDetail.class);
         String[] columns = new String[] {"symbol", "name", "lastSale", "marketCap", "ipoYear", "sector", "industry", "summaryQuote"}; // the fields to bind do in your JavaBean
-        strat.setColumnMapping(columns);
+        loadStrategy.setColumnMapping(columns);
         CsvToBean<StockDetail> csv = new CsvToBean<>();
-        return stockDetailsBySymbol(csv.parse(strat, reader));
+        return stockDetailsBySymbol(csv.parse(loadStrategy, reader));
     }
 
     private Map stockDetailsBySymbol(List<StockDetail> stockDetailList) {
