@@ -1,1 +1,7 @@
+generator.exchange.csv:
+  files: AMEX,NASDAQ,NYSE
+  path: "/static/"
+
+
+# enable all actuator endpoints from rest api.
 management.security.enabled: false

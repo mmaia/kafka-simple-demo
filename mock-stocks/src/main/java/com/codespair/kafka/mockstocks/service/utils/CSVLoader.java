@@ -19,19 +19,25 @@ import java.util.Map;
 public class CSVLoader {
 
     public Map loadExchangeCSV(String filePath) {
-        CSVReader reader;
-        try {
-            File resource = new ClassPathResource(filePath).getFile();
-            reader = new CSVReader(new FileReader(resource));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         ColumnPositionMappingStrategy<StockDetail> loadStrategy = new ColumnPositionMappingStrategy<>();
         loadStrategy.setType(StockDetail.class);
         String[] columns = new String[] {"symbol", "name", "lastSale", "marketCap", "ipoYear", "sector", "industry", "summaryQuote"}; // the fields to bind do in your JavaBean
         loadStrategy.setColumnMapping(columns);
         CsvToBean<StockDetail> csv = new CsvToBean<>();
+        CSVReader reader = createCSVReader(filePath);
         return stockDetailsBySymbol(csv.parse(loadStrategy, reader));
+    }
+
+    private CSVReader createCSVReader(String filePath) {
+        CSVReader reader;
+        try {
+            File resource = new ClassPathResource(filePath).getFile();
+            reader = new CSVReader(new FileReader(resource));
+        } catch (Exception e) {
+            log.error("Failed to load csv file with exchange information because: {}",  e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return reader;
     }
 
     private Map stockDetailsBySymbol(List<StockDetail> stockDetailList) {
@@ -41,5 +47,4 @@ public class CSVLoader {
         });
         return stockDetailMap;
     }
-
 }
