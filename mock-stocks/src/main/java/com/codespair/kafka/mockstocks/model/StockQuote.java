@@ -10,5 +10,4 @@ public class StockQuote {
     private BigDecimal high;
     private BigDecimal low;
     private BigDecimal lastTrade;
-    private StockDetail stockDetail;
 }
