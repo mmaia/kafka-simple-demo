@@ -5,12 +5,15 @@ import com.codespair.kafka.mockstocks.model.StockDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,30 +24,39 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest
 public class CSVParserTest {
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
     @Autowired
     private CSVParser csvParser;
 
     Map<String, StockDetail> stocksBySymbol;
 
     @Before
-    public void loadTestCSV() throws Exception {
+    public void loadTestCSV() {
         stocksBySymbol = csvParser.loadExchangeCSV("/static/AMEX.csv");
     }
 
     @Test
-    public void shouldLoad10Items() throws Exception {
+    public void whenCSVContain10LinesThenMapSizeShouldBe10() throws Exception {
         assertThat(stocksBySymbol.size(), is(equalTo(10)));
     }
 
     @Test
-    public void shouldGetBySymbol() {
+    public void whenStockSymbolIsValidThenReturnStockDetail() {
         assertThat(stocksBySymbol.get("ACU"), notNullValue());
         assertThat(stocksBySymbol.get("FAX"), isA(StockDetail.class));
     }
 
     @Test
-    public void shouldReturnNullIfSymbolInvalid() {
+    public void whenStockSymbolInvalidThenReturnNull() {
         assertThat(stocksBySymbol.get("FAKE"), nullValue());
+    }
+
+    @Test
+    public void whenFileToLoadNotFoundThenRuntimeException() {
+        exception.expect(RuntimeException.class);
+        csvParser.loadExchangeCSV("invalid/path.csv");
     }
 
     @After

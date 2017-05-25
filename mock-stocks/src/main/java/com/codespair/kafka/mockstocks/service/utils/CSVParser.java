@@ -18,9 +18,14 @@ import java.util.Map;
 @Component("csvParser")
 public class CSVParser {
 
-    public Map loadExchangeCSV(String filePath) throws Exception {
-        File resource = new ClassPathResource(filePath).getFile();
-        CSVReader reader = new CSVReader(new FileReader(resource));
+    public Map loadExchangeCSV(String filePath) {
+        CSVReader reader;
+        try {
+            File resource = new ClassPathResource(filePath).getFile();
+            reader = new CSVReader(new FileReader(resource));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         ColumnPositionMappingStrategy<StockDetail> loadStrategy = new ColumnPositionMappingStrategy<>();
         loadStrategy.setType(StockDetail.class);
         String[] columns = new String[] {"symbol", "name", "lastSale", "marketCap", "ipoYear", "sector", "industry", "summaryQuote"}; // the fields to bind do in your JavaBean
