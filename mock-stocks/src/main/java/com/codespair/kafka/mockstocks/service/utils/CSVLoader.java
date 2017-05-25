@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @Component("csvParser")
-public class CSVParser {
+public class CSVLoader {
 
     public Map loadExchangeCSV(String filePath) {
         CSVReader reader;

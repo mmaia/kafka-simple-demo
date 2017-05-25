@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.FileNotFoundException;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,19 +21,19 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CSVParserTest {
+public class CSVLoaderTest {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
     @Autowired
-    private CSVParser csvParser;
+    private CSVLoader csvLoader;
 
     Map<String, StockDetail> stocksBySymbol;
 
     @Before
     public void loadTestCSV() {
-        stocksBySymbol = csvParser.loadExchangeCSV("/static/AMEX.csv");
+        stocksBySymbol = csvLoader.loadExchangeCSV("/static/AMEX.csv");
     }
 
     @Test
@@ -56,7 +55,7 @@ public class CSVParserTest {
     @Test
     public void whenFileToLoadNotFoundThenRuntimeException() {
         exception.expect(RuntimeException.class);
-        csvParser.loadExchangeCSV("invalid/path.csv");
+        csvLoader.loadExchangeCSV("invalid/path.csv");
     }
 
     @After
