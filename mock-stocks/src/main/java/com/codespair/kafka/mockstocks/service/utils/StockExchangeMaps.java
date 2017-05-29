@@ -1,12 +1,14 @@
 package com.codespair.kafka.mockstocks.service.utils;
 
 import com.codespair.kafka.mockstocks.model.StockQuote;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+@Slf4j
 @Configuration
 public class StockExchangeMaps {
 
@@ -29,6 +31,7 @@ public class StockExchangeMaps {
     public void loadCsvs() {
         csvFilesToLoad.forEach((exchange) -> {
             exchanges.put(exchange, csvLoader.loadExchangeCSV(path + exchange + ".csv"));
+            log.info("csv mapped: " + exchange);
         });
     }
 
