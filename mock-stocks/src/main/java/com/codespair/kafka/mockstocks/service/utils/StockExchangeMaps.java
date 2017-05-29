@@ -1,5 +1,6 @@
 package com.codespair.kafka.mockstocks.service.utils;
 
+import com.codespair.kafka.mockstocks.model.StockDetail;
 import com.codespair.kafka.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,8 @@ public class StockExchangeMaps {
 
     private Map<String, Map> exchanges;
 
+    private List<String> exchangeNames;
+
     CSVLoader csvLoader;
 
     public StockExchangeMaps(CSVLoader csvLoader) {
@@ -33,23 +36,25 @@ public class StockExchangeMaps {
             exchanges.put(exchange, csvLoader.loadExchangeCSV(path + exchange + ".csv"));
             log.info("csv mapped: " + exchange);
         });
+        exchangeNames = new ArrayList<>(exchanges.keySet());
     }
 
-    private Map<String, StockQuote> randomExchange() {
-        Map<String, StockQuote> result;
+    public String randomExchange() {
         Random random = new Random();
-        int exchage = random.nextInt(3) + 1;
-        switch(exchage) {
-            case 1:
+        int whichExchange = random.nextInt(exchangeNames.size());
+        return exchangeNames.get(whichExchange);
+    }
 
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            default:
-
-        }
-        throw new UnsupportedOperationException("Not yet implemented");
+    public String[] randomStockSymbol() {
+        String[] result = new String[2];
+        String exchange = randomExchange();
+        result[0] = exchange;
+        log.info("got exchange: " + exchange);
+        Map<String, StockDetail> stockDetailMap = exchanges.get(exchange);
+        List<String> symbols = new ArrayList<>(stockDetailMap.keySet());
+        Random random = new Random();
+        int whichSymbol = random.nextInt(symbols.size());
+        result[1] = symbols.get(whichSymbol);
+        return result;
     }
 }
