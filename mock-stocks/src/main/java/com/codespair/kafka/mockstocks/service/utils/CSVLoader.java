@@ -18,7 +18,12 @@ import java.util.Map;
 @Component("csvParser")
 public class CSVLoader {
 
-    @SuppressWarnings("squid:S1166")
+    @SuppressWarnings("squid:S1166") // supress false positive check from sonarqube
+    /**
+     * @param filePath the filepath relative to the classpath where the csv is to be found i.e - /static/AMEX.csv
+     * @returns a map where each key is a stock exchange symbol and each element is a StockDetail object filled with
+     * data loaded from the CSVs
+     */
     public Map loadExchangeCSV(String filePath) {
         Map<String, StockDetail> result;
         ColumnPositionMappingStrategy<StockDetail> loadStrategy = new ColumnPositionMappingStrategy<>();
