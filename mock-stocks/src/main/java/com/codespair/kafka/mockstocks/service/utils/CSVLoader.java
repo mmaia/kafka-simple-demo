@@ -18,6 +18,7 @@ import java.util.Map;
 @Component("csvParser")
 public class CSVLoader {
 
+    @SuppressWarnings("squid:S1166")
     public Map loadExchangeCSV(String filePath) {
         Map<String, StockDetail> result;
         ColumnPositionMappingStrategy<StockDetail> loadStrategy = new ColumnPositionMappingStrategy<>();
