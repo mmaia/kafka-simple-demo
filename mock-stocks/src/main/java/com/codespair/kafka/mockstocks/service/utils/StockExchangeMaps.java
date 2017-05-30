@@ -30,7 +30,7 @@ public class StockExchangeMaps {
     }
 
     @PostConstruct
-    public void loadCsvs() {
+    public void loadCSVs() {
         csvFilesToLoad.forEach(exchange -> {
             exchanges.put(exchange, csvLoader.loadExchangeCSV(path + exchange + ".csv"));
             log.info("csv mapped: " + exchange);
@@ -38,6 +38,10 @@ public class StockExchangeMaps {
         exchangeNames = new ArrayList<>(exchanges.keySet());
     }
 
+    /**
+     *
+     * @return - a random exchange from the list of csvs loaded. Name of the csv file loaded is used as exchange name.
+     */
     public String randomExchange() {
         Random random = new Random();
         int whichExchange = random.nextInt(exchangeNames.size());
