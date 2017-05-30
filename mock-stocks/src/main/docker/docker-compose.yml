@@ -1,0 +1,9 @@
+version: '2.1'
+
+services:
+  sonarqube:
+    image: sonarqube:lts-alpine
+    container_name: sonarqube
+    hostname: sonarqube
+    ports:
+      - "9000:9000"
