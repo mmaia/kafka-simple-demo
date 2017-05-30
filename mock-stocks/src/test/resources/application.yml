@@ -1,0 +1,6 @@
+generator.exchange.csv:
+  files: AMEX
+  path: "/static/"
+
+spring.profiles.active: test
+
