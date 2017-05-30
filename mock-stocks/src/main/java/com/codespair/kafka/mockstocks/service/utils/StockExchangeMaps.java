@@ -22,7 +22,7 @@ public class StockExchangeMaps {
 
     private List<String> exchangeNames;
 
-    CSVLoader csvLoader;
+    private CSVLoader csvLoader;
 
     public StockExchangeMaps(CSVLoader csvLoader) {
         this.csvLoader = csvLoader;
@@ -39,7 +39,6 @@ public class StockExchangeMaps {
     }
 
     /**
-     *
      * @return - a random exchange from the list of csvs loaded. Name of the csv file loaded is used as exchange name.
      */
     public String randomExchange() {
