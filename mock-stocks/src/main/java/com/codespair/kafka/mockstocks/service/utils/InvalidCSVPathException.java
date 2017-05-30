@@ -5,10 +5,6 @@ package com.codespair.kafka.mockstocks.service.utils;
  */
 public class InvalidCSVPathException extends RuntimeException {
 
-    public InvalidCSVPathException() {
-        super("The specified csv file was not found on the specified path provided");
-    }
-
     public InvalidCSVPathException(String message) {
         super(message);
     }
