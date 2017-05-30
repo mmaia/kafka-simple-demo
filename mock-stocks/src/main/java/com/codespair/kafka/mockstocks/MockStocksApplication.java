@@ -23,6 +23,7 @@ public class MockStocksApplication {
 		}
 	}
 
+	@SuppressWarnings("squid:S2095")
 	public static void main(String[] args) {
 		SpringApplication.run(MockStocksApplication.class, args);
 	}
