@@ -2,7 +2,6 @@ package com.codespair.kafka.mockstocks.service.utils;
 
 
 import com.codespair.kafka.mockstocks.model.StockDetail;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,7 +27,7 @@ public class CSVLoaderTest {
     @Autowired
     private CSVLoader csvLoader;
 
-    Map<String, StockDetail> stocksBySymbol;
+    private Map<String, StockDetail> stocksBySymbol;
 
     @Before
     public void loadTestCSV() {
@@ -37,7 +36,7 @@ public class CSVLoaderTest {
 
     @Test
     public void whenCSVContain10LinesThenMapSizeShouldBe10() throws Exception {
-        assertThat(stocksBySymbol.size(), is(equalTo(10)));
+        assertThat(stocksBySymbol.size(), is(10));
     }
 
     @Test
