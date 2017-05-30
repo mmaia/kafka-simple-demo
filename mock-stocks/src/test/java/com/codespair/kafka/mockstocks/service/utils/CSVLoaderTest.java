@@ -54,7 +54,7 @@ public class CSVLoaderTest {
 
     @Test
     public void whenFileToLoadNotFoundThenRuntimeException() {
-        exception.expect(RuntimeException.class);
+        exception.expect(InvalidCSVPathException.class);
         csvLoader.loadExchangeCSV("invalid/path.csv");
     }
 

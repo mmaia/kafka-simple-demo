@@ -35,7 +35,7 @@ public class CSVLoader {
             reader = new CSVReader(new FileReader(resource));
         } catch (Exception e) {
             log.error("Failed to load csv file with exchange information because: {}",  e.getMessage());
-            throw new RuntimeException(e);
+            throw new InvalidCSVPathException(e.getMessage());
         }
         return reader;
     }
