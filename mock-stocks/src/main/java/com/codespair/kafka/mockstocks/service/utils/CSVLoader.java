@@ -41,7 +41,7 @@ public class CSVLoader {
 
     private Map<String, StockDetail> stockDetailsBySymbol(List<StockDetail> stockDetailList) {
         Map<String, StockDetail> stockDetailMap = new HashMap<>();
-        stockDetailList.forEach( (stockDetail) -> stockDetailMap.put(stockDetail.getSymbol(), stockDetail) );
+        stockDetailList.forEach( stockDetail -> stockDetailMap.put(stockDetail.getSymbol(), stockDetail) );
         return stockDetailMap;
     }
 }
