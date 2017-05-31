@@ -1,9 +1,37 @@
 version: '2.1'
 
 services:
+  kafka:
+    image: spotify/kafka
+    container_name: kafka
+    hostname: kafka
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    environment:
+      JMX_PORT: 9999
+
+  kafka-manager:
+    image: mmaia/kafka-manager-docker:1.3.3.6
+    container_name: kafka-manager
+    environment:
+      ZK_HOSTS: kafka:2181
+    ports:
+      - "9000:9000"
+    depends_on:
+      - kafka
+
+  portainer:
+    image: portainer/portainer:latest
+    container_name: portainer
+    ports:
+      - "9010:9000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
   sonarqube:
     image: sonarqube:lts-alpine
     container_name: sonarqube
     hostname: sonarqube
     ports:
-      - "9000:9000"
+      - "9100:9000"
