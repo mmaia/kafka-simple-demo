@@ -1,5 +1,6 @@
 package com.codespair.kafka.mockstocks;
 
+import com.codespair.kafka.mockstocks.model.StockQuote;
 import com.codespair.kafka.mockstocks.service.utils.StockExchangeMaps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class MockStocksApplication {
 	@PostConstruct
 	public void printRandomStockSymbols() {
 		for (int i = 0; i < 500; i++) {
-			String[] stock = stockExchangeMaps.randomStockSymbol();
-			log.info("exchange: " + stock[0] + " , symbol: " + stock[1]);
+			StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
+			log.info("exchange: " + stockQuote.getExchange() + " , symbol: " + stockQuote.getSymbol());
 		}
 	}
 

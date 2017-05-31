@@ -1,6 +1,8 @@
 package com.codespair.kafka.mockstocks.service.utils;
 
+import com.codespair.kafka.mockstocks.model.Exchange;
 import com.codespair.kafka.mockstocks.model.StockDetail;
+import com.codespair.kafka.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -47,16 +49,36 @@ public class StockExchangeMaps {
         return exchangeNames.get(whichExchange);
     }
 
-    public String[] randomStockSymbol() {
-        String[] result = new String[2];
+    public StockQuote randomStockSymbol() {
+        StockQuote result = new StockQuote();
         String exchange = randomExchange();
-        result[0] = exchange;
+        result.setExchange(buildExchange(exchange));
         log.info("got exchange: " + exchange);
         Map<String, StockDetail> stockDetailMap = exchanges.get(exchange);
         List<String> symbols = new ArrayList<>(stockDetailMap.keySet());
         Random random = new Random();
         int whichSymbol = random.nextInt(symbols.size());
-        result[1] = symbols.get(whichSymbol);
+        result.setSymbol(symbols.get(whichSymbol));
+        log.info("StockQuote randomly picked: " + result);
+        return result;
+    }
+
+    private Exchange buildExchange(String exchange) {
+        Exchange result = null;
+        switch (exchange) {
+            case "AMEX":
+                result = Exchange.AMEX;
+                break;
+            case "NASDAQ":
+                result =  Exchange.NASDAQ;
+                break;
+            case "NYSE":
+                result = Exchange.NYSE;
+                break;
+            default:
+                log.warn("Could not build exchange based on the input which was: {}", exchange);
+                break;
+        }
         return result;
     }
 }
