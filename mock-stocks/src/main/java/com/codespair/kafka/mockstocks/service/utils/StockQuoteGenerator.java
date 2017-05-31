@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * This class on startup try to start generating random stockquotes unless disabled(default) in the configuration
+ */
 @Slf4j
 @Service
 public class StockQuoteGenerator {
@@ -28,15 +31,16 @@ public class StockQuoteGenerator {
     @PostConstruct
     public void startQuoteGeneration() throws Exception{
         if(enabled) {
-            log.info("Starting random quote generation in {} milliseconds, with interval: {}",
+            log.info("Starting random quote generation in {} milliseconds, with interval: {} between each quote",
                     delayToStartInMilliseconds, intervalMilliseconds);
             Thread.sleep(delayToStartInMilliseconds);
+
             while(true) {
                 StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
                 log.info("exchange: " + stockQuote.getExchange() + " , symbol: " + stockQuote.getSymbol());
                 Thread.sleep(intervalMilliseconds);
             }
+
         }
     }
-
 }
