@@ -1,6 +1,7 @@
-package com.codespair.kafka.mockstocks.service.utils;
+package com.codespair.kafka.mockstocks.service;
 
 import com.codespair.kafka.mockstocks.model.StockQuote;
+import com.codespair.kafka.mockstocks.service.utils.StockExchangeMaps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,13 +32,12 @@ public class StockQuoteGenerator {
     @PostConstruct
     public void startQuoteGeneration() throws Exception{
         if(enabled) {
-            log.info("Starting random quote generation in {} milliseconds, with interval: {} between each quote",
+            log.info("Starting random quote generation in {} milliseconds, with interval: {} milliseconds between each quote",
                     delayToStartInMilliseconds, intervalMilliseconds);
             Thread.sleep(delayToStartInMilliseconds);
 
             while(true) {
                 StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
-                log.info("exchange: " + stockQuote.getExchange() + " , symbol: " + stockQuote.getSymbol());
                 Thread.sleep(intervalMilliseconds);
             }
 

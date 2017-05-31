@@ -63,7 +63,6 @@ public class StockExchangeMaps {
         StockQuote result = new StockQuote();
         String exchange = randomExchange();
         result.setExchange(buildExchange(exchange));
-        log.info("got exchange: " + exchange);
         Map<String, StockDetail> stockDetailMap = exchanges.get(exchange);
         List<String> symbols = new ArrayList<>(stockDetailMap.keySet());
         Random random = new Random();
