@@ -1,6 +1,11 @@
-generator.exchange.csv:
-  files: AMEX
-  path: "/static/"
+generator:
+  exchange.csv:
+    files: AMEX
+    path: "/static/"
+  stockquotes:
+    enabled: false #WARNING: should never be true on test or tests will hang forever and never start
+    start.delay.milliseconds: 3000
+    interval.milliseconds: 1000
 
 spring.profiles.active: test
 

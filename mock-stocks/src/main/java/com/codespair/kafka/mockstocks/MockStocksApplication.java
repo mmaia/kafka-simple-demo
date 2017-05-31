@@ -12,18 +12,6 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @SpringBootApplication
 public class MockStocksApplication {
-
-	@Autowired
-	StockExchangeMaps stockExchangeMaps;
-
-	@PostConstruct
-	public void printRandomStockSymbols() {
-		for (int i = 0; i < 500; i++) {
-			StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
-			log.info("exchange: " + stockQuote.getExchange() + " , symbol: " + stockQuote.getSymbol());
-		}
-	}
-
 	@SuppressWarnings("squid:S2095")
 	public static void main(String[] args) {
 		SpringApplication.run(MockStocksApplication.class, args);

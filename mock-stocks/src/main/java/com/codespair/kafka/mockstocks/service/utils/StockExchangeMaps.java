@@ -10,14 +10,20 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+/**
+ * This class loads on startup the CSV files available in the classpath and specified on the
+ * configuration file directory under the following 2 application properties
+ * generator.exchange.csv.path - directory relative to classpath where to find csv files
+ * generator.exchange.csv.files - list of csv file names to load from the specified directory.
+ */
 @Slf4j
 @Configuration
 public class StockExchangeMaps {
 
-    @Value("${generator.exchange.csv.path}")
+    @Value("${generator.exchange.csv.path:/static/}")
     private String path;
 
-    @Value("#{'${generator.exchange.csv.files}'.split(',')}")
+    @Value("#{'${generator.exchange.csv.files:AMEX,NYSE,NASDAQ}'.split(',')}")
     private List<String> csvFilesToLoad;
 
     private Map<String, Map> exchanges;
@@ -43,12 +49,16 @@ public class StockExchangeMaps {
     /**
      * @return - a random exchange from the list of csvs loaded. Name of the csv file loaded is used as exchange name.
      */
-    public String randomExchange() {
+    String randomExchange() {
         Random random = new Random();
         int whichExchange = random.nextInt(exchangeNames.size());
         return exchangeNames.get(whichExchange);
     }
 
+    /**
+     * @return stockquote picked randomically.
+     * @see com.codespair.kafka.mockstocks.model.StockQuote
+     */
     public StockQuote randomStockSymbol() {
         StockQuote result = new StockQuote();
         String exchange = randomExchange();
@@ -63,6 +73,7 @@ public class StockExchangeMaps {
         return result;
     }
 
+    // TODO - potential refactor, possibly move method to Exchange would be better?
     private Exchange buildExchange(String exchange) {
         Exchange result = null;
         switch (exchange) {

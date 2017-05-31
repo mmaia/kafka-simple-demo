@@ -1,7 +1,11 @@
-generator.exchange.csv:
-  files: AMEX,NASDAQ,NYSE
-  path: "/static/"
-
+generator:
+  exchange.csv:
+    files: AMEX,NASDAQ,NYSE
+    path: "/static/"
+  stockquotes:
+    enabled: true
+    start.delay.milliseconds: 3000
+    interval.milliseconds: 1000
 
 # enable all actuator endpoints from rest api.
 management.security.enabled: false
