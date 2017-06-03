@@ -1,7 +1,6 @@
 package com.codespair.kafka.mockstocks.service;
 
 import com.codespair.kafka.mockstocks.model.StockQuote;
-import com.codespair.kafka.mockstocks.service.utils.QuoteGenerationException;
 import com.codespair.kafka.mockstocks.service.utils.StockExchangeMaps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +32,9 @@ public class StockQuoteGenerator {
     @Autowired
     KafkaTemplate<Integer, String> kafkaTemplate;
 
-
-    // TODO - very first working version, lot's to improve here
     @SuppressWarnings("squid:S2189") // avoid being marked by check for infinite loop from sonarqube
     @PostConstruct
-    public void startQuoteGeneration() throws QuoteGenerationException {
+    public void startQuoteGeneration() throws InterruptedException {
         if(enabled) {
             log.info("Starting random quote generation in {} milliseconds, with interval: {} milliseconds between each quote",
                     delayToStartInMilliseconds, intervalMilliseconds);
@@ -50,9 +47,8 @@ public class StockQuoteGenerator {
                 }
             }
             catch(InterruptedException e) {
-                e.printStackTrace();
                 log.warn(e.getMessage());
-                throw new QuoteGenerationException(e.getMessage());
+                throw e;
             }
 
         }
