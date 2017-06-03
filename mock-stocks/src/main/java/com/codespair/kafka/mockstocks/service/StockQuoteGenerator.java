@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
+import java.util.Random;
 
 /**
  * This class on startup try to start generating random stockquotes unless disabled(default) in the configuration
@@ -46,6 +48,7 @@ public class StockQuoteGenerator {
                 Thread.sleep(delayToStartInMilliseconds);
                 while(true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
+                    stockQuote = enrich(stockQuote);
                     kafkaProducer.send(stockQuoteTopic, stockQuote.toString());
                     Thread.sleep(intervalMilliseconds);
                 }
@@ -55,5 +58,14 @@ public class StockQuoteGenerator {
                 throw e;
             }
         }
+    }
+
+    public StockQuote enrich(StockQuote stockQuote) {
+        Random random = new Random();
+        int upTo = 1000;
+        stockQuote.setHigh(new BigDecimal(random.nextFloat() * upTo));
+        stockQuote.setLow(new BigDecimal(random.nextFloat() * upTo));
+        stockQuote.setLastTrade(new BigDecimal(random.nextFloat() * upTo));
+        return stockQuote;
     }
 }
