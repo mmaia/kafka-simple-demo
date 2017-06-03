@@ -20,7 +20,7 @@ public class KafkaProducer {
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
             @Override
             public void onSuccess(SendResult<String, String> result) {
-                log.info("sent message='{}' with offset={}", message,
+                log.debug("sent message='{}' with offset={}", message,
                         result.getRecordMetadata().offset());
             }
             @Override

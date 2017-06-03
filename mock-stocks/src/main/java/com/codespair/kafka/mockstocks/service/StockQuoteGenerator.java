@@ -25,6 +25,11 @@ public class StockQuoteGenerator {
     @Value("${generator.stockquotes.interval.milliseconds: 5000}")
     private int intervalMilliseconds;
 
+
+    @Value("${generator.stockquotes.topic: stockQuoteTopic}")
+    private String stockQuoteTopic;
+
+
     @Autowired
     private StockExchangeMaps stockExchangeMaps;
 
@@ -41,7 +46,7 @@ public class StockQuoteGenerator {
                 Thread.sleep(delayToStartInMilliseconds);
                 while(true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
-                    kafkaProducer.send("stockQuoteTopic", stockQuote.toString());
+                    kafkaProducer.send(stockQuoteTopic, stockQuote.toString());
                     Thread.sleep(intervalMilliseconds);
                 }
             }

@@ -3,9 +3,10 @@ generator:
     files: AMEX,NASDAQ,NYSE
     path: "/static/"
   stockquotes:
+    topic: stockQuoteTopic
     enabled: true
-    start.delay.milliseconds: 3000
-    interval.milliseconds: 1000
+    start.delay.milliseconds: 1000
+    interval.milliseconds: 100
 
 # enable all actuator endpoints from rest api.
 management.security.enabled: false
