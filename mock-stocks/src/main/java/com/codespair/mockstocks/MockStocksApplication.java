@@ -1,4 +1,4 @@
-package com.codespair.kafka.mockstocks;
+package com.codespair.mockstocks;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;

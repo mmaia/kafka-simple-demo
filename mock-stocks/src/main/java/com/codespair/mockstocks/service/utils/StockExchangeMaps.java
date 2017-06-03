@@ -1,8 +1,8 @@
-package com.codespair.kafka.mockstocks.service.utils;
+package com.codespair.mockstocks.service.utils;
 
-import com.codespair.kafka.mockstocks.model.Exchange;
-import com.codespair.kafka.mockstocks.model.StockDetail;
-import com.codespair.kafka.mockstocks.model.StockQuote;
+import com.codespair.mockstocks.model.Exchange;
+import com.codespair.mockstocks.model.StockDetail;
+import com.codespair.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -57,7 +57,7 @@ public class StockExchangeMaps {
 
     /**
      * @return stockquote picked randomically.
-     * @see com.codespair.kafka.mockstocks.model.StockQuote
+     * @see StockQuote
      */
     public StockQuote randomStockSymbol() {
         StockQuote result = new StockQuote();

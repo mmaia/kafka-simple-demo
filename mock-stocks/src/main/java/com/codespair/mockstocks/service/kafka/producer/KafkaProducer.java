@@ -1,4 +1,4 @@
-package com.codespair.kafka.mockstocks.service;
+package com.codespair.mockstocks.service.kafka.producer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.codespair.kafka.mockstocks.service;
+package com.codespair.mockstocks.service.kafka.producer;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
