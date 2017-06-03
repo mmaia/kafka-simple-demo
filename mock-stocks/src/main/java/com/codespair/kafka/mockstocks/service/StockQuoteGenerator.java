@@ -5,7 +5,6 @@ import com.codespair.kafka.mockstocks.service.utils.StockExchangeMaps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -27,10 +26,10 @@ public class StockQuoteGenerator {
     private int intervalMilliseconds;
 
     @Autowired
-    StockExchangeMaps stockExchangeMaps;
+    private StockExchangeMaps stockExchangeMaps;
 
     @Autowired
-    KafkaTemplate<Integer, String> kafkaTemplate;
+    KafkaProducer kafkaProducer;
 
     @SuppressWarnings("squid:S2189") // avoid being marked by check for infinite loop from sonarqube
     @PostConstruct
@@ -42,7 +41,7 @@ public class StockQuoteGenerator {
                 Thread.sleep(delayToStartInMilliseconds);
                 while(true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
-                    kafkaTemplate.send("stockQuoteTopic", stockQuote.toString());
+                    kafkaProducer.send("stockQuoteTopic", stockQuote.toString());
                     Thread.sleep(intervalMilliseconds);
                 }
             }
@@ -50,7 +49,6 @@ public class StockQuoteGenerator {
                 log.warn(e.getMessage());
                 throw e;
             }
-
         }
     }
 }
