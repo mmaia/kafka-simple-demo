@@ -9,6 +9,11 @@ To run the application you'll need a local accessible kafka. I prefer to run it 
 [this is the one](https://github.com/mmaia/docker-compose-images/tree/master/kafka) I've used during development.
 
 
+> Set your hosts to resolve the name kafka to your localhost if  you're running this application from source code, this 
+is required because of how kafka resolves it's producer address internally on the docker network and your localhost network.
+If you're running this application including the mockstocks application inside a docker container then kafka should already
+resolve correctly.
+
 # Tests and sonarqube
 
 This project has integration with jacoco to generate code coverage and quality reports. Once you run `mvn test` surefire
