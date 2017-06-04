@@ -49,7 +49,7 @@ public class StockQuoteGenerator {
                 while(true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
                     stockQuote = enrich(stockQuote);
-                    kafkaProducer.send(stockQuoteTopic, stockQuote.toString());
+                    kafkaProducer.send(stockQuoteTopic, stockQuote);
                     Thread.sleep(intervalMilliseconds);
                 }
             }

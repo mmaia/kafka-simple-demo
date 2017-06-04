@@ -1,5 +1,6 @@
 package com.codespair.mockstocks.service.kafka.producer;
 
+import com.codespair.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,13 +14,13 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 public class KafkaProducer {
 
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, StockQuote> kafkaTemplate;
 
-    public void send(String topic, String message) {
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, message);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+    public void send(String topic, StockQuote message) {
+        ListenableFuture<SendResult<String, StockQuote>> future = kafkaTemplate.send(topic, message);
+        future.addCallback(new ListenableFutureCallback<SendResult<String, StockQuote>>() {
             @Override
-            public void onSuccess(SendResult<String, String> result) {
+            public void onSuccess(SendResult<String, StockQuote> result) {
                 log.debug("sent message='{}' with offset={}", message,
                         result.getRecordMetadata().offset());
             }
