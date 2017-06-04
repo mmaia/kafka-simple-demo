@@ -124,3 +124,6 @@ target/
 *.iml
 *.ipr
 
+kafka-quick-ref.odp
+mock-stocks/src/test/java/com/codespair/mockstocks/configuration/
+mock-stocks/src/test/java/com/codespair/mockstocks/service/kafka/
