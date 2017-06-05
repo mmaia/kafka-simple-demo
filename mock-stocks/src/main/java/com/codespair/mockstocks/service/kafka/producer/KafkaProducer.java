@@ -17,7 +17,7 @@ public class KafkaProducer {
     private KafkaTemplate<String, StockQuote> kafkaTemplate;
 
     public void send(String topic, StockQuote message) {
-        ListenableFuture<SendResult<String, StockQuote>> future = kafkaTemplate.send(topic, message);
+        ListenableFuture<SendResult<String, StockQuote>> future = kafkaTemplate.send(topic, message.getSymbol(), message);
         future.addCallback(new ListenableFutureCallback<SendResult<String, StockQuote>>() {
             @Override
             public void onSuccess(SendResult<String, StockQuote> result) {

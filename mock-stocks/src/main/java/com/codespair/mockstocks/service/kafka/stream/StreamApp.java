@@ -2,10 +2,7 @@ package com.codespair.mockstocks.service.kafka.stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.serialization.Deserializer;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.common.serialization.*;
 import org.apache.kafka.connect.json.JsonDeserializer;
 import org.apache.kafka.connect.json.JsonSerializer;
 import org.apache.kafka.streams.KafkaStreams;
@@ -31,7 +28,7 @@ public class StreamApp {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "mock-stocks-example-stream");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
-        KStream<JsonNode, JsonNode> stockQuoteRaw = kStreamBuilder.stream( jsonSerde, jsonSerde , "stockQuoteTopic");
+        KStream<String, JsonNode> stockQuoteRaw = kStreamBuilder.stream(Serdes.serdeFrom(String.class), jsonSerde , "stockQuoteTopic");
         stockQuoteRaw.print();
         return new KafkaStreams(kStreamBuilder, props);
     }
