@@ -1,6 +1,7 @@
 package com.codespair.mockstocks.service.kafka.producer;
 
 import com.codespair.mockstocks.model.StockQuote;
+import com.codespair.mockstocks.service.kafka.KafkaConfigProperties;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +19,8 @@ import java.util.Random;
 @Service
 public class StockQuoteGenerator {
 
-    @Value("${generator.stockquotes.enabled:false}")
-    private boolean enabled;
-
-    @Value("${generator.stockquotes.start.delay.milliseconds:3000}")
-    private int delayToStartInMilliseconds;
-
-    @Value("${generator.stockquotes.interval.milliseconds: 5000}")
-    private int intervalMilliseconds;
-
-
-    @Value("${generator.stockquotes.topic: stockQuoteTopic}")
-    private String stockQuoteTopic;
-
+    @Autowired
+    KafkaConfigProperties kafkaConfigProperties;
 
     @Autowired
     private StockExchangeMaps stockExchangeMaps;
@@ -40,16 +30,16 @@ public class StockQuoteGenerator {
 
     @Async
     public void startGenerator() throws InterruptedException {
-        if(enabled) {
+        if(kafkaConfigProperties.isEnabled()) {
             log.info("Starting random quote generation in {} milliseconds, with interval: {} milliseconds between each quote",
-                    delayToStartInMilliseconds, intervalMilliseconds);
+                    kafkaConfigProperties.getDelayToStartInMilliseconds(), kafkaConfigProperties.getIntervalMilliseconds());
             try {
-                Thread.sleep(delayToStartInMilliseconds);
+                Thread.sleep(kafkaConfigProperties.getDelayToStartInMilliseconds());
                 while(true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
                     stockQuote = enrich(stockQuote);
-                    kafkaProducer.send(stockQuoteTopic, stockQuote);
-                    Thread.sleep(intervalMilliseconds);
+                    kafkaProducer.send(kafkaConfigProperties.getStockQuoteTopic(), stockQuote);
+                    Thread.sleep(kafkaConfigProperties.getIntervalMilliseconds());
                 }
             }
             catch(InterruptedException e) {
