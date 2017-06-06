@@ -11,4 +11,5 @@ public class StockQuote {
     private BigDecimal low;
     private BigDecimal lastTrade;
     private Exchange exchange;
+    private StockDetail stockDetail;
 }

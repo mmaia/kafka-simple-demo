@@ -5,6 +5,7 @@ import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -70,6 +71,10 @@ public class StockExchangeMaps {
         result.setSymbol(symbols.get(whichSymbol));
         log.debug("StockQuote randomly picked: " + result);
         return result;
+    }
+
+    public Map<String, Map> getExchanges() {
+        return exchanges;
     }
 
     // TODO - potential refactor, possibly move method to Exchange would be better?
