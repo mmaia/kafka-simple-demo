@@ -6,8 +6,11 @@ generator:
     kafka:
       host: "kafka:9092"
       stream.app:
-            id: "mock-stocks-simple-stream"
-            topic: stockQuoteStreamTopic
+        id: "mock-stocks-simple-stream"
+        topic: simpleStockQuoteStreamTopic
+        enrich.produce:
+          id: "mock-stock-stream-enrich-produce"
+          topic: enrichedStockQuoteTopic
     topic: stockQuoteTopic
     enabled: true
     start.delay.milliseconds: 1000

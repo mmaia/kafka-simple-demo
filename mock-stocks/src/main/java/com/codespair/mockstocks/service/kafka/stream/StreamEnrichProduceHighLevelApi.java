@@ -3,6 +3,7 @@ package com.codespair.mockstocks.service.kafka.stream;
 import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
 import com.codespair.mockstocks.service.kafka.KafkaConfigProperties;
+import com.codespair.mockstocks.service.kafka.producer.KafkaProducer;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,6 +20,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -30,14 +32,17 @@ import java.util.Properties;
 @Service
 public class StreamEnrichProduceHighLevelApi {
 
-    private KafkaConfigProperties config;
+    private final KafkaConfigProperties config;
     private KafkaStreams streams;
-    private StockExchangeMaps stockExchangeMaps;
+    private final StockExchangeMaps stockExchangeMaps;
+    private final KafkaProducer kafkaProducer;
 
     @Autowired
-    public StreamEnrichProduceHighLevelApi(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps) {
+    public StreamEnrichProduceHighLevelApi(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps,
+                                           KafkaProducer kafkaProducer)  {
         this.config = kafkaConfigProperties;
         this.stockExchangeMaps = stockExchangeMaps;
+        this.kafkaProducer = kafkaProducer;
     }
 
     /**
@@ -53,13 +58,12 @@ public class StreamEnrichProduceHighLevelApi {
 
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamAppId());
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamEnrichProduceAppId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
         KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStockQuoteTopic());
 
         Map<String, Map> exchanges = stockExchangeMaps.getExchanges();
-        log.info("exchanges: {} ", exchanges );
         ObjectMapper objectMapper = new ObjectMapper();
 
         // - enrich stockquote with stockdetails before streaming to new topic
@@ -76,9 +80,8 @@ public class StreamEnrichProduceHighLevelApi {
             Map<String, StockDetail> stockDetailMap = exchanges.get(exchangeNode.toString().replace("\"", ""));
             stockDetail = stockDetailMap.get(key);
             stockQuote.setStockDetail(stockDetail);
-
-            //TODO - jsonNode should be produced to a new topic with enriched data
-            jsonNode = objectMapper.convertValue(stockQuote, JsonNode.class);
+            log.info("about to send to new topic enriched message {}", stockQuote);
+            kafkaProducer.send(config.getStreamAppEnrichProduceTopic(), stockQuote);
         });
 
         return new KafkaStreams(kStreamBuilder, props);

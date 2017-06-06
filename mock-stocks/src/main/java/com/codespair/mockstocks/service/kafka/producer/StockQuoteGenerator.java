@@ -20,13 +20,13 @@ import java.util.Random;
 public class StockQuoteGenerator {
 
     @Autowired
-    KafkaConfigProperties kafkaConfigProperties;
+    private KafkaConfigProperties kafkaConfigProperties;
 
     @Autowired
     private StockExchangeMaps stockExchangeMaps;
 
     @Autowired
-    KafkaProducer kafkaProducer;
+    private KafkaProducer kafkaProducer;
 
     @Async
     public void startGenerator() throws InterruptedException {

@@ -30,4 +30,10 @@ public class KafkaConfigProperties {
 
     @Value("${generator.stockquotes.kafka.stream.app.topic}")
     private String streamAppTopic;
+
+    @Value("${generator.stockquotes.kafka.stream.app.enrich.produce.id}")
+    private String streamEnrichProduceAppId;
+
+    @Value("${generator.stockquotes.kafka.stream.app.enrich.produce.topic}")
+    private String streamAppEnrichProduceTopic;
 }
