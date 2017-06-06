@@ -27,6 +27,9 @@ import javax.annotation.PreDestroy;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * This class shows a KStream from a topic with a forEach call that enrich messages and produces to a new topic.
+ */
 @Slf4j
 @Service
 public class StreamEnrichProduceHighLevelApi {
@@ -65,7 +68,7 @@ public class StreamEnrichProduceHighLevelApi {
         Map<String, Map> exchanges = stockExchangeMaps.getExchanges();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        // - enrich stockquote with stockdetails before streaming to new topic
+        // - enrich stockquote with stockdetails before producing to new topic
         stockQuoteRawStream.foreach((key, jsonNode) -> {
             StockQuote stockQuote = null;
             StockDetail stockDetail;
@@ -84,7 +87,6 @@ public class StreamEnrichProduceHighLevelApi {
 
         return new KafkaStreams(kStreamBuilder, props);
     }
-
 
 
     @PostConstruct
