@@ -14,6 +14,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -36,6 +37,7 @@ public class StreamChainHighLevelApi {
      * @param hosts where kafka is running
      * @return a KafkaStreams that is associated to the specified topic and serializers(Serdes).
      */
+    @Async
     public KafkaStreams createStockQuoteStreamsInstance(String hosts) {
         log.info("about to start streaming for exchange stock quote filtering...");
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
