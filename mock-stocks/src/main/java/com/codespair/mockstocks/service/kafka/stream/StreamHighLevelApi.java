@@ -21,10 +21,13 @@ import java.util.Properties;
 @Service
 public class StreamHighLevelApi {
 
-    @Autowired
     KafkaConfigProperties config;
-
     KafkaStreams streams;
+
+    @Autowired
+    public StreamHighLevelApi(KafkaConfigProperties kafkaConfigProperties) {
+        this.config = kafkaConfigProperties;
+    }
 
     /**
      * Creates s KafkaStreams using the high level api
