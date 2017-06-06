@@ -41,9 +41,10 @@ public class StreamHighLevelApi {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "mock-stocks-example-stream");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.serdeFrom(String.class), jsonSerde , "stockQuoteTopic");
+        //stream from topic...
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.serdeFrom(String.class), jsonSerde , config.getStockQuoteTopic());
 
-        // send message to new topic
+        // send message to new topic...
         stockQuoteRawStream.to(Serdes.serdeFrom(String.class), jsonSerde,"stockQuoteStream");
         return new KafkaStreams(kStreamBuilder, props);
     }

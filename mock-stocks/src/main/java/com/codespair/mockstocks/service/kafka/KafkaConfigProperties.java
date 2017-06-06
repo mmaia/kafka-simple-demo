@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class KafkaConfigProperties {
+
     @Value("${generator.stockquotes.enabled:false}")
     private boolean enabled;
 
@@ -19,7 +20,6 @@ public class KafkaConfigProperties {
 
     @Value("${generator.stockquotes.interval.milliseconds: 5000}")
     private int intervalMilliseconds;
-
 
     @Value("${generator.stockquotes.topic: stockQuoteTopic}")
     private String stockQuoteTopic;
