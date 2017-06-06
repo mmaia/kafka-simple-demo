@@ -42,13 +42,13 @@ public class StreamHighLevelApi {
 
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "mock-stocks-example-stream");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamAppId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
         KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.serdeFrom(String.class), jsonSerde , config.getStockQuoteTopic());
 
         // send message to new topic...
-        stockQuoteRawStream.to(Serdes.serdeFrom(String.class), jsonSerde,"stockQuoteStream");
+        stockQuoteRawStream.to(Serdes.serdeFrom(String.class), jsonSerde,config.getStreamAppTopic());
         return new KafkaStreams(kStreamBuilder, props);
     }
 
@@ -56,7 +56,7 @@ public class StreamHighLevelApi {
     public void startStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
         Thread.sleep(config.getDelayToStartInMilliseconds() + 2000);
-        streams = createStockQuoteStreamsInstance("localhost:9092");
+        streams = createStockQuoteStreamsInstance(config.getKafkaHost());
         streams.start();
     }
 

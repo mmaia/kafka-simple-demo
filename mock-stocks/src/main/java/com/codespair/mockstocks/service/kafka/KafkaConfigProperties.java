@@ -24,4 +24,10 @@ public class KafkaConfigProperties {
 
     @Value("${generator.stockquotes.kafka.host}")
     private String kafkaHost;
+
+    @Value("${generator.stockquotes.kafka.stream.app.id}")
+    private String streamAppId;
+
+    @Value("${generator.stockquotes.kafka.stream.app.topic}")
+    private String streamAppTopic;
 }

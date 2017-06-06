@@ -3,7 +3,11 @@ generator:
     files: AMEX,NASDAQ,NYSE
     path: "/static/"
   stockquotes:
-    kafka.host: "kafka:9092"
+    kafka:
+      host: "kafka:9092"
+      stream.app:
+            id: "mock-stocks-simple-stream"
+            topic: stockQuoteStreamTopic
     topic: stockQuoteTopic
     enabled: true
     start.delay.milliseconds: 1000
