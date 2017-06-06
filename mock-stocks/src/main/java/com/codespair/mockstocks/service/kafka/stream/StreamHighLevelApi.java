@@ -12,13 +12,21 @@ import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.Properties;
 
 @Slf4j
 @Service
-public class StreamApp {
+public class StreamHighLevelApi {
 
-    private KafkaStreams createStockQuoteStreamsInstance(String hosts) {
+    KafkaStreams streams;
+
+    /**
+     * Creates s KafkaStreams using the high level api
+     * @param hosts where kafka is running
+     * @return a KafkaStreams that is associated to the specified topic ans serializers(Serdes).
+     */
+    public KafkaStreams createStockQuoteStreamsInstance(String hosts) {
         log.info("loading kafka stream configuration");
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
         final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
@@ -28,15 +36,22 @@ public class StreamApp {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "mock-stocks-example-stream");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
-        KStream<String, JsonNode> stockQuoteRaw = kStreamBuilder.stream(Serdes.serdeFrom(String.class), jsonSerde , "stockQuoteTopic");
-        stockQuoteRaw.print();
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.serdeFrom(String.class), jsonSerde , "stockQuoteTopic");
+
+        // send message to new topic
+        stockQuoteRawStream.to(Serdes.serdeFrom(String.class), jsonSerde,"stockQuoteStream");
         return new KafkaStreams(kStreamBuilder, props);
     }
 
     @PostConstruct
     public void startStreaming() {
         log.info("trying to start streaming...");
-        KafkaStreams streams = createStockQuoteStreamsInstance("localhost:9092");
+        streams = createStockQuoteStreamsInstance("localhost:9092");
         streams.start();
+    }
+
+    @PreDestroy
+    public void wrapUp() {
+        streams.close();
     }
 }
