@@ -15,5 +15,5 @@ Implemented using:
  
 # Run with docker-compose
 
-- 
+- Please read the [mock-stocks README](./mock-stocks/README.md) for details.
  

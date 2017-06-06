@@ -45,10 +45,10 @@ public class StreamHighLevelApi {
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamAppId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.serdeFrom(String.class), jsonSerde , config.getStockQuoteTopic());
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStockQuoteTopic());
 
         // send message to new topic...
-        stockQuoteRawStream.to(Serdes.serdeFrom(String.class), jsonSerde,config.getStreamAppTopic());
+        stockQuoteRawStream.to(Serdes.String(), jsonSerde, config.getStreamAppTopic());
         return new KafkaStreams(kStreamBuilder, props);
     }
 
