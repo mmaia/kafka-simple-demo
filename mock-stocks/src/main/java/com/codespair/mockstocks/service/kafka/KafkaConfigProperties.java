@@ -2,7 +2,6 @@ package com.codespair.mockstocks.service.kafka;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class KafkaConfigProperties {
-
     @Value("${generator.stockquotes.enabled:false}")
     private boolean enabled;
 
@@ -23,4 +21,7 @@ public class KafkaConfigProperties {
 
     @Value("${generator.stockquotes.topic: stockQuoteTopic}")
     private String stockQuoteTopic;
+
+    @Value("${generator.stockquotes.kafka.host}")
+    private String kafkaHost;
 }

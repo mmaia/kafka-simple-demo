@@ -3,6 +3,7 @@ generator:
     files: AMEX,NASDAQ,NYSE
     path: "/static/"
   stockquotes:
+    kafka.host: "kafka:9092"
     topic: stockQuoteTopic
     enabled: true
     start.delay.milliseconds: 1000
