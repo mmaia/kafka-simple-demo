@@ -80,7 +80,6 @@ public class StreamEnrichProduceHighLevelApi {
             Map<String, StockDetail> stockDetailMap = exchanges.get(exchangeNode.toString().replace("\"", ""));
             stockDetail = stockDetailMap.get(key);
             stockQuote.setStockDetail(stockDetail);
-            log.info("about to send to new topic enriched message {}", stockQuote);
             kafkaProducer.send(config.getStreamAppEnrichProduceTopic(), stockQuote);
         });
 
