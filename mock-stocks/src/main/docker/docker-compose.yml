@@ -28,10 +28,3 @@ services:
       - "9010:9000"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-
-  sonarqube:
-    image: sonarqube:lts-alpine
-    container_name: sonarqube
-    hostname: sonarqube
-    ports:
-      - "9100:9000"
