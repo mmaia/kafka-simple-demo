@@ -1,6 +1,6 @@
-package com.codespair.mockstocks.service.kafka.stream;
+package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
-import com.codespair.mockstocks.service.kafka.KafkaConfigProperties;
+import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -14,7 +14,6 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -23,22 +22,24 @@ import java.util.Properties;
 
 @Service
 @Slf4j
-public class StreamChainHighLevelApi {
+public class StreamChain {
     private final KafkaConfigProperties config;
     private KafkaStreams streams;
 
     @Autowired
-    public StreamChainHighLevelApi(KafkaConfigProperties kafkaConfigProperties)  {
+    public StreamChain(KafkaConfigProperties kafkaConfigProperties)  {
         this.config = kafkaConfigProperties;
     }
 
     /**
-     * Creates s KafkaStreams using the high level api
-     * @param hosts where kafka is running
+     * Creates KafkaStreams using the high level api.
+     * Using default configuration streams from enrichedStockQuoteTopic applying a filter and sending the new
+     * stream processed by the filter to a new topic containing only stocks quotes from AMEX exchange called amexTopic.
+     * @param hosts where kafka is running.
      * @return a KafkaStreams that is associated to the specified topic and serializers(Serdes).
      */
-    @Async
-    public KafkaStreams createStockQuoteStreamsInstance(String hosts) {
+    public
+    KafkaStreams createStockQuoteStreamsInstance(String hosts) {
         log.info("about to start streaming for exchange stock quote filtering...");
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
         final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
@@ -65,6 +66,7 @@ public class StreamChainHighLevelApi {
 
         return new KafkaStreams(kStreamBuilder, props);
     }
+
 
     @PostConstruct
     public void startExchangeFilterStreaming() throws InterruptedException {

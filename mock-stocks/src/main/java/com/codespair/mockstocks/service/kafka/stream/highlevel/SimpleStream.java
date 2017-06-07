@@ -1,6 +1,6 @@
-package com.codespair.mockstocks.service.kafka.stream;
+package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
-import com.codespair.mockstocks.service.kafka.KafkaConfigProperties;
+import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -21,22 +21,28 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.Properties;
 
+/**
+ * Shows the simplest possible kafka stream.
+ */
 @Slf4j
 @Service
-public class SimpleStreamHighLevelApi {
+public class SimpleStream {
 
     private KafkaConfigProperties config;
     private KafkaStreams streams;
     private StockExchangeMaps stockExchangeMaps;
 
     @Autowired
-    public SimpleStreamHighLevelApi(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps) {
+    public SimpleStream(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps) {
         this.config = kafkaConfigProperties;
         this.stockExchangeMaps = stockExchangeMaps;
     }
 
     /**
-     * Creates s KafkaStreams using the high level api
+     * Creates s KafkaStreams using the high level api. Simplest possible implementation.
+     * Create a stream from(when using defaults) stockQuotesTopic and send data direclty
+     * to another topic called simpleStockQuoteStreamTopic without any modifications or
+     * deserialization.
      * @param hosts where kafka is running
      * @return a KafkaStreams that is associated to the specified topic ans serializers(Serdes).
      */
@@ -56,8 +62,6 @@ public class SimpleStreamHighLevelApi {
         stockQuoteRawStream.to(Serdes.String(), jsonSerde, config.getStreamAppTopic());
         return new KafkaStreams(kStreamBuilder, props);
     }
-
-
 
     @PostConstruct
     public void startStreaming() throws InterruptedException {

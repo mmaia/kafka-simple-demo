@@ -1,20 +1,24 @@
 generator:
+  enabled: true
+  start.delay.milliseconds: 1000
+  interval.milliseconds: 100
   exchange.csv:
     files: AMEX,NASDAQ,NYSE
     path: "/static/"
-  stockquotes:
-    kafka:
-      host: "kafka:9092"
-      stream.app:
-        id: "mock-stocks-simple-stream"
-        topic: simpleStockQuoteStreamTopic
-        enrich.produce:
-          id: "mock-stock-stream-enrich-produce"
-          topic: enrichedStockQuoteTopic
-    topic: stockQuoteTopic
-    enabled: true
-    start.delay.milliseconds: 1000
-    interval.milliseconds: 100
+
+kafka:
+  host: "kafka:9092"
+  stock-quote:
+    topic: stock-quote
+  simple-stream:
+    id: "simple-stream"
+    topic: simple-stream
+  stream-chain:
+    id: "stream-chain"
+    topic: amex
+  stream-enrich-produce:
+    id: "stream-enrich-produce"
+    topic: stream-enrich-produce
 
 # enable all actuator endpoints from rest api.
 management.security.enabled: false

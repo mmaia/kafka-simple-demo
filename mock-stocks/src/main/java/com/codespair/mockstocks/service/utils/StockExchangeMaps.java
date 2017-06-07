@@ -4,6 +4,7 @@ import com.codespair.mockstocks.model.Exchange;
 import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,17 +22,14 @@ import java.util.*;
 @Configuration
 public class StockExchangeMaps {
 
-    @Value("${generator.exchange.csv.path:/static/}")
-    private String path;
-
-    @Value("#{'${generator.exchange.csv.files:AMEX,NYSE,NASDAQ}'.split(',')}")
-    private List<String> csvFilesToLoad;
-
     private Map<String, Map> exchanges;
 
     private List<String> exchangeNames;
 
     private CSVLoader csvLoader;
+
+    @Autowired
+    KafkaConfigProperties kafkaConfigProperties;
 
     public StockExchangeMaps(CSVLoader csvLoader) {
         this.csvLoader = csvLoader;
@@ -40,8 +38,8 @@ public class StockExchangeMaps {
 
     @PostConstruct
     public void loadCSVs() {
-        csvFilesToLoad.forEach(exchange -> {
-            exchanges.put(exchange, csvLoader.loadExchangeCSV(path + exchange + ".csv"));
+        kafkaConfigProperties.getCsvFilesToLoad().forEach(exchange -> {
+            exchanges.put(exchange, csvLoader.loadExchangeCSV(kafkaConfigProperties.getPath() + exchange + ".csv"));
             log.info("csv mapped: " + exchange);
         });
         exchangeNames = new ArrayList<>(exchanges.keySet());
