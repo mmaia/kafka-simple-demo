@@ -1,6 +1,8 @@
 package com.codespair.mockstocks.service.utils;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,37 +17,48 @@ public class KafkaConfigProperties {
 
     // generator config
     @Value("${generator.enabled:false}")
+    @Setter(AccessLevel.NONE)
     private boolean enabled;
 
     @Value("${generator.exchange.csv.path:/static/}")
+    @Setter(AccessLevel.NONE)
     private String path;
 
     @Value("#{'${generator.exchange.csv.files:AMEX,NYSE,NASDAQ}'.split(',')}")
+    @Setter(AccessLevel.NONE)
     private List<String> csvFilesToLoad;
 
     @Value("${generator.start.delay.milliseconds:3000}")
+    @Setter(AccessLevel.NONE)
     private int delayToStartInMilliseconds;
 
     @Value("${generator.interval.milliseconds: 5000}")
+    @Setter(AccessLevel.NONE)
     private int intervalMilliseconds;
 
 
     // kafka config
-    @Value("${kafka.host}")
+    @Value("${kafka.host:'localhost:9092'}")
+    @Setter(AccessLevel.NONE)
     private String kafkaHost;
 
-    @Value("${kafka.stock-quote.topic}")
+    @Value("${kafka.stock-quote.topic:stock-quote}")
+    @Setter(AccessLevel.NONE)
     private String stockQuoteTopic;
 
-    @Value("${kafka.simple-stream.id}")
+    @Value("${kafka.simple-stream.id:simple-stream}")
+    @Setter(AccessLevel.NONE)
     private String streamAppId;
 
-    @Value("${kafka.simple-stream.topic}")
+    @Value("${kafka.simple-stream.topic:simple-stream}")
+    @Setter(AccessLevel.NONE)
     private String streamAppTopic;
 
-    @Value("${kafka.stream-enrich-produce.id}")
+    @Value("${kafka.stream-enrich-produce.id:stream-enrich-produce}")
+    @Setter(AccessLevel.NONE)
     private String streamEnrichProduceAppId;
 
-    @Value("${kafka.stream-enrich-produce.topic}")
+    @Value("${kafka.stream-enrich-produce.topic:stream-enrich-produce}")
+    @Setter(AccessLevel.NONE)
     private String streamAppEnrichProduceTopic;
 }
