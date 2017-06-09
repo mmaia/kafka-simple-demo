@@ -1,8 +1,7 @@
 package com.codespair.mockstocks;
 
-import com.codespair.mockstocks.service.kafka.producer.StockQuoteGenerator;
+import com.codespair.mockstocks.service.kafka.spring.producer.StockQuoteGenerator;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
