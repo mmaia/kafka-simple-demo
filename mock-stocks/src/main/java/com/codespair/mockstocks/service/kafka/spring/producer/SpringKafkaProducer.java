@@ -1,18 +1,17 @@
-package com.codespair.mockstocks.service.kafka.producer;
+package com.codespair.mockstocks.service.kafka.spring.producer;
 
 import com.codespair.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Service
 @Slf4j
-public class KafkaProducer {
+public class SpringKafkaProducer {
 
     @Autowired
     private KafkaTemplate<String, StockQuote> kafkaTemplate;

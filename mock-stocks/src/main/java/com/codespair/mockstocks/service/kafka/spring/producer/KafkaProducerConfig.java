@@ -1,4 +1,4 @@
-package com.codespair.mockstocks.service.kafka.producer;
+package com.codespair.mockstocks.service.kafka.spring.producer;
 
 import com.codespair.mockstocks.model.StockQuote;
 import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
