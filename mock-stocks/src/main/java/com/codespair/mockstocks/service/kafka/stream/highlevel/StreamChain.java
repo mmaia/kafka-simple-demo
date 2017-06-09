@@ -14,6 +14,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +23,7 @@ import java.util.Properties;
 
 @Service
 @Slf4j
+@DependsOn("streamEnrichProduce") // we need the topic to have data before starting this one...
 public class StreamChain {
     private final KafkaConfigProperties config;
     private KafkaStreams streams;
@@ -47,7 +49,7 @@ public class StreamChain {
 
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "stock-quotes-streaming-exchange-filter");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getAmexQuotesAppId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
         KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStreamAppEnrichProduceTopic());
@@ -62,7 +64,8 @@ public class StreamChain {
                             }
                             return result;
                         });
-        amexStockQuotes.to(Serdes.String(), jsonSerde, "amexTopic");
+
+        amexStockQuotes.to(Serdes.String(), jsonSerde, config.getAmexQuotesTopic());
 
         return new KafkaStreams(kStreamBuilder, props);
     }

@@ -15,7 +15,7 @@ kafka:
     topic: simple-stream
   stream-chain:
     id: "stream-chain"
-    topic: amex
+    topic: amex-quotes
   stream-enrich-produce:
     id: "stream-enrich-produce"
     topic: stream-enrich-produce
