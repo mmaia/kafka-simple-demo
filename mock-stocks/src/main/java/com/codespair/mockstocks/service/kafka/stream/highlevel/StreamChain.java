@@ -49,11 +49,12 @@ public class StreamChain {
 
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getAmexQuotesAppId());
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamChainAppId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
         KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStreamAppEnrichProduceTopic());
 
+        // AMEX exchange stock quotes stream
         KStream<String, JsonNode> amexStockQuotes =
                 stockQuoteRawStream
                         .filter((key, stockQuoteNode) -> {
@@ -64,12 +65,36 @@ public class StreamChain {
                             }
                             return result;
                         });
-
         amexStockQuotes.to(Serdes.String(), jsonSerde, config.getAmexQuotesTopic());
+
+        // NYSE exchange stock quotes stream
+        KStream<String, JsonNode> nyseStockQuotes =
+                stockQuoteRawStream
+                        .filter((key, stockQuoteNode) -> {
+                            boolean result = false;
+                            JsonNode exchange = stockQuoteNode.get("exchange");
+                            if(exchange.toString().replace("\"", "").equalsIgnoreCase("NYSE")) {
+                                result = true;
+                            }
+                            return result;
+                        });
+        nyseStockQuotes.to(Serdes.String(), jsonSerde, config.getNyseQuotesTopic());
+
+        // NASDAQ exchange stock quotes stream
+        KStream<String, JsonNode> nasdaqStockQuotes =
+                stockQuoteRawStream
+                        .filter((key, stockQuoteNode) -> {
+                            boolean result = false;
+                            JsonNode exchange = stockQuoteNode.get("exchange");
+                            if(exchange.toString().replace("\"", "").equalsIgnoreCase("NASDAQ")) {
+                                result = true;
+                            }
+                            return result;
+                        });
+        nasdaqStockQuotes.to(Serdes.String(), jsonSerde, config.getNasdaqQuotesTopic());
 
         return new KafkaStreams(kStreamBuilder, props);
     }
-
 
     @PostConstruct
     public void startExchangeFilterStreaming() throws InterruptedException {

@@ -62,11 +62,19 @@ public class KafkaConfigProperties {
     @Setter(AccessLevel.NONE)
     private String streamAppEnrichProduceTopic;
 
-    @Value("${kafka.stream-chain.topic:amex-quotes}")
+    @Value("${kafka.stream-chain.topic.amex:amex-quotes}")
     @Setter(AccessLevel.NONE)
     private String amexQuotesTopic;
 
+    @Value("${kafka.stream-chain.topic.nasdaq:nasdaq-quotes}")
+    @Setter(AccessLevel.NONE)
+    private String nasdaqQuotesTopic;
+
+    @Value("${kafka.stream-chain.topic.nyse:nyse-quotes}")
+    @Setter(AccessLevel.NONE)
+    private String nyseQuotesTopic;
+
     @Value("${kafka.stream-chain.id:amex-quotes}")
     @Setter(AccessLevel.NONE)
-    private String amexQuotesAppId;
+    private String streamChainAppId;
 }
