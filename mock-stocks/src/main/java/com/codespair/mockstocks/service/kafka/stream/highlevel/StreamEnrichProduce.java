@@ -1,9 +1,9 @@
 package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
+import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
 import com.codespair.mockstocks.service.kafka.spring.producer.SpringKafkaProducer;
-import com.codespair.mockstocks.service.utils.ConfigurationProperties;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,13 +34,13 @@ import java.util.Properties;
 @Service
 public class StreamEnrichProduce {
 
-    private final ConfigurationProperties config;
+    private final KafkaConfigProperties config;
     private KafkaStreams streams;
     private final StockExchangeMaps stockExchangeMaps;
     private final SpringKafkaProducer kafkaProducer;
 
     @Autowired
-    public StreamEnrichProduce(ConfigurationProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps,
+    public StreamEnrichProduce(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps,
                                SpringKafkaProducer kafkaProducer)  {
         this.config = kafkaConfigProperties;
         this.stockExchangeMaps = stockExchangeMaps;
@@ -60,10 +60,10 @@ public class StreamEnrichProduce {
 
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamEnrichProduceAppId());
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamEnrichProduce().getId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStockQuoteTopic());
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStockQuote().getTopic());
 
         Map<String, Map> exchanges = stockExchangeMaps.getExchanges();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -82,7 +82,7 @@ public class StreamEnrichProduce {
             Map<String, StockDetail> stockDetailMap = exchanges.get(exchangeNode.toString().replace("\"", ""));
             stockDetail = stockDetailMap.get(key);
             stockQuote.setStockDetail(stockDetail);
-            kafkaProducer.send(config.getStreamAppEnrichProduceTopic(), stockQuote);
+            kafkaProducer.send(config.getStreamEnrichProduce().getTopic(), stockQuote);
         });
 
         return new KafkaStreams(kStreamBuilder, props);
@@ -91,8 +91,8 @@ public class StreamEnrichProduce {
     @PostConstruct
     public void startStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
-        Thread.sleep(config.getDelayToStartInMilliseconds() + 1000);
-        streams = createStreamsInstance(config.getKafkaHost());
+        Thread.sleep(1000);
+        streams = createStreamsInstance(config.getHost());
         streams.start();
     }
 

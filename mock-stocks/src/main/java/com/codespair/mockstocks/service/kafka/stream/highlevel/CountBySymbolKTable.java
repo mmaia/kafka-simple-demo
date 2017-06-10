@@ -1,6 +1,7 @@
 package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
-import com.codespair.mockstocks.service.utils.ConfigurationProperties;
+import com.codespair.mockstocks.config.GeneratorConfigProperties;
+import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -26,12 +27,16 @@ import java.util.Properties;
 @DependsOn("streamChain")
 @Slf4j
 public class CountBySymbolKTable {
-    private final ConfigurationProperties config;
+
+
+    private final GeneratorConfigProperties generatorConfigProperties;
+    private final KafkaConfigProperties kafkaConfigProperties;
     private KafkaStreams streams;
 
     @Autowired
-    public CountBySymbolKTable(ConfigurationProperties config) {
-        this.config = config;
+    public CountBySymbolKTable(KafkaConfigProperties config, GeneratorConfigProperties generatorConfigProperties) {
+        this.kafkaConfigProperties = config;
+        this.generatorConfigProperties = generatorConfigProperties;
     }
 
     private KafkaStreams createStreamsInstance(String host) {
@@ -46,7 +51,7 @@ public class CountBySymbolKTable {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, host);
 
         //stream from topic...
-        KStream<String, JsonNode> amexStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getAmexQuotesTopic());
+        KStream<String, JsonNode> amexStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , kafkaConfigProperties.getStreamChain().getAmexTopic());
         KTable<String, Long> countsBySymbol = amexStream.groupByKey(Serdes.String(), jsonSerde).count("counts-by-symbol");
         countsBySymbol.to(Serdes.String(), Serdes.Long(), "amex-count-by-symbol");
 
@@ -56,8 +61,8 @@ public class CountBySymbolKTable {
     @PostConstruct
     public void startExchangeFilterStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
-        Thread.sleep(config.getDelayToStartInMilliseconds() + 1000);
-        streams = createStreamsInstance(config.getKafkaHost());
+        Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);
+        streams = createStreamsInstance(kafkaConfigProperties.getHost());
         streams.start();
     }
 

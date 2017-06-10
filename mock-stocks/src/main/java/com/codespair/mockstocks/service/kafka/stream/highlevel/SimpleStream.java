@@ -1,6 +1,7 @@
 package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
-import com.codespair.mockstocks.service.utils.ConfigurationProperties;
+import com.codespair.mockstocks.config.GeneratorConfigProperties;
+import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +29,15 @@ import java.util.Properties;
 @Service
 public class SimpleStream {
 
-    private ConfigurationProperties config;
+    private GeneratorConfigProperties generatorConfigProperties;
+    private KafkaConfigProperties kafkaConfigProperties;
     private KafkaStreams streams;
-    private StockExchangeMaps stockExchangeMaps;
 
     @Autowired
-    public SimpleStream(ConfigurationProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps) {
-        this.config = kafkaConfigProperties;
-        this.stockExchangeMaps = stockExchangeMaps;
+    public SimpleStream(KafkaConfigProperties kafkaConfigProperties,
+                        GeneratorConfigProperties generatorConfigProperties) {
+        this.kafkaConfigProperties = kafkaConfigProperties;
+        this.generatorConfigProperties = generatorConfigProperties;
     }
 
     /**
@@ -54,20 +56,20 @@ public class SimpleStream {
 
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamAppId());
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, kafkaConfigProperties.getSimpleStream().getId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStockQuoteTopic());
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , kafkaConfigProperties.getStockQuote().getTopic());
         // stream unchanged message to new topic...
-        stockQuoteRawStream.to(Serdes.String(), jsonSerde, config.getStreamAppTopic());
+        stockQuoteRawStream.to(Serdes.String(), jsonSerde, kafkaConfigProperties.getSimpleStream().getTopic());
         return new KafkaStreams(kStreamBuilder, props);
     }
 
     @PostConstruct
     public void startStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
-        Thread.sleep(config.getDelayToStartInMilliseconds() + 1000);
-        streams = createStreamsInstance(config.getKafkaHost());
+        Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);
+        streams = createStreamsInstance(kafkaConfigProperties.getHost());
         streams.start();
     }
 

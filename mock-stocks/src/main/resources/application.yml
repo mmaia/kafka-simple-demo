@@ -1,9 +1,12 @@
 generator:
   enabled: true
-  start.delay.milliseconds: 1000
-  interval.milliseconds: 100
-  exchange.csv:
-    files: AMEX,NASDAQ,NYSE
+  start-delay-milliseconds: 1000
+  interval-milliseconds: 100
+  exchange-csv:
+    files:
+      - AMEX
+      - NASDAQ
+      - NYSE
     path: "/static/"
 
 kafka:
@@ -15,12 +18,13 @@ kafka:
     topic: simple-stream
   stream-chain:
     id: "stream-chain"
-    topic.amex: amex-quotes
-    topic.nyse: nyse-quotes
-    topic.nasdaq: nasdaq-quotes
+    amexTopic: amex-quotes
+    nyseTopic: nyse-quotes
+    nasdaqTopic: nasdaq-quotes
   stream-enrich-produce:
     id: "stream-enrich-produce"
     topic: stream-enrich-produce
 
+# standard spring settings ====================
 # enable all actuator endpoints from rest api.
 management.security.enabled: false

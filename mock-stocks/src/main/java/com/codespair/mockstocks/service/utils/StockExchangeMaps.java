@@ -1,5 +1,7 @@
 package com.codespair.mockstocks.service.utils;
 
+import com.codespair.mockstocks.config.GeneratorConfigProperties;
+import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.codespair.mockstocks.model.Exchange;
 import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
@@ -27,7 +29,7 @@ public class StockExchangeMaps {
     private CSVLoader csvLoader;
 
     @Autowired
-    ConfigurationProperties kafkaConfigProperties;
+    GeneratorConfigProperties generatorConfigProperties;
 
     public StockExchangeMaps(CSVLoader csvLoader) {
         this.csvLoader = csvLoader;
@@ -36,8 +38,8 @@ public class StockExchangeMaps {
 
     @PostConstruct
     public void loadCSVs() {
-        kafkaConfigProperties.getCsvFilesToLoad().forEach(exchange -> {
-            exchanges.put(exchange, csvLoader.loadExchangeCSV(kafkaConfigProperties.getPath() + exchange + ".csv"));
+        generatorConfigProperties.getExchangeCsv().getFiles().forEach(exchange -> {
+            exchanges.put(exchange, csvLoader.loadExchangeCSV(generatorConfigProperties.getExchangeCsv().getPath() + exchange + ".csv"));
             log.info("csv mapped: " + exchange);
         });
         exchangeNames = new ArrayList<>(exchanges.keySet());
