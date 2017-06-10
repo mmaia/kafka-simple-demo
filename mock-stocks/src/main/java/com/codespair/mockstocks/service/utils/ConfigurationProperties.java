@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Component
 @Data
-public class KafkaConfigProperties {
+public class ConfigurationProperties {
 
     // generator config
     @Value("${generator.enabled:false}")

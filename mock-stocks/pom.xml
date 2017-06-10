@@ -26,6 +26,8 @@
 	</properties>
 
 	<dependencies>
+
+		<!-- spring & springboot-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -35,11 +37,6 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka-streams</artifactId>
-			<version>0.10.1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
@@ -47,6 +44,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- validator JSR-303 impl. -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+
+		<!-- kafka -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-streams</artifactId>
+			<version>0.10.1.0</version>
 		</dependency>
 
 		<!-- lombok -->
@@ -63,6 +73,7 @@
 			<version>3.9</version>
 		</dependency>
 
+		<!-- jacoco test support -->
 		<dependency>
 			<groupId>org.jacoco</groupId>
 			<artifactId>jacoco-maven-plugin</artifactId>
@@ -70,7 +81,6 @@
 		</dependency>
 
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>

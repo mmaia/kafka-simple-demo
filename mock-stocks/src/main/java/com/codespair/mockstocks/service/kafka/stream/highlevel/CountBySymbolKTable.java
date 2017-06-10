@@ -1,6 +1,6 @@
 package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
-import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
+import com.codespair.mockstocks.service.utils.ConfigurationProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -26,11 +26,11 @@ import java.util.Properties;
 @DependsOn("streamChain")
 @Slf4j
 public class CountBySymbolKTable {
-    private final KafkaConfigProperties config;
+    private final ConfigurationProperties config;
     private KafkaStreams streams;
 
     @Autowired
-    public CountBySymbolKTable(KafkaConfigProperties config) {
+    public CountBySymbolKTable(ConfigurationProperties config) {
         this.config = config;
     }
 

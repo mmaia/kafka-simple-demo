@@ -1,6 +1,6 @@
 package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
-import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
+import com.codespair.mockstocks.service.utils.ConfigurationProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -25,11 +25,11 @@ import java.util.Properties;
 @Slf4j
 @DependsOn("streamEnrichProduce") // we need the topic to have data before starting this one...
 public class StreamChain {
-    private final KafkaConfigProperties config;
+    private final ConfigurationProperties config;
     private KafkaStreams streams;
 
     @Autowired
-    public StreamChain(KafkaConfigProperties kafkaConfigProperties)  {
+    public StreamChain(ConfigurationProperties kafkaConfigProperties)  {
         this.config = kafkaConfigProperties;
     }
 

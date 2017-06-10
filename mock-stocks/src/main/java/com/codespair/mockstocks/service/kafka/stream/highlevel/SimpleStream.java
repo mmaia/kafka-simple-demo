@@ -1,6 +1,6 @@
 package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
-import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
+import com.codespair.mockstocks.service.utils.ConfigurationProperties;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +28,12 @@ import java.util.Properties;
 @Service
 public class SimpleStream {
 
-    private KafkaConfigProperties config;
+    private ConfigurationProperties config;
     private KafkaStreams streams;
     private StockExchangeMaps stockExchangeMaps;
 
     @Autowired
-    public SimpleStream(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps) {
+    public SimpleStream(ConfigurationProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps) {
         this.config = kafkaConfigProperties;
         this.stockExchangeMaps = stockExchangeMaps;
     }

@@ -3,7 +3,7 @@ package com.codespair.mockstocks.service.kafka.stream.highlevel;
 import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
 import com.codespair.mockstocks.service.kafka.spring.producer.SpringKafkaProducer;
-import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
+import com.codespair.mockstocks.service.utils.ConfigurationProperties;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,13 +34,13 @@ import java.util.Properties;
 @Service
 public class StreamEnrichProduce {
 
-    private final KafkaConfigProperties config;
+    private final ConfigurationProperties config;
     private KafkaStreams streams;
     private final StockExchangeMaps stockExchangeMaps;
     private final SpringKafkaProducer kafkaProducer;
 
     @Autowired
-    public StreamEnrichProduce(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps,
+    public StreamEnrichProduce(ConfigurationProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps,
                                SpringKafkaProducer kafkaProducer)  {
         this.config = kafkaConfigProperties;
         this.stockExchangeMaps = stockExchangeMaps;

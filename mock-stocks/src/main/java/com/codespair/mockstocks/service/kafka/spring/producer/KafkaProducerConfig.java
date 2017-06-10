@@ -1,7 +1,7 @@
 package com.codespair.mockstocks.service.kafka.spring.producer;
 
 import com.codespair.mockstocks.model.StockQuote;
-import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
+import com.codespair.mockstocks.service.utils.ConfigurationProperties;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +20,10 @@ import java.util.Map;
 @EnableKafka
 public class KafkaProducerConfig {
 
-    private KafkaConfigProperties config;
+    private ConfigurationProperties config;
 
     @Autowired
-    public KafkaProducerConfig(KafkaConfigProperties kafkaConfigProperties) {
+    public KafkaProducerConfig(ConfigurationProperties kafkaConfigProperties) {
         this.config = kafkaConfigProperties;
     }
 

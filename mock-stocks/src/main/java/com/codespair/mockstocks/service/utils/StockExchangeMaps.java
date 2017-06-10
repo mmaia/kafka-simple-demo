@@ -5,8 +5,6 @@ import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -29,7 +27,7 @@ public class StockExchangeMaps {
     private CSVLoader csvLoader;
 
     @Autowired
-    KafkaConfigProperties kafkaConfigProperties;
+    ConfigurationProperties kafkaConfigProperties;
 
     public StockExchangeMaps(CSVLoader csvLoader) {
         this.csvLoader = csvLoader;

@@ -1,7 +1,7 @@
 package com.codespair.mockstocks.service.kafka.spring.producer;
 
 import com.codespair.mockstocks.model.StockQuote;
-import com.codespair.mockstocks.service.utils.KafkaConfigProperties;
+import com.codespair.mockstocks.service.utils.ConfigurationProperties;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.Random;
 public class StockQuoteGenerator {
 
     @Autowired
-    private KafkaConfigProperties kafkaConfigProperties;
+    private ConfigurationProperties kafkaConfigProperties;
 
     @Autowired
     private StockExchangeMaps stockExchangeMaps;
