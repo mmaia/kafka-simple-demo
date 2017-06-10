@@ -52,7 +52,7 @@ public class StreamEnrichProduce {
      * @param hosts where kafka is running
      * @return a KafkaStreams that is associated to the specified topic ans serializers(Serdes).
      */
-    public KafkaStreams createStockQuoteStreamsInstance(String hosts) {
+    public KafkaStreams createStreamsInstance(String hosts) {
         log.info("loading kafka stream configuration");
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
         final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
@@ -91,8 +91,8 @@ public class StreamEnrichProduce {
     @PostConstruct
     public void startStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
-        Thread.sleep(config.getDelayToStartInMilliseconds() + 2000);
-        streams = createStockQuoteStreamsInstance(config.getKafkaHost());
+        Thread.sleep(config.getDelayToStartInMilliseconds() + 1000);
+        streams = createStreamsInstance(config.getKafkaHost());
         streams.start();
     }
 

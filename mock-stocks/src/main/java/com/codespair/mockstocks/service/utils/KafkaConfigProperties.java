@@ -28,7 +28,7 @@ public class KafkaConfigProperties {
     @Setter(AccessLevel.NONE)
     private List<String> csvFilesToLoad;
 
-    @Value("${generator.start.delay.milliseconds:3000}")
+    @Value("${generator.start.delay.milliseconds:1000}")
     @Setter(AccessLevel.NONE)
     private int delayToStartInMilliseconds;
 

@@ -40,8 +40,8 @@ public class StreamChain {
      * @param hosts where kafka is running.
      * @return a KafkaStreams that is associated to the specified topic and serializers(Serdes).
      */
-    public
-    KafkaStreams createStockQuoteStreamsInstance(String hosts) {
+    private
+    KafkaStreams createStreamsInstance(String hosts) {
         log.info("about to start streaming for exchange stock quote filtering...");
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
         final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
@@ -99,8 +99,8 @@ public class StreamChain {
     @PostConstruct
     public void startExchangeFilterStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
-        Thread.sleep(config.getDelayToStartInMilliseconds() + 2000);
-        streams = createStockQuoteStreamsInstance(config.getKafkaHost());
+        Thread.sleep(config.getDelayToStartInMilliseconds() + 1000);
+        streams = createStreamsInstance(config.getKafkaHost());
         streams.start();
     }
 
