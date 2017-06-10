@@ -11,7 +11,6 @@ import org.apache.kafka.connect.json.JsonDeserializer;
 import org.apache.kafka.connect.json.JsonSerializer;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KGroupedStream;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.kstream.KTable;
@@ -48,7 +47,6 @@ public class CountBySymbolKTable {
 
         //stream from topic...
         KStream<String, JsonNode> amexStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getAmexQuotesTopic());
-
         KTable<String, Long> countsBySymbol = amexStream.groupByKey(Serdes.String(), jsonSerde).count("counts-by-symbol");
         countsBySymbol.to(Serdes.String(), Serdes.Long(), "amex-count-by-symbol");
 

@@ -35,6 +35,7 @@ public class KafkaConfigProperties {
     @Value("${generator.interval.milliseconds: 5000}")
     @Setter(AccessLevel.NONE)
     private int intervalMilliseconds;
+    //================
 
 
     // kafka config
@@ -74,7 +75,7 @@ public class KafkaConfigProperties {
     @Setter(AccessLevel.NONE)
     private String nyseQuotesTopic;
 
-    @Value("${kafka.stream-chain.id:amex-quotes}")
+    @Value("${kafka.stream-chain.id:stream-chain}")
     @Setter(AccessLevel.NONE)
     private String streamChainAppId;
 }
