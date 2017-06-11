@@ -18,6 +18,7 @@ public class KafkaConfigProperties {
     @Data
     @Validated
     public static class StockQuote {
+        @NotBlank
         private String topic;
     }
 
