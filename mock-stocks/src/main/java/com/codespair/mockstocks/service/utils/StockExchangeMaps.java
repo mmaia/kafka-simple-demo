@@ -67,7 +67,6 @@ public class StockExchangeMaps {
         Random random = new Random();
         int whichSymbol = random.nextInt(symbols.size());
         result.setSymbol(symbols.get(whichSymbol));
-        log.debug("StockQuote randomly picked: " + result);
         return result;
     }
 
