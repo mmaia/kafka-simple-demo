@@ -2,7 +2,6 @@ package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
 import com.codespair.mockstocks.config.GeneratorConfigProperties;
 import com.codespair.mockstocks.config.KafkaConfigProperties;
-import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -15,7 +14,6 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
