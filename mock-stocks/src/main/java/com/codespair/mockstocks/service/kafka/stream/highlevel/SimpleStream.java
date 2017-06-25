@@ -33,7 +33,6 @@ public class SimpleStream {
     private KafkaConfigProperties kafkaConfigProperties;
     private KafkaStreams streams;
 
-    @Autowired
     public SimpleStream(KafkaConfigProperties kafkaConfigProperties,
                         GeneratorConfigProperties generatorConfigProperties) {
         this.kafkaConfigProperties = kafkaConfigProperties;
