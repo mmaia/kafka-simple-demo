@@ -28,11 +28,11 @@ public class StockExchangeMaps {
 
     private CSVLoader csvLoader;
 
-    @Autowired
     GeneratorConfigProperties generatorConfigProperties;
 
-    public StockExchangeMaps(CSVLoader csvLoader) {
+    public StockExchangeMaps(CSVLoader csvLoader, GeneratorConfigProperties generatorConfigProperties) {
         this.csvLoader = csvLoader;
+        this.generatorConfigProperties = generatorConfigProperties;
         this.exchanges = new HashMap<>();
     }
 
