@@ -62,6 +62,7 @@ public class StreamEnrichProduce {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getStreamEnrichProduce().getId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
+
         //stream from topic...
         KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStockQuote().getTopic());
 
