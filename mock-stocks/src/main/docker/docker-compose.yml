@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   kafka:
-    image: spotify/kafka
+    image: mmaia/kafka:0.10.2.1
     container_name: kafka
     hostname: kafka
     ports:
@@ -12,7 +12,7 @@ services:
       JMX_PORT: 9999
 
   kafka-manager:
-    image: mmaia/kafka-manager-docker:1.3.3.6
+    image: mmaia/kafka-manager-docker:1.3.3.7
     container_name: kafka-manager
     environment:
       ZK_HOSTS: kafka:2181
