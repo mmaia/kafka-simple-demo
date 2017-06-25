@@ -51,9 +51,13 @@ public class CountBySymbolKTable {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, host);
 
         //stream from topic...
-        KStream<String, JsonNode> amexStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , kafkaConfigProperties.getStreamChain().getAmexTopic());
+        KStream<String, JsonNode> amexStream = kStreamBuilder.stream(Serdes.String(), jsonSerde, kafkaConfigProperties.getStreamChain().getAmexTopic());
+
         // we create a ktable and count by key, and giving a name for the state store which will be created by kafka
         KTable<String, Long> countsBySymbol = amexStream.groupByKey(Serdes.String(), jsonSerde).count("amex-count-by-symbol");
+
+        log.debug("checking the just created local store name: {} ", countsBySymbol.getStoreName());
+
         // we then strem the table to a topic
         countsBySymbol.to(Serdes.String(), Serdes.Long(), "amex-count-by-symbol");
 
