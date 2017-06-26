@@ -3,9 +3,11 @@ package com.codespair.mockstocks.service.kafka.spring.producer;
 import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.codespair.mockstocks.model.StockQuote;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -15,6 +17,7 @@ import org.apache.kafka.connect.json.JsonSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 @Component
 public class StockQuoteProducer {
@@ -31,8 +34,11 @@ public class StockQuoteProducer {
         kafkaProducer = new KafkaProducer<>(configure());
     }
 
-    public void send(StockQuote stockQuote) {
-        kafkaProducer.send();
+    public Future<RecordMetadata> send(String key, StockQuote stockQuote) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode stockQuoteJsonNode = objectMapper.convertValue(stockQuote, JsonNode.class);
+        return kafkaProducer.send(new ProducerRecord<String, JsonNode>(config.getStockQuote().getTopic(), key,
+                stockQuoteJsonNode));
     }
 
     private Properties configure() {
