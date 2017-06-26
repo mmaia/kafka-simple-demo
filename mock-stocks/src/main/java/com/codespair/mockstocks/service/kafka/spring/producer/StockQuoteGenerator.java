@@ -29,7 +29,7 @@ public class StockQuoteGenerator {
     private StockExchangeMaps stockExchangeMaps;
 
     @Autowired
-    private SpringKafkaProducer kafkaProducer;
+    private StockQuoteProducerClient kafkaProducerClient;
 
     @Async
     public void startGenerator() throws InterruptedException {
@@ -41,7 +41,7 @@ public class StockQuoteGenerator {
                 while(true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
                     stockQuote = enrich(stockQuote);
-                    kafkaProducer.send(kafkaConfigProperties.getStockQuote().getTopic(), stockQuote);
+                    kafkaProducerClient.send(kafkaConfigProperties.getStockQuote().getTopic(), null, stockQuote);
                     Thread.sleep(generatorConfigProperties.getIntervalMilliseconds());
                 }
             }

@@ -20,12 +20,12 @@ import java.util.Properties;
 import java.util.concurrent.Future;
 
 @Component
-public class StockQuoteProducer {
+public class StockQuoteProducerClient {
 
     private KafkaConfigProperties config;
     private Producer<String, JsonNode> kafkaProducer;
 
-    public StockQuoteProducer(KafkaConfigProperties kafkaConfigProperties) {
+    public StockQuoteProducerClient(KafkaConfigProperties kafkaConfigProperties) {
         this.config = kafkaConfigProperties;
         this.createProducer();
     }
@@ -34,11 +34,16 @@ public class StockQuoteProducer {
         kafkaProducer = new KafkaProducer<>(configure());
     }
 
-    public Future<RecordMetadata> send(String key, StockQuote stockQuote) {
+    public Future<RecordMetadata> send(String topic, String key, StockQuote stockQuote) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode stockQuoteJsonNode = objectMapper.convertValue(stockQuote, JsonNode.class);
-        return kafkaProducer.send(new ProducerRecord<String, JsonNode>(config.getStockQuote().getTopic(), key,
+        return kafkaProducer.send(new ProducerRecord<>(topic, key,
                 stockQuoteJsonNode));
+    }
+
+    public void close() {
+        kafkaProducer.close();
+        kafkaProducer = null;
     }
 
     private Properties configure() {
@@ -49,10 +54,11 @@ public class StockQuoteProducer {
         final Serde<JsonNode> jsonSerde = Serdes.serdeFrom(jsonSerializer, jsonDeserializer);
 
         properties.put("bootstrap.servers", config.getHost());
-        properties.put("client.id", config.getStockQuote());
+        properties.put("client.id", config.getStockQuote().getTopic());
         properties.put("key.serializer", Serdes.String());
         properties.put("value.serializer", jsonSerde);
 
         return properties;
     }
 }
+
