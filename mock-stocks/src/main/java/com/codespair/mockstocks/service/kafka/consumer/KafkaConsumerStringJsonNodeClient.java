@@ -2,7 +2,6 @@ package com.codespair.mockstocks.service.kafka.consumer;
 
 import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.fasterxml.jackson.databind.JsonNode;
-import edu.emory.mathcs.backport.java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -14,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -51,8 +51,8 @@ public class KafkaConsumerStringJsonNodeClient {
             if(records.count() > 0) {
                 for(ConsumerRecord<String, JsonNode> record: records) {
                     if(counter % 500 == 0) {
-                        log.info("Record recovered, groupId: {}, topicName: {}, key: {}, value: {} ",
-                                this.groupId, this.topicNames, record.key(), record.value());
+                        log.info("Record recovered, groupId: {}, topicName: {}, key: {}, value: {} , offset: {}",
+                                this.groupId, this.topicNames, record.key(), record.value(), record.offset());
                     }
                     counter++;
                 }
@@ -76,4 +76,8 @@ public class KafkaConsumerStringJsonNodeClient {
         return props;
     }
 
+    @PreDestroy
+    public void close() {
+        kafkaConsumer.close();
+    }
 }
