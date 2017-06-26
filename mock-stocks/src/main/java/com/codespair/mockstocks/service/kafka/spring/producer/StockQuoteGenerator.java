@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
 import java.util.Random;
 
@@ -59,5 +60,10 @@ public class StockQuoteGenerator {
         stockQuote.setLow(new BigDecimal(random.nextFloat() * upTo));
         stockQuote.setLastTrade(new BigDecimal(random.nextFloat() * upTo));
         return stockQuote;
+    }
+
+    @PreDestroy
+    public void closeProducer() {
+        kafkaProducerClient.close();
     }
 }
