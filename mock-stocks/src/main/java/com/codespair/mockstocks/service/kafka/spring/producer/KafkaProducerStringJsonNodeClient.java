@@ -1,44 +1,47 @@
 package com.codespair.mockstocks.service.kafka.spring.producer;
 
 import com.codespair.mockstocks.config.KafkaConfigProperties;
-import com.codespair.mockstocks.model.StockQuote;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.serialization.Deserializer;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
-import org.apache.kafka.connect.json.JsonDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.connect.json.JsonSerializer;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 import java.util.concurrent.Future;
 
 @Component
-public class StockQuoteProducerClient {
+@Scope("prototype")
+public class KafkaProducerStringJsonNodeClient {
 
     private KafkaConfigProperties config;
     private Producer<String, JsonNode> kafkaProducer;
+    private String clientId;
 
-    public StockQuoteProducerClient(KafkaConfigProperties kafkaConfigProperties) {
+    public KafkaProducerStringJsonNodeClient(KafkaConfigProperties kafkaConfigProperties) {
         this.config = kafkaConfigProperties;
-        this.createProducer();
     }
 
-    public void createProducer() {
-        kafkaProducer = new KafkaProducer<>(configure());
+    public void configure(String clientId) {
+        this.clientId = clientId;
+        createProducer();
     }
 
-    public Future<RecordMetadata> send(String topic, String key, StockQuote stockQuote) {
+    private void createProducer() {
+        kafkaProducer = new KafkaProducer<>(kafkaClientProperties());
+    }
+
+    public Future<RecordMetadata> send(String topic, String key, Object instance) {
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode stockQuoteJsonNode = objectMapper.convertValue(stockQuote, JsonNode.class);
+        JsonNode jsonNode = objectMapper.convertValue(instance, JsonNode.class);
         return kafkaProducer.send(new ProducerRecord<>(topic, key,
-                stockQuoteJsonNode));
+                jsonNode));
     }
 
     public void close() {
@@ -46,17 +49,15 @@ public class StockQuoteProducerClient {
         kafkaProducer = null;
     }
 
-    private Properties configure() {
+    private Properties kafkaClientProperties() {
         Properties properties = new Properties();
 
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
-        final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
-        final Serde<JsonNode> jsonSerde = Serdes.serdeFrom(jsonSerializer, jsonDeserializer);
 
         properties.put("bootstrap.servers", config.getHost());
-        properties.put("client.id", config.getStockQuote().getTopic());
-        properties.put("key.serializer", Serdes.String());
-        properties.put("value.serializer", jsonSerde);
+        properties.put("client.id", clientId);
+        properties.put("key.serializer", StringSerializer.class);
+        properties.put("value.serializer", jsonSerializer.getClass());
 
         return properties;
     }

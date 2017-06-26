@@ -3,7 +3,7 @@ package com.codespair.mockstocks.service.kafka.stream.highlevel;
 import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
-import com.codespair.mockstocks.service.kafka.spring.producer.SpringKafkaProducer;
+import com.codespair.mockstocks.service.kafka.spring.producer.KafkaProducerStringJsonNodeClient;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,11 +37,11 @@ public class StreamEnrichProduce {
     private final KafkaConfigProperties config;
     private KafkaStreams streams;
     private final StockExchangeMaps stockExchangeMaps;
-    private final SpringKafkaProducer kafkaProducer;
+    private final KafkaProducerStringJsonNodeClient kafkaProducer;
 
     @Autowired
     public StreamEnrichProduce(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps,
-                               SpringKafkaProducer kafkaProducer)  {
+                               KafkaProducerStringJsonNodeClient kafkaProducer)  {
         this.config = kafkaConfigProperties;
         this.stockExchangeMaps = stockExchangeMaps;
         this.kafkaProducer = kafkaProducer;
@@ -68,7 +68,7 @@ public class StreamEnrichProduce {
 
         Map<String, Map> exchanges = stockExchangeMaps.getExchanges();
         ObjectMapper objectMapper = new ObjectMapper();
-
+        kafkaProducer.configure(config.getStreamEnrichProduce().getTopic());
         // - enrich stockquote with stockdetails before producing to new topic
         stockQuoteRawStream.foreach((key, jsonNode) -> {
             StockQuote stockQuote = null;
@@ -83,7 +83,7 @@ public class StreamEnrichProduce {
             Map<String, StockDetail> stockDetailMap = exchanges.get(exchangeNode.toString().replace("\"", ""));
             stockDetail = stockDetailMap.get(key);
             stockQuote.setStockDetail(stockDetail);
-            kafkaProducer.send(config.getStreamEnrichProduce().getTopic(), stockQuote);
+            kafkaProducer.send(config.getStreamEnrichProduce().getTopic(), null, stockQuote);
         });
 
         return new KafkaStreams(kStreamBuilder, props);
