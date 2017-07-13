@@ -21,14 +21,14 @@ import java.util.Properties;
 @Component
 @Scope("prototype")
 @Slf4j
-public class KafkaConsumerStringJsonNodeClient {
+public class StringJsonNodeClientConsumer {
 
     private KafkaConfigProperties config;
     private KafkaConsumer<String, JsonNode> kafkaConsumer;
     private String groupId;
     private List<String> topicNames;
 
-    public KafkaConsumerStringJsonNodeClient(KafkaConfigProperties kafkaConfigProperties) {
+    public StringJsonNodeClientConsumer(KafkaConfigProperties kafkaConfigProperties) {
         this.config = kafkaConfigProperties;
         this.topicNames = new ArrayList<>();
     }

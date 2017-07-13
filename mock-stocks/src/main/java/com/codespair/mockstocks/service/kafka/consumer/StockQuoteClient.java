@@ -13,11 +13,11 @@ import javax.annotation.PostConstruct;
 public class StockQuoteClient {
 
     KafkaConfigProperties config;
-    KafkaConsumerStringJsonNodeClient client;
+    StringJsonNodeClientConsumer client;
 
-    public StockQuoteClient(KafkaConfigProperties kafkaConfigProperties, KafkaConsumerStringJsonNodeClient kafkaConsumerStringJsonNodeClient) {
+    public StockQuoteClient(KafkaConfigProperties kafkaConfigProperties, StringJsonNodeClientConsumer stringJsonNodeClientConsumer) {
         this.config = kafkaConfigProperties;
-        this.client = kafkaConsumerStringJsonNodeClient;
+        this.client = stringJsonNodeClientConsumer;
     }
 
     @PostConstruct

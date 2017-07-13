@@ -12,11 +12,11 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class SimpleStreamClient {
     KafkaConfigProperties config;
-    KafkaConsumerStringJsonNodeClient client;
+    StringJsonNodeClientConsumer client;
 
-    public SimpleStreamClient(KafkaConfigProperties kafkaConfigProperties, KafkaConsumerStringJsonNodeClient kafkaConsumerStringJsonNodeClient) {
+    public SimpleStreamClient(KafkaConfigProperties kafkaConfigProperties, StringJsonNodeClientConsumer stringJsonNodeClientConsumer) {
         this.config = kafkaConfigProperties;
-        this.client = kafkaConsumerStringJsonNodeClient;
+        this.client = stringJsonNodeClientConsumer;
     }
 
     @PostConstruct

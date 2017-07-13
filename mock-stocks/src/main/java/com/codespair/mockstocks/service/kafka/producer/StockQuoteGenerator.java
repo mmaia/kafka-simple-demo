@@ -30,12 +30,12 @@ public class StockQuoteGenerator {
     private StockExchangeMaps stockExchangeMaps;
 
     @Autowired
-    private KafkaProducerStringJsonNodeClient kafkaProducerStringJsonNodeClient;
+    private StringJsonNodeClientProducer stringJsonNodeClientProducer;
 
     @Async
     public void startGenerator() throws InterruptedException {
         if(generatorConfigProperties.isEnabled()) {
-            kafkaProducerStringJsonNodeClient.configure(kafkaConfigProperties.getStockQuote().getTopic());
+            stringJsonNodeClientProducer.configure(kafkaConfigProperties.getStockQuote().getTopic());
             log.info("Starting random quote generation in {} milliseconds, with interval: {} milliseconds between each quote",
                     generatorConfigProperties.getStartDelayMilliseconds(), generatorConfigProperties.getIntervalMilliseconds());
             try {
@@ -43,7 +43,7 @@ public class StockQuoteGenerator {
                 while(true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
                     stockQuote = enrich(stockQuote);
-                    kafkaProducerStringJsonNodeClient.send(kafkaConfigProperties.getStockQuote().getTopic(), null, stockQuote);
+                    stringJsonNodeClientProducer.send(kafkaConfigProperties.getStockQuote().getTopic(), null, stockQuote);
                     Thread.sleep(generatorConfigProperties.getIntervalMilliseconds());
                 }
             }
@@ -65,6 +65,6 @@ public class StockQuoteGenerator {
 
     @PreDestroy
     public void closeProducer() {
-        kafkaProducerStringJsonNodeClient.close();
+        stringJsonNodeClientProducer.close();
     }
 }

@@ -18,13 +18,13 @@ import java.util.concurrent.Future;
 
 @Component
 @Scope("prototype")
-public class KafkaProducerStringJsonNodeClient {
+public class StringJsonNodeClientProducer {
 
     private KafkaConfigProperties config;
     private Producer<String, JsonNode> kafkaProducer;
     private String clientId;
 
-    public KafkaProducerStringJsonNodeClient(KafkaConfigProperties kafkaConfigProperties) {
+    public StringJsonNodeClientProducer(KafkaConfigProperties kafkaConfigProperties) {
         this.config = kafkaConfigProperties;
     }
 
