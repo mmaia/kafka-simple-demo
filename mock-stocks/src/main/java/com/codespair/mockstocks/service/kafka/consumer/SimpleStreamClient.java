@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-@DependsOn("kafkaConsumerStringJsonNodeClient")
+@DependsOn("stringJsonNodeClientConsumer")
 @Slf4j
 public class SimpleStreamClient {
     KafkaConfigProperties config;
