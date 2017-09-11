@@ -67,7 +67,7 @@ public class StringJsonNodeClientConsumer {
     private Properties loadProperties() {
         Properties props = new Properties();
         Deserializer<JsonNode> deserializer = new JsonDeserializer();
-        props.setProperty("bootstrap.servers", config.getHost());
+        props.setProperty("bootstrap.servers", config.getHosts());
         props.setProperty("group.id", groupId);
         props.setProperty("key.deserializer", StringDeserializer.class.getName());
         props.setProperty("value.deserializer", deserializer.getClass().getName());
