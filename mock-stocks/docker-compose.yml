@@ -1,21 +1,27 @@
 version: '2.1'
 
 services:
-  kafka:
-    image: mmaia/kafka:0.10.2.1
-    container_name: kafka
-    hostname: kafka
+  zookeeper:
+    image: wurstmeister/zookeeper
     ports:
-      - "2181:2181"
-      - "9092:9092"
+      - "2181"
+
+  kafka:
+    image: wurstmeister/kafka:0.10.2.1
+    ports:
+      - "9092"
     environment:
-      JMX_PORT: 9999
+      KAFKA_ADVERTISED_HOST_NAME: 172.17.0.100
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0 -Dcom.sun.management.jmxremote.rmi.port=1099"
+      JMX_PORT: 1099
 
   kafka-manager:
-    image: mmaia/kafka-manager:1.3.3.7
+    image: mmaia/kafka-manager:1.3.3.13
     container_name: kafka-manager
     environment:
-      ZK_HOSTS: kafka:2181
+      ZK_HOSTS: zookeeper:2181
     ports:
       - "9000:9000"
     depends_on:

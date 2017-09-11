@@ -9,10 +9,25 @@ To run the application you'll need a local accessible kafka. I prefer to run it 
 [this is the one](https://github.com/mmaia/docker-compose-images/tree/master/kafka) I've used during development.
 
 
-> Set your hosts to resolve the name kafka to your localhost if  you're running this application from source code, this 
+> Set your hosts to resolve the name of the kafka containers to your localhost if  you're running this application from source code, this 
 is required because of how kafka resolves it's producer address internally on the docker network and your localhost network.
 If you're running this application including the mockstocks application inside a docker container then kafka should already
 resolve correctly.
+
+Start all containers in background:
+```bash
+    docker-compose up -d
+```
+
+Attach terminal to docker logs and follow(tail):
+```bash
+    docker-compose logs -f
+```
+
+To scale kafka to multiple instances type:
+```bash
+    docker-compose scale kafka=3
+```
 
 # Tests and sonarqube
 
