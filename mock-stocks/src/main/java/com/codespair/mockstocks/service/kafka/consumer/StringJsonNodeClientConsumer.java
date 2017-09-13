@@ -3,6 +3,7 @@ package com.codespair.mockstocks.service.kafka.consumer;
 import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -14,9 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 @Component
 @Scope("prototype")
@@ -61,19 +60,19 @@ public class StringJsonNodeClientConsumer {
     }
 
     private void createConsumer() {
-        this.kafkaConsumer = new KafkaConsumer<>(loadProperties());
+        this.kafkaConsumer = new KafkaConsumer<>(loadConsumerConfigProperties());
     }
 
-    private Properties loadProperties() {
-        Properties props = new Properties();
+    private Map loadConsumerConfigProperties() {
+        Map consumerConfigProperties = new HashMap<String, Object>();
         Deserializer<JsonNode> deserializer = new JsonDeserializer();
-        props.setProperty("bootstrap.servers", config.getHosts());
-        props.setProperty("group.id", groupId);
-        props.setProperty("key.deserializer", StringDeserializer.class.getName());
-        props.setProperty("value.deserializer", deserializer.getClass().getName());
+        consumerConfigProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHosts());
+        consumerConfigProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        consumerConfigProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        consumerConfigProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer.getClass().getName());
         // starts with the smallest offset record registered in the stream.
-        props.setProperty("auto.offset.reset", "earliest");
-        return props;
+        consumerConfigProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return consumerConfigProperties;
     }
 
     @PreDestroy
