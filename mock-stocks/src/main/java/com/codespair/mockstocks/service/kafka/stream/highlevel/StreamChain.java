@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 import java.util.Properties;
 
 @Service
@@ -45,7 +46,7 @@ public class StreamChain {
      * @return a KafkaStreams that is associated to the specified topic and serializers(Serdes).
      */
     private
-    KafkaStreams createStreamsInstance(String hosts) {
+    KafkaStreams createStreamsInstance(List<String> hosts) {
         log.info("about to start streaming for exchange stock quote filtering...");
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
         final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
@@ -104,7 +105,7 @@ public class StreamChain {
     public void startExchangeFilterStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
         Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);
-        streams = createStreamsInstance(kafkaConfigProperties.getHost());
+        streams = createStreamsInstance(kafkaConfigProperties.getHosts());
         streams.start();
     }
 

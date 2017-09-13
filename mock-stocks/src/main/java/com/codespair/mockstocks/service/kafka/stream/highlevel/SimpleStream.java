@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -45,7 +46,7 @@ public class SimpleStream {
      * @param hosts where kafka is running
      * @return a KafkaStreams that is associated to the specified topic ans serializers(Serdes).
      */
-    private KafkaStreams createStreamsInstance(String hosts) {
+    private KafkaStreams createStreamsInstance(List<String> hosts) {
         log.info("loading kafka stream configuration");
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
         final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
@@ -66,7 +67,7 @@ public class SimpleStream {
     public void startStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
         Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);
-        streams = createStreamsInstance(kafkaConfigProperties.getHost());
+        streams = createStreamsInstance(kafkaConfigProperties.getHosts());
         streams.start();
     }
 

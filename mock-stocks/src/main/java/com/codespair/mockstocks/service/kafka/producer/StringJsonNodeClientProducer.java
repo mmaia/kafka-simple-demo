@@ -54,7 +54,7 @@ public class StringJsonNodeClientProducer {
 
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
 
-        properties.put("bootstrap.servers", config.getHost());
+        properties.put("bootstrap.servers", config.getHosts());
         properties.put("client.id", clientId);
         properties.put("key.serializer", StringSerializer.class);
         properties.put("value.serializer", jsonSerializer.getClass());

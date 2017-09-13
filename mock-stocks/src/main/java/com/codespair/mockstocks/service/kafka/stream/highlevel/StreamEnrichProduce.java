@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -52,7 +53,7 @@ public class StreamEnrichProduce {
      * @param hosts where kafka is running
      * @return a KafkaStreams that is associated to the specified topic ans serializers(Serdes).
      */
-    public KafkaStreams createStreamsInstance(String hosts) {
+    public KafkaStreams createStreamsInstance(List<String> hosts) {
         log.info("loading kafka stream configuration");
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
         final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
@@ -93,7 +94,7 @@ public class StreamEnrichProduce {
     public void startStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
         Thread.sleep(1000);
-        streams = createStreamsInstance(config.getHost());
+        streams = createStreamsInstance(config.getHosts());
         streams.start();
     }
 
