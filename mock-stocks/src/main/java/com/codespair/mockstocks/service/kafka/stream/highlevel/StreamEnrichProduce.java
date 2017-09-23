@@ -90,7 +90,6 @@ public class StreamEnrichProduce {
         return new KafkaStreams(kStreamBuilder, props);
     }
 
-    @PostConstruct
     public void startStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
         Thread.sleep(1000);

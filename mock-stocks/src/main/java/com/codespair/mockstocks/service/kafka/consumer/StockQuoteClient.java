@@ -20,8 +20,7 @@ public class StockQuoteClient {
         this.client = stringJsonNodeClientConsumer;
     }
 
-    @PostConstruct
-    public void consumeStockQuotes() {
+    public void startConsumingStockQuotes() {
       client.configure(config.getStockQuote().getTopic() + "-client", config.getStockQuote().getTopic());
       client.startConsumer();
     }

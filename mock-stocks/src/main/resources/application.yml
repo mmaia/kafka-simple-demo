@@ -1,7 +1,7 @@
 generator:
   enabled: true
-  start-delay-milliseconds: 1000
-  interval-milliseconds: 100
+  start-delay-milliseconds: 100
+  interval-milliseconds: 60
   exchange-csv:
     files:
       - AMEX
@@ -12,8 +12,7 @@ generator:
 kafka:
   hosts:
     - "kafka:9092"
-#    - "kafka_2:9092"
-#    - "kafka_3:9092"
+    - "kafka_1:9093"
   stock-quote:
     topic: stock-quote
   simple-stream:

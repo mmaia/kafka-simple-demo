@@ -101,7 +101,6 @@ public class StreamChain {
         return new KafkaStreams(kStreamBuilder, props);
     }
 
-    @PostConstruct
     public void startExchangeFilterStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
         Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);

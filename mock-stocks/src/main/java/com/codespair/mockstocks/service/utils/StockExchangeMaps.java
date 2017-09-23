@@ -36,7 +36,6 @@ public class StockExchangeMaps {
         this.exchanges = new HashMap<>();
     }
 
-    @PostConstruct
     public void loadCSVs() {
         generatorConfigProperties.getExchangeCsv().getFiles().forEach(exchange -> {
             exchanges.put(exchange, csvLoader.loadExchangeCSV(generatorConfigProperties.getExchangeCsv().getPath() + exchange + ".csv"));

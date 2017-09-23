@@ -5,7 +5,6 @@ import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.codespair.mockstocks.model.StockQuote;
 import com.codespair.mockstocks.service.utils.StockExchangeMaps;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -20,34 +19,37 @@ import java.util.Random;
 @Service
 public class StockQuoteGenerator {
 
-    @Autowired
     private GeneratorConfigProperties generatorConfigProperties;
-
-    @Autowired
     private KafkaConfigProperties kafkaConfigProperties;
-
-    @Autowired
     private StockExchangeMaps stockExchangeMaps;
-
-    @Autowired
     private StringJsonNodeClientProducer stringJsonNodeClientProducer;
+
+    public StockQuoteGenerator(GeneratorConfigProperties generatorConfigProperties,
+                               KafkaConfigProperties kafkaConfigProperties,
+                               StockExchangeMaps stockExchangeMaps,
+                               StringJsonNodeClientProducer stringJsonNodeClientProducer) {
+        this.generatorConfigProperties = generatorConfigProperties;
+        this.kafkaConfigProperties = kafkaConfigProperties;
+        this.stockExchangeMaps = stockExchangeMaps;
+        this.stringJsonNodeClientProducer = stringJsonNodeClientProducer;
+    }
+
 
     @Async
     public void startGenerator() throws InterruptedException {
-        if(generatorConfigProperties.isEnabled()) {
+        if (generatorConfigProperties.isEnabled()) {
             stringJsonNodeClientProducer.configure(kafkaConfigProperties.getStockQuote().getTopic());
             log.info("Starting random quote generation in {} milliseconds, with interval: {} milliseconds between each quote",
                     generatorConfigProperties.getStartDelayMilliseconds(), generatorConfigProperties.getIntervalMilliseconds());
             try {
                 Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds());
-                while(true) {
+                while (true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
                     stockQuote = enrich(stockQuote);
-                    stringJsonNodeClientProducer.send(kafkaConfigProperties.getStockQuote().getTopic(), null, stockQuote);
+                    stringJsonNodeClientProducer.send(kafkaConfigProperties.getStockQuote().getTopic(), stockQuote.getSymbol(), stockQuote);
                     Thread.sleep(generatorConfigProperties.getIntervalMilliseconds());
                 }
-            }
-            catch(InterruptedException e) {
+            } catch (InterruptedException e) {
                 log.warn(e.getMessage());
                 throw e;
             }

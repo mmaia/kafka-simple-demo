@@ -3,10 +3,7 @@ package com.codespair.mockstocks.service.kafka.producer;
 import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.connect.json.JsonSerializer;
@@ -54,10 +51,10 @@ public class StringJsonNodeClientProducer {
 
         final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
 
-        properties.put("bootstrap.servers", config.getHosts());
-        properties.put("client.id", clientId);
-        properties.put("key.serializer", StringSerializer.class);
-        properties.put("value.serializer", jsonSerializer.getClass());
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHosts());
+        properties.put(ProducerConfig.CLIENT_ID_CONFIG, clientId);
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, jsonSerializer.getClass());
 
         return properties;
     }
