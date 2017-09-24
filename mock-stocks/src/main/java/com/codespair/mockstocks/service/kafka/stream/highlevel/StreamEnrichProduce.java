@@ -22,7 +22,6 @@ import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class StreamEnrichProduce {
 
         Map<String, Map> exchanges = stockExchangeMaps.getExchanges();
         ObjectMapper objectMapper = new ObjectMapper();
-        kafkaProducer.configure(config.getStreamEnrichProduce().getTopic());
+        kafkaProducer.initializeClient(config.getStreamEnrichProduce().getTopic());
         // - enrich stockquote with stockdetails before producing to new topic
         stockQuoteRawStream.foreach((key, jsonNode) -> {
             StockQuote stockQuote = null;

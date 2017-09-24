@@ -1,6 +1,6 @@
 generator:
   enabled: true
-  start-delay-milliseconds: 100
+  start-delay-milliseconds: 3000
   interval-milliseconds: 60
   exchange-csv:
     files:

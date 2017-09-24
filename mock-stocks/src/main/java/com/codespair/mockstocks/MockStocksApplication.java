@@ -13,7 +13,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 public class MockStocksApplication {
 
-
     protected MockStocksApplication() {
     }
 

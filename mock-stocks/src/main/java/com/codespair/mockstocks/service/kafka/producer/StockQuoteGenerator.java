@@ -38,7 +38,7 @@ public class StockQuoteGenerator {
     @Async
     public void startGenerator() throws InterruptedException {
         if (generatorConfigProperties.isEnabled()) {
-            stringJsonNodeClientProducer.configure(kafkaConfigProperties.getStockQuote().getTopic());
+            stringJsonNodeClientProducer.initializeClient(stockQuoteTopic() + "Id");
             log.info("Starting random quote generation in {} milliseconds, with interval: {} milliseconds between each quote",
                     generatorConfigProperties.getStartDelayMilliseconds(), generatorConfigProperties.getIntervalMilliseconds());
             try {
@@ -46,7 +46,7 @@ public class StockQuoteGenerator {
                 while (true) {
                     StockQuote stockQuote = stockExchangeMaps.randomStockSymbol();
                     stockQuote = enrich(stockQuote);
-                    stringJsonNodeClientProducer.send(kafkaConfigProperties.getStockQuote().getTopic(), stockQuote.getSymbol(), stockQuote);
+                    stringJsonNodeClientProducer.send(stockQuoteTopic(), stockQuote.getSymbol(), stockQuote);
                     Thread.sleep(generatorConfigProperties.getIntervalMilliseconds());
                 }
             } catch (InterruptedException e) {
@@ -56,6 +56,15 @@ public class StockQuoteGenerator {
         }
     }
 
+    private String stockQuoteTopic() {
+        return this.kafkaConfigProperties.getStockQuote().getTopic();
+    }
+
+    /**
+     * Randomize values of high, low and lastTrade of quotes
+     * @param stockQuote the quote to have some values randomized
+     * @return StockQuote with high, low and lastTrade randomized.
+     */
     public StockQuote enrich(StockQuote stockQuote) {
         Random random = new Random();
         int upTo = 1000;
