@@ -15,7 +15,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @Scope("prototype")
@@ -40,22 +43,20 @@ public class StringJsonNodeClientConsumer {
 
     @Async
     public void startConsumer() {
+        log.info("StringJsonNodeClientConsumer.startConsumer");
         kafkaConsumer.subscribe(this.topicNames);
-
         long counter = 0L;
-
         // we will start pooling for entries
-        while(true) {
+        while (true) {
             ConsumerRecords<String, JsonNode> records = kafkaConsumer.poll(300);
-            if(records.count() > 0) {
-                for(ConsumerRecord<String, JsonNode> record: records) {
-                    if(counter % 500 == 0) {
-                        log.info("Record recovered, groupId: {}, topicName: {}, key: {}, value: {} , offset: {}",
-                                this.groupId, this.topicNames, record.key(), record.value(), record.offset());
-                    }
-                    counter++;
+            for (ConsumerRecord<String, JsonNode> record : records) {
+                if (counter % 5 == 0) {
+                    log.info("Record recovered, groupId: {}, topicName: {}, key: {}, value: {} , offset: {}",
+                            this.groupId, this.topicNames, record.key(), record.value(), record.offset());
                 }
+                counter++;
             }
+
         }
     }
 
@@ -63,8 +64,8 @@ public class StringJsonNodeClientConsumer {
         this.kafkaConsumer = new KafkaConsumer<>(loadConsumerConfigProperties());
     }
 
-    private Map loadConsumerConfigProperties() {
-        Map consumerConfigProperties = new HashMap<String, Object>();
+    private Map<String, Object> loadConsumerConfigProperties() {
+        Map<String, Object> consumerConfigProperties = new HashMap<>();
         Deserializer<JsonNode> deserializer = new JsonDeserializer();
         consumerConfigProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHosts());
         consumerConfigProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
