@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Properties;
@@ -28,14 +27,14 @@ import java.util.Properties;
 @DependsOn("streamEnrichProduce") // we need the topic to have data before starting this one...
 public class StreamChain {
 
-    private final GeneratorConfigProperties generatorConfigProperties;
-    private final KafkaConfigProperties kafkaConfigProperties;
+    private final GeneratorConfigProperties genConfig;
+    private final KafkaConfigProperties kConfig;
     private KafkaStreams streams;
 
     @Autowired
-    public StreamChain(KafkaConfigProperties kafkaConfigProperties, GeneratorConfigProperties generatorConfigProperties)  {
-        this.kafkaConfigProperties = kafkaConfigProperties;
-        this.generatorConfigProperties = generatorConfigProperties;
+    public StreamChain(KafkaConfigProperties kConfig, GeneratorConfigProperties genConfig)  {
+        this.kConfig = kConfig;
+        this.genConfig = genConfig;
     }
 
     /**
@@ -54,10 +53,10 @@ public class StreamChain {
 
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, kafkaConfigProperties.getStreamChain().getId());
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, kConfig.getStreamChain().getId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , kafkaConfigProperties.getStreamEnrichProduce().getTopic());
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , kConfig.getStreamEnrichProduce().getTopic());
 
         // AMEX exchange stock quotes stream
         KStream<String, JsonNode> amexStockQuotes =
@@ -70,7 +69,7 @@ public class StreamChain {
                             }
                             return result;
                         });
-        amexStockQuotes.to(Serdes.String(), jsonSerde, kafkaConfigProperties.getStreamChain().getAmexTopic());
+        amexStockQuotes.to(Serdes.String(), jsonSerde, kConfig.getStreamChain().getAmexTopic());
 
         // NYSE exchange stock quotes stream
         KStream<String, JsonNode> nyseStockQuotes =
@@ -83,7 +82,7 @@ public class StreamChain {
                             }
                             return result;
                         });
-        nyseStockQuotes.to(Serdes.String(), jsonSerde, kafkaConfigProperties.getStreamChain().getNyseTopic());
+        nyseStockQuotes.to(Serdes.String(), jsonSerde, kConfig.getStreamChain().getNyseTopic());
 
         // NASDAQ exchange stock quotes stream
         KStream<String, JsonNode> nasdaqStockQuotes =
@@ -96,15 +95,15 @@ public class StreamChain {
                             }
                             return result;
                         });
-        nasdaqStockQuotes.to(Serdes.String(), jsonSerde, kafkaConfigProperties.getStreamChain().getNasdaqTopic());
+        nasdaqStockQuotes.to(Serdes.String(), jsonSerde, kConfig.getStreamChain().getNasdaqTopic());
 
         return new KafkaStreams(kStreamBuilder, props);
     }
 
     public void startExchangeFilterStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
-        Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);
-        streams = createStreamsInstance(kafkaConfigProperties.getHosts());
+        Thread.sleep(genConfig.getStartDelayMilliseconds() + 1000);
+        streams = createStreamsInstance(kConfig.getHosts());
         streams.start();
     }
 
