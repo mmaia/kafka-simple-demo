@@ -68,9 +68,9 @@ public class StockQuoteGenerator {
     public StockQuote enrich(StockQuote stockQuote) {
         Random random = new Random();
         int upTo = 1000;
-        stockQuote.setHigh(new BigDecimal(random.nextFloat() * upTo));
-        stockQuote.setLow(new BigDecimal(random.nextFloat() * upTo));
-        stockQuote.setLastTrade(new BigDecimal(random.nextFloat() * upTo));
+        stockQuote.setHigh(new BigDecimal(random.nextFloat() * upTo).setScale(3, BigDecimal.ROUND_CEILING));
+        stockQuote.setLow(new BigDecimal(random.nextFloat() * upTo).setScale(3, BigDecimal.ROUND_CEILING));
+        stockQuote.setLastTrade(new BigDecimal(random.nextFloat() * upTo).setScale(3, BigDecimal.ROUND_CEILING));
         return stockQuote;
     }
 

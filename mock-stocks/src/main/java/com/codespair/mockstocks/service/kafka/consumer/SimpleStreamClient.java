@@ -19,6 +19,7 @@ public class SimpleStreamClient {
     }
 
     public void startConsumingStockQuotes() {
+        log.info("SimpleStreamClient.startconsumingStockQuotes");
         client.configure(topicName() + "-client", topicName());
         client.startConsumer();
     }

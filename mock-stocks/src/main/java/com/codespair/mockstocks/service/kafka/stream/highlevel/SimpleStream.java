@@ -16,7 +16,6 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Properties;
@@ -29,45 +28,50 @@ import java.util.Properties;
 public class SimpleStream {
 
     private GeneratorConfigProperties generatorConfigProperties;
-    private KafkaConfigProperties kafkaConfigProperties;
+    private KafkaConfigProperties config;
     private KafkaStreams streams;
 
-    public SimpleStream(KafkaConfigProperties kafkaConfigProperties,
+    public SimpleStream(KafkaConfigProperties config,
                         GeneratorConfigProperties generatorConfigProperties) {
-        this.kafkaConfigProperties = kafkaConfigProperties;
+        this.config = config;
         this.generatorConfigProperties = generatorConfigProperties;
     }
 
     /**
      * Creates s KafkaStreams using the high level api. Simplest possible implementation.
-     * Create a stream from(when using defaults) stockQuotesTopic and send data direclty
-     * to another topic called simpleStockQuoteStreamTopic without any modifications or
-     * deserialization.
-     * @param hosts where kafka is running
+     * Create a stream from a topic and send data direclty
+     * to another topic without any modification.
      * @return a KafkaStreams that is associated to the specified topic ans serializers(Serdes).
      */
-    private KafkaStreams createStreamsInstance(List<String> hosts) {
+    private KafkaStreams createStreamsInstance() {
         log.info("loading kafka stream configuration");
-        final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
-        final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
-        final Serde<JsonNode> jsonSerde = Serdes.serdeFrom(jsonSerializer, jsonDeserializer);
-
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
-        Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, kafkaConfigProperties.getSimpleStream().getId());
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , kafkaConfigProperties.getStockQuote().getTopic());
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde() , config.getStockQuote().getTopic());
         // stream unchanged message to new topic...
-        stockQuoteRawStream.to(Serdes.String(), jsonSerde, kafkaConfigProperties.getSimpleStream().getTopic());
-        return new KafkaStreams(kStreamBuilder, props);
+        stockQuoteRawStream.to(Serdes.String(), jsonSerde(), config.getSimpleStream().getTopic());
+        return new KafkaStreams(kStreamBuilder, configuration());
     }
 
     public void startStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
         Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);
-        streams = createStreamsInstance(kafkaConfigProperties.getHosts());
+        streams = createStreamsInstance();
         streams.start();
+    }
+
+    private Properties configuration() {
+        Properties result = new Properties();
+        result.put(StreamsConfig.APPLICATION_ID_CONFIG, config.getSimpleStream().getId());
+        result.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHosts());
+        return result;
+    }
+
+    private Serde<JsonNode> jsonSerde() {
+        final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
+        final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
+        final Serde<JsonNode> jsonSerde = Serdes.serdeFrom(jsonSerializer, jsonDeserializer);
+        return jsonSerde;
     }
 
     @PreDestroy

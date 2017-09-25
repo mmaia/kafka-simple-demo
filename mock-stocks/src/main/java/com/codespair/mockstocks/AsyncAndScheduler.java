@@ -1,6 +1,7 @@
 package com.codespair.mockstocks;
 
 import com.codespair.mockstocks.service.kafka.consumer.SimpleStreamClient;
+import com.codespair.mockstocks.service.kafka.consumer.StockQuoteClient;
 import com.codespair.mockstocks.service.kafka.producer.StockQuoteGenerator;
 import com.codespair.mockstocks.service.kafka.stream.highlevel.CountBySymbolKTable;
 import com.codespair.mockstocks.service.kafka.stream.highlevel.SimpleStream;
@@ -23,6 +24,7 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
     private StreamChain streamChain;
     private SimpleStreamClient simpleStreamClient;
     private StockQuoteGenerator stockQuoteGenerator;
+    private StockQuoteClient stockQuoteClient;
     private StreamEnrichProduce streamEnrichProduce;
     private SimpleStream simpleStream;
     private CountBySymbolKTable countBySymbolKTable;
@@ -31,6 +33,7 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
                              StreamChain streamChain,
                              SimpleStreamClient simpleStreamClient,
                              StockQuoteGenerator stockQuoteGenerator,
+                             StockQuoteClient stockQuoteClient,
                              StreamEnrichProduce streamEnrichProduce,
                              SimpleStream simpleStream,
                              CountBySymbolKTable countBySymbolKTable) {
@@ -38,6 +41,7 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
         this.streamChain = streamChain;
         this.simpleStreamClient = simpleStreamClient;
         this.stockQuoteGenerator = stockQuoteGenerator;
+        this.stockQuoteClient = stockQuoteClient;
         this.streamEnrichProduce = streamEnrichProduce;
         this.simpleStream = simpleStream;
         this.countBySymbolKTable = countBySymbolKTable;
@@ -49,11 +53,13 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
         try {
             stockExchangeMaps.loadCSVs();
             stockQuoteGenerator.startGenerator();
+            stockQuoteClient.startConsumingStockQuotes();
+            simpleStream.startStreaming();
             simpleStreamClient.startConsumingStockQuotes();
+//            countBySymbolKTable.startExchangeFilterStreaming();
+//            simpleStreamClient.startConsumingStockQuotes();
 //            streamEnrichProduce.startStreaming();
 //            streamChain.startExchangeFilterStreaming();
-//            simpleStream.startStreaming();
-//            countBySymbolKTable.startExchangeFilterStreaming();
         } catch(Exception e) {
             log.error("Error starting kafka services: {}", e.getMessage(), e);
         }

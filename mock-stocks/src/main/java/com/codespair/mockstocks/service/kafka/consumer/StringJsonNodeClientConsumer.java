@@ -50,13 +50,11 @@ public class StringJsonNodeClientConsumer {
         while (true) {
             ConsumerRecords<String, JsonNode> records = kafkaConsumer.poll(300);
             for (ConsumerRecord<String, JsonNode> record : records) {
-                if (counter % 5 == 0) {
-                    log.info("Record recovered, groupId: {}, topicName: {}, key: {}, value: {} , offset: {}",
-                            this.groupId, this.topicNames, record.key(), record.value(), record.offset());
+                if (counter %250 == 0) {
+                    log.info("Record recovered, record.toString: {}", record.toString());
                 }
                 counter++;
             }
-
         }
     }
 
@@ -66,11 +64,10 @@ public class StringJsonNodeClientConsumer {
 
     private Map<String, Object> loadConsumerConfigProperties() {
         Map<String, Object> consumerConfigProperties = new HashMap<>();
-        Deserializer<JsonNode> deserializer = new JsonDeserializer();
         consumerConfigProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHosts());
         consumerConfigProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         consumerConfigProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        consumerConfigProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer.getClass().getName());
+        consumerConfigProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
         // starts with the smallest offset record registered in the stream.
         consumerConfigProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return consumerConfigProperties;

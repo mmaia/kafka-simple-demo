@@ -28,7 +28,7 @@ public class StockExchangeMaps {
 
     private CSVLoader csvLoader;
 
-    GeneratorConfigProperties generatorConfigProperties;
+    private GeneratorConfigProperties generatorConfigProperties;
 
     public StockExchangeMaps(CSVLoader csvLoader, GeneratorConfigProperties generatorConfigProperties) {
         this.csvLoader = csvLoader;
