@@ -50,8 +50,8 @@ public class StringJsonNodeClientConsumer {
         while (true) {
             ConsumerRecords<String, JsonNode> records = kafkaConsumer.poll(300);
             for (ConsumerRecord<String, JsonNode> record : records) {
-                if (counter %250 == 0) {
-                    log.info("Record recovered, record.toString: {}", record.toString());
+                if (counter % 500 == 0) {
+                    log.info("Record: {}", record.toString());
                 }
                 counter++;
             }
