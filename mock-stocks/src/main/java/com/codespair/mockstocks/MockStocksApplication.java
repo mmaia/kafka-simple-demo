@@ -16,6 +16,11 @@ public class MockStocksApplication {
     protected MockStocksApplication() {
     }
 
+    /**
+     * Thread pool to handle Async operations
+     * @return the thread pool to be used for async and scheduled processes in the application.
+     * @see <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/scheduling.html">Spring Task Execution and Scheduling</a>
+     */
     @Bean
     public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
