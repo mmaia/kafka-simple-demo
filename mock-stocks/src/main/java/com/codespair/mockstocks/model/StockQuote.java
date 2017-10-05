@@ -1,9 +1,11 @@
 package com.codespair.mockstocks.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
+@Builder
 @Data
 public class StockQuote {
     private String symbol;

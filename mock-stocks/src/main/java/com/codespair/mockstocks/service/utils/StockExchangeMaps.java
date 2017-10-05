@@ -1,15 +1,12 @@
 package com.codespair.mockstocks.service.utils;
 
 import com.codespair.mockstocks.config.GeneratorConfigProperties;
-import com.codespair.mockstocks.config.KafkaConfigProperties;
 import com.codespair.mockstocks.model.Exchange;
 import com.codespair.mockstocks.model.StockDetail;
 import com.codespair.mockstocks.model.StockQuote;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
@@ -37,11 +34,19 @@ public class StockExchangeMaps {
     }
 
     public void loadCSVs() {
-        generatorConfigProperties.getExchangeCsv().getFiles().forEach(exchange -> {
-            exchanges.put(exchange, csvLoader.loadExchangeCSV(generatorConfigProperties.getExchangeCsv().getPath() + exchange + ".csv"));
+        getCsvFileNames().forEach(exchange -> {
+            exchanges.put(exchange, stockExchagesMap(exchange));
             log.info("csv mapped: " + exchange);
         });
         exchangeNames = new ArrayList<>(exchanges.keySet());
+    }
+
+    private Map<String, StockDetail> stockExchagesMap(String exchange) {
+        return csvLoader.loadExchangeCSV(generatorConfigProperties.getExchangeCsv().getPath() + exchange + ".csv");
+    }
+
+    private List<String> getCsvFileNames() {
+        return generatorConfigProperties.getExchangeCsv().getFiles();
     }
 
     /**
@@ -58,15 +63,15 @@ public class StockExchangeMaps {
      * @see StockQuote
      */
     public StockQuote randomStockSymbol() {
-        StockQuote result = new StockQuote();
         String exchange = randomExchange();
-        result.setExchange(buildExchange(exchange));
         Map<String, StockDetail> stockDetailMap = exchanges.get(exchange);
         List<String> symbols = new ArrayList<>(stockDetailMap.keySet());
         Random random = new Random();
         int whichSymbol = random.nextInt(symbols.size());
-        result.setSymbol(symbols.get(whichSymbol));
-        return result;
+        return StockQuote.builder()
+                .exchange(buildExchange(exchange))
+                .symbol(symbols.get(whichSymbol))
+                .build();
     }
 
     public Map<String, Map> getExchanges() {

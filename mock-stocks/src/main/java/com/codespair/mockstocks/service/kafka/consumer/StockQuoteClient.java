@@ -15,14 +15,15 @@ public class StockQuoteClient {
     KafkaConfigProperties config;
     StringJsonNodeClientConsumer client;
 
-    public StockQuoteClient(KafkaConfigProperties kafkaConfigProperties, StringJsonNodeClientConsumer stringJsonNodeClientConsumer) {
+    public StockQuoteClient(KafkaConfigProperties kafkaConfigProperties,
+                            StringJsonNodeClientConsumer stringJsonNodeClientConsumer) {
         this.config = kafkaConfigProperties;
         this.client = stringJsonNodeClientConsumer;
     }
 
     public void startConsumingStockQuotes() {
-      client.configure(config.getStockQuote().getTopic() + "-client", config.getStockQuote().getTopic());
-      client.startConsumer();
+        client.configure(config.getStockQuote().getTopic() +
+                "-client", config.getStockQuote().getTopic());
+        client.startConsumer();
     }
-
 }

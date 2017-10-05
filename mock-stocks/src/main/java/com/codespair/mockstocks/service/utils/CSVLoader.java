@@ -20,28 +20,34 @@ public class CSVLoader {
 
     @SuppressWarnings("squid:S1166") // supress false positive check from sonarqube
     /**
+     * Uses CSVReader to read an parse the specified file and build a map where the stock symbol is the key and the
+     * value is a StockDetail object with instrument attributes in it.
      * @param filePath the filepath relative to the classpath where the csv is to be found i.e - /static/AMEX.csv
      * @returns a map where each key is a stock exchange symbol and each element is a StockDetail object filled with
      * data loaded from the CSVs
      */
-    public Map loadExchangeCSV(String filePath) {
+    public Map<String, StockDetail> loadExchangeCSV(String filePath) {
         Map<String, StockDetail> result;
-        ColumnPositionMappingStrategy<StockDetail> loadStrategy = new ColumnPositionMappingStrategy<>();
-        loadStrategy.setType(StockDetail.class);
-        String[] columns = new String[]{"symbol", "name", "lastSale", "marketCap", "ipoYear", "sector", "industry", "summaryQuote"}; // the fields to bind do in your JavaBean
-        loadStrategy.setColumnMapping(columns);
         CsvToBean<StockDetail> csv = new CsvToBean<>();
         try {
             File resource = new ClassPathResource(filePath).getFile();
             FileReader fileReader = new FileReader(resource);
             CSVReader reader = new CSVReader(fileReader);
-            result = stockDetailsBySymbol(csv.parse(loadStrategy, reader));
+            result = stockDetailsBySymbol(csv.parse(getStockDetailMappingStrategy(), reader));
             fileReader.close();
         } catch (Exception e) {
             log.error("Failed to load csv file with exchange information because: {}", e.getMessage());
             throw new InvalidCSVPathException(e.getMessage());
         }
         return result;
+    }
+
+    private ColumnPositionMappingStrategy<StockDetail> getStockDetailMappingStrategy() {
+        ColumnPositionMappingStrategy<StockDetail> loadStrategy = new ColumnPositionMappingStrategy<>();
+        loadStrategy.setType(StockDetail.class);
+        String[] columns = new String[]{"symbol", "name", "lastSale", "marketCap", "ipoYear", "sector", "industry", "summaryQuote"}; // the fields to bind do in your JavaBean
+        loadStrategy.setColumnMapping(columns);
+        return loadStrategy;
     }
 
     private Map<String, StockDetail> stockDetailsBySymbol(List<StockDetail> stockDetailList) {

@@ -40,7 +40,8 @@ public class StreamEnrichProduce {
     private final StringJsonNodeClientProducer kafkaProducer;
 
     @Autowired
-    public StreamEnrichProduce(KafkaConfigProperties kafkaConfigProperties, StockExchangeMaps stockExchangeMaps,
+    public StreamEnrichProduce(KafkaConfigProperties kafkaConfigProperties,
+                               StockExchangeMaps stockExchangeMaps,
                                StringJsonNodeClientProducer kafkaProducer)  {
         this.config = kafkaConfigProperties;
         this.stockExchangeMaps = stockExchangeMaps;
@@ -64,7 +65,10 @@ public class StreamEnrichProduce {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
 
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , config.getStockQuote().getTopic());
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(
+                Serdes.String(),
+                jsonSerde,
+                config.getStockQuote().getTopic());
 
         Map<String, Map> exchanges = stockExchangeMaps.getExchanges();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -83,7 +87,10 @@ public class StreamEnrichProduce {
             Map<String, StockDetail> stockDetailMap = exchanges.get(exchangeNode.toString().replace("\"", ""));
             stockDetail = stockDetailMap.get(key);
             stockQuote.setStockDetail(stockDetail);
-            kafkaProducer.send(config.getStreamEnrichProduce().getTopic(), null, stockQuote);
+            kafkaProducer.send(
+                    config.getStreamEnrichProduce().getTopic(),
+                    stockQuote.getSymbol(),
+                    stockQuote);
         });
 
         return new KafkaStreams(kStreamBuilder, props);

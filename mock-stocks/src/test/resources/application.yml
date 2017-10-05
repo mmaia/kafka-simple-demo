@@ -1,5 +1,5 @@
 generator:
-  exchange.csv:
+  exchange-csv:
     files: AMEX
     path: "/static/"
   stockquotes:

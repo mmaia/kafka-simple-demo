@@ -30,6 +30,7 @@ public class StockExchangeMapsTest {
 
     @Before
     public void loadTestCSV() {
+        stockExchangeMaps.loadCSVs();
         stocksBySymbol = csvLoader.loadExchangeCSV("/static/AMEX.csv");
     }
 

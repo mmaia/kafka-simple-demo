@@ -24,7 +24,7 @@ import java.util.Properties;
 
 @Service
 @Slf4j
-@DependsOn("streamEnrichProduce") // we need the topic to have data before starting this one...
+@DependsOn("streamEnrichProduce") // we need the origin topic to be created before starting this one...
 public class StreamChain {
 
     private final GeneratorConfigProperties genConfig;
@@ -56,7 +56,10 @@ public class StreamChain {
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, kConfig.getStreamChain().getId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde , kConfig.getStreamEnrichProduce().getTopic());
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(
+                Serdes.String(),
+                jsonSerde ,
+                kConfig.getStreamEnrichProduce().getTopic());
 
         // AMEX exchange stock quotes stream
         KStream<String, JsonNode> amexStockQuotes =

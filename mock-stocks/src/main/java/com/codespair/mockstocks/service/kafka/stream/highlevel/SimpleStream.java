@@ -14,6 +14,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
@@ -41,15 +42,23 @@ public class SimpleStream {
      * Creates s KafkaStreams using the high level api. Simplest possible implementation.
      * Create a stream from a topic and send data direclty
      * to another topic without any modification.
+     *
      * @return a KafkaStreams that is associated to the specified topic ans serializers(Serdes).
      */
-    private KafkaStreams createStreamsInstance() {
+    KafkaStreams createStreamsInstance() {
         log.info("loading kafka stream configuration");
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(Serdes.String(), jsonSerde() , config.getStockQuote().getTopic());
+        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(
+                Serdes.String(),
+                jsonSerde(),
+                config.getStockQuote().getTopic());
+
         // stream unchanged message to new topic...
-        stockQuoteRawStream.to(Serdes.String(), jsonSerde(), config.getSimpleStream().getTopic());
+        stockQuoteRawStream.to(
+                Serdes.String(),
+                jsonSerde(),
+                config.getSimpleStream().getTopic());
         return new KafkaStreams(kStreamBuilder, configuration());
     }
 
