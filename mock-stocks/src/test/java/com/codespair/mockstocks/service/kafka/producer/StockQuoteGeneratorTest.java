@@ -10,6 +10,10 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
+
 @SpringBootTest
 public class StockQuoteGeneratorTest {
 
@@ -30,7 +34,19 @@ public class StockQuoteGeneratorTest {
 
     @Test
     public void enrichTest() throws Exception {
-        stockQuoteGenerator.enrich(newStockQuote());
+        StockQuote stockQuote = newStockQuote();
+        assertThat(stockQuote.getHigh(), nullValue());
+        assertThat(stockQuote.getLastTrade(), nullValue());
+        assertThat(stockQuote.getStockDetail(), nullValue());
+        assertThat(stockQuote.getLow(), nullValue());
+        assertThat(stockQuote.getSymbol(), notNullValue());
+        assertThat(stockQuote.getExchange(), notNullValue());
+        stockQuote = stockQuoteGenerator.enrich(newStockQuote());
+        assertThat(stockQuote.getHigh(), notNullValue());
+        assertThat(stockQuote.getLastTrade(), notNullValue());
+        assertThat(stockQuote.getLow(), notNullValue());
+
+
     }
 
     private StockQuote newStockQuote() {
