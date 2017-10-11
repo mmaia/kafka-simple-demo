@@ -40,29 +40,30 @@ public class CountBySymbolKTable {
         this.generatorConfigProperties = generatorConfigProperties;
     }
 
-    private KafkaStreams createStreamsInstance(List<String> host) {
+    private KafkaStreams createStreamsInstance(List<String> hosts) {
         log.info("about to start streaming for exchange stock quote filtering...");
-        final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
-        final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
-        final Serde<JsonNode> jsonSerde = Serdes.serdeFrom(jsonSerializer, jsonDeserializer);
-
+        final Serde<JsonNode> jsonSerde = getJsonNodeSerde();
+        final Properties props = getProperties(hosts);
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
+
+        //stream from amex topic...
+        KStream<String, JsonNode> amexStream = kStreamBuilder.stream(Serdes.String(), jsonSerde, kafkaConfigProperties.getStreamChain().getAmexTopic());
+        // we create a ktable and count by key, and giving a name for the state store which will be created(locally and in a kafka topic).
+        KTable<String, Long> countsBySymbol = amexStream.groupByKey(Serdes.String(), jsonSerde).count("amex-count-by-symbol");
+        return new KafkaStreams(kStreamBuilder, props);
+    }
+
+    private Properties getProperties(List<String> hosts) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "count-by-symbol-ktable");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, host);
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
+        return props;
+    }
 
-        //stream from topic...
-        KStream<String, JsonNode> amexStream = kStreamBuilder.stream(Serdes.String(), jsonSerde, kafkaConfigProperties.getStreamChain().getAmexTopic());
-
-        // we create a ktable and count by key, and giving a name for the state store which will be created by kafka
-        KTable<String, Long> countsBySymbol = amexStream.groupByKey(Serdes.String(), jsonSerde).count("amex-count-by-symbol");
-
-        log.debug("checking the just created local store name: {} ", countsBySymbol.getStoreName());
-
-        // we then strem the table to a topic
-        countsBySymbol.to(Serdes.String(), Serdes.Long(), "amex-count-by-symbol");
-
-        return new KafkaStreams(kStreamBuilder, props);
+    private static Serde<JsonNode> getJsonNodeSerde() {
+        final Serializer<JsonNode> jsonSerializer = new JsonSerializer();
+        final Deserializer<JsonNode> jsonDeserializer = new JsonDeserializer();
+        return Serdes.serdeFrom(jsonSerializer, jsonDeserializer);
     }
 
     public void startExchangeFilterStreaming() throws InterruptedException {

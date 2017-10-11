@@ -48,7 +48,7 @@ public class StockQuoteGenerator {
                     stockQuote = enrich(stockQuote);
                     stringJsonNodeClientProducer.send(stockQuoteTopic(), stockQuote.getSymbol(), stockQuote);
                     Thread.sleep(generatorConfigProperties.getIntervalMilliseconds());
-                    log.info("generating another quote: {} ", stockQuote);
+                    log.debug("generating another quote: {} ", stockQuote);
                 }
             } catch (InterruptedException e) {
                 log.warn(e.getMessage());
