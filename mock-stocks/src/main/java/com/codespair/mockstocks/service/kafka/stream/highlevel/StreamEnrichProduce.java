@@ -68,11 +68,12 @@ public class StreamEnrichProduce {
         KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(
                 Serdes.String(),
                 jsonSerde,
-                config.getStockQuote().getTopic());
+                stockQuoteTopic());
 
         Map<String, Map> exchanges = stockExchangeMaps.getExchanges();
         ObjectMapper objectMapper = new ObjectMapper();
-        kafkaProducer.initializeClient(config.getStreamEnrichProduce().getTopic());
+        kafkaProducer.initializeClient(streamEnrichProduceTopic() + "_id");
+
         // - enrich stockquote with stockdetails before producing to new topic
         stockQuoteRawStream.foreach((key, jsonNode) -> {
             StockQuote stockQuote = null;
@@ -88,12 +89,20 @@ public class StreamEnrichProduce {
             stockDetail = stockDetailMap.get(key);
             stockQuote.setStockDetail(stockDetail);
             kafkaProducer.send(
-                    config.getStreamEnrichProduce().getTopic(),
+                    streamEnrichProduceTopic(),
                     stockQuote.getSymbol(),
                     stockQuote);
         });
 
         return new KafkaStreams(kStreamBuilder, props);
+    }
+
+    private String streamEnrichProduceTopic() {
+        return config.getStreamEnrichProduce().getTopic();
+    }
+
+    private String stockQuoteTopic() {
+        return config.getStockQuote().getTopic();
     }
 
     public void startStreaming() throws InterruptedException {
