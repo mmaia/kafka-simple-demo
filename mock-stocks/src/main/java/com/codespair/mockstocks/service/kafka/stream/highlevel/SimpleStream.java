@@ -49,16 +49,19 @@ public class SimpleStream {
         log.info("loading kafka stream configuration");
         KStreamBuilder kStreamBuilder = new KStreamBuilder();
         //stream from topic...
-        KStream<String, JsonNode> stockQuoteRawStream = kStreamBuilder.stream(
-                Serdes.String(),
-                jsonSerde(),
-                config.getStockQuote().getTopic());
+        KStream<String, JsonNode> stockQuoteRawStream =
+                kStreamBuilder.stream(
+                    Serdes.String(),
+                    jsonSerde(),
+                    config.getStockQuote().getTopic());
 
         // stream unchanged message to new topic...
-        stockQuoteRawStream.to(
-                Serdes.String(),
-                jsonSerde(),
-                config.getSimpleStream().getTopic());
+        stockQuoteRawStream
+                .to(
+                    Serdes.String(),
+                    jsonSerde(),
+                    config.getSimpleStream().getTopic());
+
         return new KafkaStreams(kStreamBuilder, configuration());
     }
 
