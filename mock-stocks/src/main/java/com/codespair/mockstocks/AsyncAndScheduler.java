@@ -56,10 +56,9 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
             stockQuoteClient.startConsumingStockQuotes();
             simpleStream.startStreaming();
             simpleStreamClient.startConsumingStockQuotes();
+            streamEnrichProduce.startStreaming();
+            streamChain.startExchangeFilterStreaming();
 //            countBySymbolKTable.startExchangeFilterStreaming();
-//            simpleStreamClient.startConsumingStockQuotes();
-//            streamEnrichProduce.startStreaming();
-//            streamChain.startExchangeFilterStreaming();
         } catch(Exception e) {
             log.error("Error starting kafka services: {}", e.getMessage(), e);
         }

@@ -1,0 +1,6 @@
+# standard spring settings ==================
+# enable all actuator endpoints from rest api
+management.security.enabled: false
+
+server:
+  port: 7000
