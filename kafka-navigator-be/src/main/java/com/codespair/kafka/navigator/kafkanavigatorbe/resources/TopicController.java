@@ -2,6 +2,7 @@ package com.codespair.kafka.navigator.kafkanavigatorbe.resources;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.TopicMeta;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.PartitionInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +23,10 @@ public class TopicController {
   }
 
   @GetMapping("/")
-  public ResponseEntity<Map<String, Object>> getTopics()  {
+  public ResponseEntity< Map<String, List<String>> > getTopics()  {
     log.info("getting data for kafka hosts: {}", hosts);
-    Map<String, Object> myMap = new HashMap<>();
-    myMap.put("working", "Yey.... I am working software");
-    topicMeta.topicData();
-    return ResponseEntity.ok().body(myMap);
+    Map<String, List<String>> topics = topicMeta.topicData();
+    return ResponseEntity.ok().body(topics);
   }
 
   @GetMapping("/{topicName}")

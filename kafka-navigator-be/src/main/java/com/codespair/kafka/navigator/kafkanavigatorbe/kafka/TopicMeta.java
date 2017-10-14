@@ -8,6 +8,7 @@ import org.apache.kafka.connect.json.JsonDeserializer;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +32,20 @@ public class TopicMeta {
    * @return a Map where each key is a topic and each value is a PartitionInfo object with all
    * required information.
    */
-  public Map<String, List<PartitionInfo>> topicData() {
+  public Map<String, List<String>> topicData() {
+    Map<String, List<String>> result = new HashMap<>();
     Map<String, List<PartitionInfo>> topicInfo = kafkaConsumer.listTopics();
     for(Map.Entry<String, List<PartitionInfo>> item: topicInfo.entrySet()) {
       if (ignoreMeta(item)) {
-        topicInfo.remove(item.getKey());
         continue;
       }
+      List<String> partitionInfoString = new ArrayList<>();
+      for (PartitionInfo pi: item.getValue()) {
+        partitionInfoString.add(pi.toString());
+      }
+      result.put(item.getKey(), partitionInfoString);
     }
-    return topicInfo;
+    return result;
   }
 
   /**
