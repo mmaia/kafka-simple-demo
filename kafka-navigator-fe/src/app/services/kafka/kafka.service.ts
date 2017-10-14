@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import {Http} from "@angular/http";
 import 'rxjs/add/operator/toPromise';
+import {Topic} from "../../model/Topic";
 
 @Injectable()
 export class KafkaService {
 
-  private kNavUrl: string = 'api/topics/';
+  private kNavUrl: string = 'http://localhost:7000/api/topics/';
   private kHosts: Array<string>;
 
   constructor(private http: Http) { }
@@ -13,7 +14,9 @@ export class KafkaService {
   getTopics(): Promise<any> {
     return this.http.get(this.kNavUrl)
       .toPromise()
-      .then((response) => console.log(JSON.stringify(response)))
+      .then((response) => {
+        return response.json() as Topic[]
+      })
       .catch(this.handleError);
   }
 

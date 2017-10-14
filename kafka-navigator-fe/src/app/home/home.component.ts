@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
   }
 
   connect() {
-    this.kafkaService.getTopics().then((result) => console.log(result));
+    this.kafkaService.getTopics().then((result) => console.log(JSON.stringify(result)));
   }
 
 
