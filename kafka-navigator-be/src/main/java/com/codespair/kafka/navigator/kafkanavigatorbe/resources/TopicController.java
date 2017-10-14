@@ -14,9 +14,7 @@ import java.util.*;
 public class TopicController {
 
   private final static List<String> hosts = Arrays.asList("kafka:9092", "kafka_1:9093");
-  private final static String topic = "stock-quote";
-
-  TopicMeta topicMeta;
+  private TopicMeta topicMeta;
 
   public TopicController() {
     topicMeta = new TopicMeta(hosts);
