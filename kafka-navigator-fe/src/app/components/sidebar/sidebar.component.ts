@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {WindowService} from "../../services/window/window.service";
 
 declare const $: any;
 declare interface RouteInfo {
@@ -26,13 +27,13 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
   menuItems: any[];
 
-  constructor() { }
+  constructor(private windowService: WindowService) { }
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
   isMobileMenu() {
-      if ($(window).width() > 991) {
+      if (this.windowService.nativeWindow.width > 991) {
           return false;
       }
       return true;
