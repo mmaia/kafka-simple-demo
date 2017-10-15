@@ -14,11 +14,11 @@
                 <div class="col-md-12">
                   <div class="form-group form-black label-floating is-empty">
                     <label class="control-label">Kafka Servers</label>
-                    <input name="hostList" type="text" class="form-control" [(ngModel)]="hosts">
+                    <input class="form-control" #hosts>
                   </div>
                 </div>
               </div>
-              <button type="submit" class="btn btn-danger btn-round pull-right" (click)="connect()">
+              <button type="submit" class="btn btn-danger btn-round pull-right" (click)="connect(hosts.value)">
                 Connect
                 <i class="material-icons">arrow_forward</i>
               </button>

@@ -8,19 +8,14 @@ import {KafkaService} from "../services/kafka/kafka.service";
 })
 export class HomeComponent implements OnInit {
 
-  public hosts: string;
-
   constructor(private kafkaService: KafkaService) { }
 
   ngOnInit() {
   }
 
-  connect() {
-    this.kafkaService.getTopics().then((result) => {
-      console.log("hosts: " + this.hosts);
+  connect(hosts: string) {
+    this.kafkaService.connect(hosts.split(',')).then((result) => {
       console.log(JSON.stringify(result))
     });
   }
-
-
 }

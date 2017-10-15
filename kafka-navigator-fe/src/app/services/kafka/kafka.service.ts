@@ -6,6 +6,7 @@ import {Topic} from "../../model/Topic";
 @Injectable()
 export class KafkaService {
 
+  private connectUrl: string = 'http://localhost:7000/api/topics/connect/';
   private kNavUrl: string = 'http://localhost:7000/api/topics/';
   private kHosts: Array<string>;
 
@@ -18,6 +19,11 @@ export class KafkaService {
         return response.json() as Topic[]
       })
       .catch(this.handleError);
+  }
+
+  connect(hosts: Array<string>): Promise<any> {
+
+    return Promise.resolve("not yet implemented");
   }
 
   private handleError(error: any): Promise<any> {
