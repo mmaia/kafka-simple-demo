@@ -22,7 +22,6 @@ export class KafkaService {
   }
 
   connect(hosts: Array<string>): Promise<any> {
-
     return Promise.resolve("not yet implemented");
   }
 
