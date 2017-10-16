@@ -1,6 +1,7 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.resources;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.BusMeta;
+import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.KMetric;
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.TopicMeta;
 import com.codespair.kafka.navigator.kafkanavigatorbe.resources.utils.HostsWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -25,7 +28,7 @@ public class BusController {
 
   @PostMapping("/connect")
   public ResponseEntity connect(@RequestBody HostsWrapper hw) {
-    busMeta.initializeClient(hw.getHosts());
-    return ResponseEntity.ok("Connection established with hosts: " + hw.getHosts());
+    Set<KMetric> metricSet = busMeta.initializeClient(hw.getHosts());
+    return ResponseEntity.ok().body(metricSet);
   }
 }
