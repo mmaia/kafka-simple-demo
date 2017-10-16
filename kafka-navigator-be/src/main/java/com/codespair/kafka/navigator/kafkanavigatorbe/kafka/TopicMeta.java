@@ -1,12 +1,8 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.connect.json.JsonDeserializer;
 import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,13 +13,13 @@ import java.util.Map;
  * This class collects metadata and metrics from topics of specified kafka hosts.
  */
 @Slf4j
+@Repository
 public class TopicMeta {
 
-  private KafkaConsumer<String, JsonNode> kafkaConsumer;
+  private BusMeta busMeta;
 
-  public TopicMeta(List<String> hosts) {
-    kafkaConsumer = new KafkaConsumer<>(kafkaProps(hosts));
-    log.info("Connections created with specified kafka hosts: {}", hosts);
+  public TopicMeta(BusMeta busMeta) {
+    this.busMeta = busMeta;
   }
 
   /**
@@ -34,11 +30,9 @@ public class TopicMeta {
    */
   public Map<String, List<String>> topicData() {
     Map<String, List<String>> result = new HashMap<>();
-    Map<String, List<PartitionInfo>> topicInfo = kafkaConsumer.listTopics();
+    Map<String, List<PartitionInfo>> topicInfo = busMeta.getKafkaConsumer().listTopics();
     for(Map.Entry<String, List<PartitionInfo>> item: topicInfo.entrySet()) {
-      if (ignoreMeta(item)) {
-        continue;
-      }
+      if (ignoreMeta(item)) continue;
       List<String> partitionInfoString = new ArrayList<>();
       for (PartitionInfo pi: item.getValue()) {
         partitionInfoString.add(pi.toString());
@@ -53,15 +47,5 @@ public class TopicMeta {
    */
   private boolean ignoreMeta(Map.Entry<String, List<PartitionInfo>> item) {
     return item.getKey().startsWith("__");
-  }
-
-  private Map<String, Object> kafkaProps(List<String> hosts) {
-    Map<String, Object> consumerConfigProperties = new HashMap<>();
-    consumerConfigProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
-    consumerConfigProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-    consumerConfigProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
-    // starts with the smallest offset record registered for now.
-    consumerConfigProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-    return consumerConfigProperties;
   }
 }

@@ -4,3 +4,4 @@ management.security.enabled: false
 
 server:
   port: 7000
+

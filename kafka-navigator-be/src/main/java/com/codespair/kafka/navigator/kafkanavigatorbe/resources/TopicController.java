@@ -16,11 +16,11 @@ public class TopicController {
   private final static List<String> hosts = Arrays.asList("kafka:9092", "kafka_1:9093");
   private TopicMeta topicMeta;
 
-  public TopicController() {
-    topicMeta = new TopicMeta(hosts);
+  public TopicController(TopicMeta topicMeta) {
+    this.topicMeta = topicMeta;
   }
 
-  @GetMapping("/")
+  @GetMapping
   public ResponseEntity< Map<String, List<String>> > getTopics()  {
     log.info("getting data for kafka hosts: {}", hosts);
     Map<String, List<String>> topics = topicMeta.topicData();
