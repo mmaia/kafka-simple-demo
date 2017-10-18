@@ -27,7 +27,7 @@ public class BusMeta {
   }
 
   /**
-   * Establishes initial connection with kafka and get the metrics available
+   * Establishes initial connection with kafka and get the metrics available for this connected client
    * @param hosts the list of kafka hosts to connect with
    * @return Set where each element is a KMetric object with kafka metrics
    */

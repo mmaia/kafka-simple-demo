@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {KafkaService} from "../services/kafka/kafka.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -8,7 +9,8 @@ import {KafkaService} from "../services/kafka/kafka.service";
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private kafkaService: KafkaService) { }
+  constructor(private kafkaService: KafkaService,
+              private router: Router) { }
 
   ngOnInit() {
   }
@@ -16,7 +18,8 @@ export class HomeComponent implements OnInit {
   connect(hosts: string) {
     console.log("hosts typed by user: " + hosts);
     this.kafkaService.connect(hosts).then((result) => {
-      console.log(JSON.stringify(result))
+      console.log(JSON.stringify(result));
+      this.router.navigate(['/kafka-metrics']);
     });
   }
 }

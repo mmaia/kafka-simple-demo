@@ -11,9 +11,11 @@ export class KafkaMetricsComponent implements OnInit {
 
   public metrics: Array<KMetric>;
 
-  constructor(private kafkaService: KafkaService) { }
+  constructor(private kafkaService: KafkaService) {
+  }
 
   ngOnInit() {
     this.metrics = this.kafkaService.getKMetrics();
+    console.log("this.metrics => " + this.metrics);
   }
 }

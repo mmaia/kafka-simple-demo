@@ -7,7 +7,7 @@ import {KMetric} from "../../model/KMetric";
 @Injectable()
 export class KafkaService {
 
-  private kMetrics: Array<KMetric>;
+  public kMetrics: Array<KMetric>;
   private connectUrl: string = 'http://localhost:7000/api/bus/connect';
   private kNavUrl: string = 'http://localhost:7000/api/topics';
   private kHosts: Array<string>;
@@ -30,8 +30,8 @@ export class KafkaService {
     return this.http.post(this.connectUrl, this.kHosts, this.reqOptions())
       .toPromise()
       .then((response) => {
-        console.log(JSON.stringify(response));
-        this.kMetrics = response.json().data as Array<KMetric>;
+        this.kMetrics = response.json() as Array<KMetric>;
+        console.log("this.kMetrics in service: " + JSON.stringify(this.kMetrics));
         return this.kMetrics;
       });
   }
