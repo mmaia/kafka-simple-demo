@@ -8,11 +8,13 @@ import { AppComponent } from './app.component';
 import {ServicesModule} from "./services/services.module";
 import {AppRoutingModule} from "./app.routing";
 import { HomeComponent } from './home/home.component';
+import { KafkaMetricsComponent } from './kafka-metrics/kafka-metrics.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    KafkaMetricsComponent
   ],
   imports: [
     BrowserModule,
