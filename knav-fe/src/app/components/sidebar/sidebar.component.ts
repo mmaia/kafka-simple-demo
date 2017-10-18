@@ -10,7 +10,7 @@ declare interface RouteInfo {
 }
 export const ROUTES: RouteInfo[] = [
     { path: 'home', title: 'Home',  icon: 'dashboard', class: '' },
-    { path: 'kafka-metrics', title: 'Kafka Metrics',  icon:'thermometer', class: '' }
+    { path: 'kafka-metrics', title: 'Kafka Metrics',  icon:'equalizer', class: '' }
 ];
 
 @Component({
