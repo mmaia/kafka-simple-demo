@@ -14,7 +14,8 @@ export class HomeComponent implements OnInit {
   }
 
   connect(hosts: string) {
-    this.kafkaService.connect(hosts.split(',')).then((result) => {
+    console.log("hosts typed by user: " + hosts);
+    this.kafkaService.connect(hosts).then((result) => {
       console.log(JSON.stringify(result))
     });
   }

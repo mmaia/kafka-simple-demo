@@ -6,10 +6,7 @@ import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.TopicMeta;
 import com.codespair.kafka.navigator.kafkanavigatorbe.resources.utils.HostsWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -26,8 +23,10 @@ public class BusController {
     this.topicMeta = topicMeta;
   }
 
+  @CrossOrigin(origins="*")
   @PostMapping("/connect")
   public ResponseEntity connect(@RequestBody HostsWrapper hw) {
+    log.info("Received request to connect, trying to connect with kafka servers: {}", hw.getHosts());
     Set<KMetric> metricSet = busMeta.initializeClient(hw.getHosts());
     return ResponseEntity.ok().body(metricSet);
   }
