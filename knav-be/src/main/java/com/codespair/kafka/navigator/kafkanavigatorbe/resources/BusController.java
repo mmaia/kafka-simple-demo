@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -25,9 +26,9 @@ public class BusController {
 
   @CrossOrigin(origins="*")
   @PostMapping("/connect")
-  public ResponseEntity connect(@RequestBody HostsWrapper hw) {
-    log.info("Received request to connect, trying to connect with kafka servers: {}", hw.getHosts());
-    Set<KMetric> metricSet = busMeta.initializeClient(hw.getHosts());
+  public ResponseEntity connect(@RequestBody List<String> hosts) {
+    log.info("Received request to connect, trying to connect with kafka servers: {}", hosts);
+    Set<KMetric> metricSet = busMeta.initializeClient(hosts);
     return ResponseEntity.ok().body(metricSet);
   }
 }

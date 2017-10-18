@@ -24,14 +24,15 @@ export class KafkaService {
 
   connect(hosts: string): Promise<any> {
     this.kHosts = hosts.split(",");
-    return this.http.post(this.connectUrl, hosts, this.reqOptions())
+    console.log(JSON.stringify(this.kHosts));
+    return this.http.post(this.connectUrl, this.kHosts, this.reqOptions())
       .toPromise()
       .then((response) => console.log(JSON.stringify(response)));
   }
 
   private reqOptions(): RequestOptions {
     const headers = new Headers();
-    headers.append("Contenty-Type", "applications/json");
+    headers.append("Content-Type", "application/json");
     const options = new RequestOptions({
       method: RequestMethod.Post,
       headers: headers
