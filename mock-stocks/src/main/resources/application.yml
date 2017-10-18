@@ -9,6 +9,12 @@ generator:
       - NYSE
     path: "/static/"
 
+logging:
+  level:
+    root: INFO
+    org.apache.kafka: ERROR
+    com.codespair: ERROR
+
 kafka:
   hosts:
     - "kafka:9092"
