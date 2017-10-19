@@ -14,10 +14,14 @@ import java.util.*;
 @Service
 public class KafkaJMX {
 
-  JMXServiceURL jmxServiceURL;
+  private JMXServiceURL jmxServiceURL;
+  private List<String> jmxDomains;
+  private boolean isConnected;
+
 
   /**
    * Connects with kafka jmx and recover a list of available MBean Domain names.
+   *
    * @param jmxUrl the url of a broker to connect with using JMX.
    * @return a list of available JMX Bean domain names to be navigated.
    */
@@ -26,8 +30,10 @@ public class KafkaJMX {
     try {
       MBeanServerConnection mbsc = mBeanServerConnection(url);
       String domains[] = mbsc.getDomains();
+      isConnected = true;
+      jmxDomains = Arrays.asList(domains);
       logDomains(domains);
-      return Optional.of(Arrays.asList(domains));
+      return Optional.of(jmxDomains);
     } catch (IOException e) {
       log.error("could not connect to jmx kafka server: {}", e.getMessage(), e);
       return Optional.empty();

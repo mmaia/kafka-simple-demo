@@ -1,8 +1,7 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.resources;
 
-import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.BusMeta;
+import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.BusClientMetaData;
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.KMetric;
-import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.TopicMeta;
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx.KafkaJMX;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +17,11 @@ import java.util.Set;
 public class BusController {
 
   private KafkaJMX kafkaJMX;
-  private BusMeta busMeta;
+  private BusClientMetaData busClientMetaData;
 
-  public BusController(KafkaJMX kafkaJMX, BusMeta busMeta) {
+  public BusController(KafkaJMX kafkaJMX, BusClientMetaData busClientMetaData) {
     this.kafkaJMX = kafkaJMX;
-    this.busMeta = busMeta;
+    this.busClientMetaData = busClientMetaData;
   }
 
   @CrossOrigin(origins="*")
@@ -42,7 +41,7 @@ public class BusController {
   @PostMapping("/k-client-metrics")
   public ResponseEntity kClientMetrics(@RequestBody List<String> hosts) {
     log.info("Received request to connect, trying to connect and get metrics list of kafka client: {}", hosts);
-    Set<KMetric> metricSet = busMeta.initializeClient(hosts);
+    Set<KMetric> metricSet = busClientMetaData.initializeClient(hosts);
     return ResponseEntity.ok().body(metricSet);
   }
 }

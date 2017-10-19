@@ -16,12 +16,12 @@ import java.util.Set;
 @Slf4j
 @Data
 @Repository
-public class BusMeta {
+public class BusClientMetaData {
 
   private KafkaConfig kafkaConfig;
   private KafkaConsumer<String, JsonNode> kafkaConsumer;
 
-  public BusMeta(KafkaConfig kafkaConfig) {
+  public BusClientMetaData(KafkaConfig kafkaConfig) {
     this.kafkaConfig = kafkaConfig;
     log.info("Connections created with specified kafka hosts: {}");
   }

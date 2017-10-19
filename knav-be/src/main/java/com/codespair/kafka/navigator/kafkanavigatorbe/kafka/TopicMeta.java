@@ -16,10 +16,10 @@ import java.util.Map;
 @Repository
 public class TopicMeta {
 
-  private BusMeta busMeta;
+  private BusClientMetaData busClientMetaData;
 
-  public TopicMeta(BusMeta busMeta) {
-    this.busMeta = busMeta;
+  public TopicMeta(BusClientMetaData busClientMetaData) {
+    this.busClientMetaData = busClientMetaData;
   }
 
   /**
@@ -30,7 +30,7 @@ public class TopicMeta {
    */
   public Map<String, List<String>> topicData() {
     Map<String, List<String>> result = new HashMap<>();
-    Map<String, List<PartitionInfo>> topicInfo = busMeta.getKafkaConsumer().listTopics();
+    Map<String, List<PartitionInfo>> topicInfo = busClientMetaData.getKafkaConsumer().listTopics();
     for(Map.Entry<String, List<PartitionInfo>> item: topicInfo.entrySet()) {
       if (ignoreMeta(item)) continue;
       List<String> partitionInfoString = new ArrayList<>();
