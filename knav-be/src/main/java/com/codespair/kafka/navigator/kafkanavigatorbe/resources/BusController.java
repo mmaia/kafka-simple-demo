@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -28,8 +29,12 @@ public class BusController {
   @PostMapping("/connect/{server_url}")
   public ResponseEntity connect(@PathVariable("server_url") String jmxServerUrl) {
     log.info("Received request to connect, trying to connect with kafka jmx: {}", jmxServerUrl);
-    kafkaJMX.connect(jmxServerUrl);
-    return ResponseEntity.ok().body("OK");
+    Optional<List<String>> domainList =  kafkaJMX.connect(jmxServerUrl);
+    if(domainList.isPresent())
+    {
+      return ResponseEntity.ok().body(domainList.get());
+    }
+    return ResponseEntity.noContent().build();
   }
 
 

@@ -8,9 +8,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -19,19 +17,20 @@ public class KafkaJMX {
   JMXServiceURL jmxServiceURL;
 
   /**
-   * Connects with kafka jmx
-   * @param jmxUrl
+   * Connects with kafka jmx and recover a list of available MBean Domain names.
+   * @param jmxUrl the url of a broker to connect with using JMX.
+   * @return a list of available JMX Bean domain names to be navigated.
    */
-  public void connect(String jmxUrl) {
+  public Optional<List<String>> connect(String jmxUrl) {
     String url = "service:jmx:rmi:///jndi/rmi://" + jmxUrl + "/jmxrmi";
     try {
       MBeanServerConnection mbsc = mBeanServerConnection(url);
       String domains[] = mbsc.getDomains();
       logDomains(domains);
-      log.info("\n---------------------\n");
-      log.info("defaultDomain: " + mbsc.getDefaultDomain());
+      return Optional.of(Arrays.asList(domains));
     } catch (IOException e) {
       log.error("could not connect to jmx kafka server: {}", e.getMessage(), e);
+      return Optional.empty();
     }
   }
 
@@ -47,7 +46,6 @@ public class KafkaJMX {
       log.info("\tDomain = " + domain);
     }
   }
-
 
   private Map<String, String> defaultJMXConnectorProperties() {
     Map<String, String> props = new HashMap<>();
