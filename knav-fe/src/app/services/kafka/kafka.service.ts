@@ -6,10 +6,9 @@ import {KMetric} from "../../model/KMetric";
 
 @Injectable()
 export class KafkaService {
-
   public kMetrics: Array<KMetric>;
-  private connectUrl: string = 'http://localhost:7000/api/bus/connect';
-  private kNavUrl: string = 'http://localhost:7000/api/topics';
+  private connectUrl = 'http://localhost:7000/api/bus/connect';
+  private kNavUrl = 'http://localhost:7000/api/topics';
   private kHosts: Array<string>;
 
   constructor(private http: Http) {
@@ -24,19 +23,16 @@ export class KafkaService {
       .catch(this.handleError);
   }
 
-  connect(hosts: string): Promise<Array<KMetric>> {
-    this.kHosts = hosts.split(",");
-    console.log(JSON.stringify(this.kHosts));
-    return this.http.post(this.connectUrl, this.kHosts, this.reqOptions())
+  public connect(jmxHost: string): Promise<Array<String>> {
+    console.log(JSON.stringify(jmxHost));
+    return this.http.post(this.connectUrl, jmxHost, this.reqOptions())
       .toPromise()
       .then((response) => {
-        this.kMetrics = response.json() as Array<KMetric>;
-        console.log("this.kMetrics in service: " + JSON.stringify(this.kMetrics));
-        return this.kMetrics;
+        return response.json() as Array<string>;
       });
   }
 
-  public getKMetrics(): Array<KMetric> {
+  getKMetrics(): Array<KMetric> {
     return this.kMetrics;
   }
 

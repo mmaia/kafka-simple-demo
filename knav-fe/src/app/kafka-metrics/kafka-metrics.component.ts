@@ -16,6 +16,6 @@ export class KafkaMetricsComponent implements OnInit {
 
   ngOnInit() {
     this.metrics = this.kafkaService.getKMetrics();
-    console.log("this.metrics => " + this.metrics);
+    console.log('this.metrics => ' + this.metrics);
   }
 }
