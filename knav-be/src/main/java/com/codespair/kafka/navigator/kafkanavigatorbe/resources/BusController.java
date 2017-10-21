@@ -25,10 +25,10 @@ public class BusController {
   }
 
   @CrossOrigin(origins="*")
-  @PostMapping("/connect/{server_url}")
-  public ResponseEntity connect(@PathVariable("server_url") String jmxServerUrl) {
+  @PostMapping("/connect")
+  public ResponseEntity connect(@RequestBody List<String> jmxServerUrl) {
     log.info("Received request to connect, trying to connect with kafka jmx: {}", jmxServerUrl);
-    Optional<List<String>> domainList =  kafkaJMX.connect(jmxServerUrl);
+    Optional<List<String>> domainList =  kafkaJMX.connect(jmxServerUrl.get(0));
     if(domainList.isPresent())
     {
       return ResponseEntity.ok().body(domainList.get());

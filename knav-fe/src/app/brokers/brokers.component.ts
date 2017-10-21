@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import {isUndefined} from "util";
-import {KafkaService} from "../services/kafka/kafka.service";
-import {Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {KafkaService} from '../services/kafka/kafka.service';
+import {Broker} from "../model/Broker";
+
 declare var $: any;
+
 @Component({
   selector: 'app-brokers',
   templateUrl: './brokers.component.html',
@@ -10,21 +11,24 @@ declare var $: any;
 })
 export class BrokersComponent implements OnInit {
 
-  constructor(private kafkaService: KafkaService, private router: Router) { }
+  private broker: Broker;
+
+  constructor(private kafkaService: KafkaService) {
+  }
 
   ngOnInit() {
   }
 
   public connect(hosts) {
-    if(hosts.value.length < 1) {  //invalid
+    if (!(hosts.value.length >= 1)) {
       this.required();
       return;
     }
 
-    this.kafkaService.connect(hosts).then((result) => {
+    this.kafkaService.connect(hosts.value).then((result) => {
+      console.log('got domains back after connecting...');
       console.log(JSON.stringify(result));
-      this.router.navigate(['/kafka-metrics']);
-    });
+    }).catch((error) => console.log(error));
 
   }
 

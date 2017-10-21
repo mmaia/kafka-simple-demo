@@ -45,6 +45,7 @@ public class KafkaJMX {
   }
 
   private MBeanServerConnection mBeanServerConnection(String url) throws IOException {
+    log.info("connecting to mbeanserver url: {}", url);
     jmxServiceURL = new JMXServiceURL(url);
     JMXConnector jmxc = JMXConnectorFactory.connect(jmxServiceURL, defaultJMXConnectorProperties());
     return jmxc.getMBeanServerConnection();

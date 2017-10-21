@@ -1,4 +1,4 @@
-import {Tag} from "./Tag";
+import {Tag} from './Tag';
 
 export class KMetric {
   public name: string;
