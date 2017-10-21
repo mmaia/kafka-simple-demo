@@ -9,17 +9,9 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private kafkaService: KafkaService,
-              private router: Router) { }
+  constructor() { }
 
   ngOnInit() {
   }
 
-  connect(hosts: string) {
-    console.log("hosts typed by user: " + hosts);
-    this.kafkaService.connect(hosts).then((result) => {
-      console.log(JSON.stringify(result));
-      this.router.navigate(['/kafka-metrics']);
-    });
-  }
 }
