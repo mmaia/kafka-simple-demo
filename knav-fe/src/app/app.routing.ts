@@ -4,9 +4,11 @@ import { BrowserModule  } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 import {HomeComponent} from "./home/home.component";
 import {KafkaMetricsComponent} from "./kafka-metrics/kafka-metrics.component";
+import {BrokersComponent} from "./brokers/brokers.component";
 
 const routes: Routes =[
-  { path: '',               redirectTo: 'home',                 pathMatch: 'full' },
+  { path: '',               redirectTo: 'brokers',                 pathMatch: 'full' },
+  { path: 'brokers',           component: BrokersComponent},
   { path: 'home',           component: HomeComponent},
   { path: 'kafka-metrics',  component: KafkaMetricsComponent}
 ];

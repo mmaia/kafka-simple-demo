@@ -40,6 +40,10 @@ public class KafkaJMX {
     }
   }
 
+  public List<String> getJmxDomains() {
+    return jmxDomains;
+  }
+
   private MBeanServerConnection mBeanServerConnection(String url) throws IOException {
     jmxServiceURL = new JMXServiceURL(url);
     JMXConnector jmxc = JMXConnectorFactory.connect(jmxServiceURL, defaultJMXConnectorProperties());
