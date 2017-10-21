@@ -3,6 +3,7 @@ import {Headers, Http, RequestMethod, RequestOptions} from "@angular/http";
 import 'rxjs/add/operator/toPromise';
 import {Topic} from "../../model/Topic";
 import {KMetric} from "../../model/KMetric";
+import {Broker} from "../../model/Broker";
 
 @Injectable()
 export class KafkaService {
@@ -23,12 +24,12 @@ export class KafkaService {
       .catch(this.handleError);
   }
 
-  public connect(jmxHost: string): Promise<Array<String>> {
+  public connect(jmxHost: string): Promise<Broker> {
     console.log(JSON.stringify(jmxHost));
     return this.http.post(this.connectUrl, jmxHost, this.reqOptions())
       .toPromise()
       .then((response) => {
-        return response.json() as Array<string>;
+        return response.json() as Broker;
       });
   }
 

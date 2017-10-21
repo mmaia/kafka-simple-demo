@@ -1,5 +1,10 @@
+import {TopicMetrics} from './TopicMetrics';
+
 export class Broker {
+  public id: string;
+  public topicMetrics: TopicMetrics;
   private allDomains: Array<String>;
+  private kafkaServerDomain = 'kafka.server';
 
   public getAllDomains(): Array<String> {
     return this.allDomains;
