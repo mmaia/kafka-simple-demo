@@ -36,12 +36,16 @@ public class KafkaJMX {
     try {
       mbsc = mBeanServerConnection(url);
       connected = true;
-      return isConnected();
     } catch (IOException e) {
       log.error("could not connect to jmx kafka server: {}", e.getMessage(), e);
     }
+    return isConnected();
   }
 
+  /**
+   * Recover a list of jmx domains of this kafka server
+   * @return a List with strings each representing a jmx domain from the kafka broker
+   */
   public Optional<List<String>> getJmxDomains() {
     String domains[];
     try {
@@ -70,11 +74,14 @@ public class KafkaJMX {
     }
   }
 
+  /**
+   * Get general topic metrics for broker
+   * @return AttributeList with topic metrics from broker.
+   */
   public Optional<AttributeList> getTopicMetrics() {
     try {
       ObjectName objectName = new ObjectName("kafka.server:type=BrokerTopicMetrics");
-      Optional.of(mbsc.getAttributes(objectName, topicMetricsAttributes()));
-
+      return Optional.of(mbsc.getAttributes(objectName, topicMetricsAttributes()));
     } catch (Exception e) {
       log.error("Erorr recovering Topic Metrics for Broker: {}",
           getBrokerId().get());
