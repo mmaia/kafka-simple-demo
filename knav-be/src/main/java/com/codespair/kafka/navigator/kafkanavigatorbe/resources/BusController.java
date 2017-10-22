@@ -28,14 +28,13 @@ public class BusController {
   @PostMapping("/connect")
   public ResponseEntity connect(@RequestBody String jmxServerUrl) {
     log.info("Received request to connect, trying to connect with kafka jmx: {}", jmxServerUrl);
-    Optional<List<String>> domainList =  kafkaJMX.connect(jmxServerUrl);
-    if(domainList.isPresent())
-    {
-      return ResponseEntity.ok().body(domainList.get());
+    Optional<Boolean> connected = Optional.of(kafkaJMX.connect(jmxServerUrl));
+    Optional<Integer> brokerId = Optional.empty();
+    if(connected.get()) {
+      brokerId = kafkaJMX.getBrokerId();
     }
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.ok().body(brokerId.orElse(-1));
   }
-
 
   @CrossOrigin(origins="*")
   @PostMapping("/k-client-metrics")
