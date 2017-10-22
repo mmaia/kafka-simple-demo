@@ -1,7 +1,7 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.resources;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.BusClientMetaData;
-import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.KMetric;
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.KMetric;
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx.KafkaJMX;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

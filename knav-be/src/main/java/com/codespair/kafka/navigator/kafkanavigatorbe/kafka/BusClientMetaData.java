@@ -1,5 +1,6 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka;
 
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.KMetric;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

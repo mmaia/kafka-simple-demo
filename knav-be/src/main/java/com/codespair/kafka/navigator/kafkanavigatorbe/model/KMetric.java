@@ -1,4 +1,4 @@
-package com.codespair.kafka.navigator.kafkanavigatorbe.kafka;
+package com.codespair.kafka.navigator.kafkanavigatorbe.model;
 
 import lombok.Builder;
 import lombok.Getter;
