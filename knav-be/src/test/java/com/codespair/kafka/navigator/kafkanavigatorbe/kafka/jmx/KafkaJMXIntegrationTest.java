@@ -3,11 +3,6 @@ package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.validation.constraints.AssertTrue;
-
-import java.util.Optional;
-
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -26,6 +21,7 @@ public class KafkaJMXIntegrationTest {
   @Test
   public void shouldReturnBrokerId() {
     kafkaJMX.getBrokerId();
+//    kafkaJMX.getTopicMetrics();
 //    Optional<Integer> brokerId = kafkaJMX.getBrokerId();
 //    assertNotNull(brokerId.get());
   }

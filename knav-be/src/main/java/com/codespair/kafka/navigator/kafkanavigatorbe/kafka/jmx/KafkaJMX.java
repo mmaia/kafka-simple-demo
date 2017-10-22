@@ -1,6 +1,7 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.Broker;
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.TopicMetrics;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
@@ -45,6 +46,8 @@ public class KafkaJMX {
     Optional<Integer> brokerId = getBrokerId();
     Broker result = Broker.builder()
         .id(brokerId.get())
+        .allDomains(getJmxDomains().get())
+        .topicMetrics(getTopicMetrics().orElse(null))
         .build();
     return Optional.of(result);
   }
@@ -78,7 +81,7 @@ public class KafkaJMX {
   public Optional<Integer> getBrokerId() {
     Optional<Integer> brokerId = Optional.empty();
     try {
-      ObjectName objectName = new ObjectName("kafka.server:*");
+      ObjectName objectName = new ObjectName("kafka.server:type=app-info,*");
       Set mbeans = mbsc.queryNames(objectName, null);
       for (Object mbean : mbeans) {
         ObjectName oName = (ObjectName) mbean;
@@ -92,6 +95,35 @@ public class KafkaJMX {
       log.error("Error getting Broker id: {}", e.getMessage(), e);
     }
     return brokerId;
+  }
+
+  /**
+   * Get general topic metrics for broker
+   *
+   * @return AttributeList with topic metrics from broker.
+   */
+  public Optional<TopicMetrics> getTopicMetrics() {
+    Optional<TopicMetrics> result = Optional.empty();
+    try {
+      ObjectName objectName = new ObjectName("kafka.server:type=BrokerTopicMetrics");
+      AttributeList attributeList = mbsc.getAttributes(objectName, topicMetricsAttributes());
+      TopicMetrics topicMetrics = buildTopicMetrics(attributeList);
+      result = Optional.of(topicMetrics);
+    } catch (Exception e) {
+      log.error("Error recovering Topic Metrics for Broker: {}",
+          getBrokerId().get(), e.getMessage(), e);
+
+    }
+    return result;
+  }
+
+  private TopicMetrics buildTopicMetrics(AttributeList attributeList) {
+    TopicMetrics topicMetrics = null;
+    for (Object obj: attributeList) {
+      Attribute attribute = (Attribute) obj;
+      log.info("attribute: {}", attribute);
+    }
+    return topicMetrics;
   }
 
   public void queryAll() {
@@ -118,22 +150,6 @@ public class KafkaJMX {
       }
     } catch (Exception e) {
       log.error("Error processing attributes from mebean, objectName: {}, error message: {}", objectName, e.getMessage());
-    }
-  }
-
-  /**
-   * Get general topic metrics for broker
-   *
-   * @return AttributeList with topic metrics from broker.
-   */
-  public Optional<AttributeList> getTopicMetrics() {
-    try {
-      ObjectName objectName = new ObjectName("kafka.server:type=BrokerTopicMetrics");
-      return Optional.of(mbsc.getAttributes(objectName, topicMetricsAttributes()));
-    } catch (Exception e) {
-      log.error("Erorr recovering Topic Metrics for Broker: {}",
-          getBrokerId().get());
-      return Optional.empty();
     }
   }
 
