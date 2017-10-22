@@ -1,6 +1,7 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.resources;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.BusClientMetaData;
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.Broker;
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.KMetric;
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx.KafkaJMX;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +30,12 @@ public class BusController {
   public ResponseEntity connect(@RequestBody String jmxServerUrl) {
     log.info("Received request to connect, trying to connect with kafka jmx: {}", jmxServerUrl);
     Optional<Boolean> connected = Optional.of(kafkaJMX.connect(jmxServerUrl));
-    Optional<Integer> brokerId = Optional.empty();
     if(connected.get()) {
-      brokerId = kafkaJMX.getBrokerId();
+      Optional<Broker> broker = kafkaJMX.getBrokerInfo();
+      return ResponseEntity.ok().body(broker.get());
+    } else {
+      return ResponseEntity.notFound().build();
     }
-    return ResponseEntity.ok().body(brokerId.orElse(-1));
   }
 
   @CrossOrigin(origins="*")

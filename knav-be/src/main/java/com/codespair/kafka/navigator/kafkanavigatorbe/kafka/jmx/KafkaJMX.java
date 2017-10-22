@@ -1,5 +1,7 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.Broker;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
@@ -40,6 +42,14 @@ public class KafkaJMX {
       log.error("could not connect to jmx kafka server: {}", e.getMessage(), e);
     }
     return isConnected();
+  }
+
+  public Optional<Broker> getBrokerInfo() {
+    Optional<Integer> brokerId = getBrokerId();
+    Broker result = Broker.builder()
+        .id(brokerId.get())
+        .build();
+    return Optional.of(result);
   }
 
   /**
