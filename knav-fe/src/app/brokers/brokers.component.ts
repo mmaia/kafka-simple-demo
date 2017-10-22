@@ -24,7 +24,7 @@ export class BrokersComponent implements OnInit {
     }
 
     this.kafkaService.connect(hosts.value).then((result) => {
-      console.log('got broker id back...');
+      console.log('got broker...');
       console.log(JSON.stringify(result));
       this.broker = result;
     }).catch((error) => console.log(error));

@@ -1,15 +1,12 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.Broker;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import javax.management.AttributeList;
-import javax.management.MBeanServerConnection;
-import javax.management.ObjectName;
+import javax.management.*;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -54,6 +51,7 @@ public class KafkaJMX {
 
   /**
    * Recover a list of jmx domains of this kafka server
+   *
    * @return a List with strings each representing a jmx domain from the kafka broker
    */
   public Optional<List<String>> getJmxDomains() {
@@ -70,22 +68,62 @@ public class KafkaJMX {
   }
 
   /**
-   * Recover the Broker id
+   * Recover the Broker id from the ObjectName. This is an initial implementation that might not be the best way of
+   * doing this but it's the current known way of getting this done.
+   * This method parses the ObjectName and look for the one containing app-info and then substring from the "id="
+   * pattern position until the end, parsing it to an Integer that represents the kafka broker id.
    *
    * @return an Integer representing the Broker id
    */
   public Optional<Integer> getBrokerId() {
+    Optional<Integer> brokerId = Optional.empty();
     try {
-      ObjectName objectName = new ObjectName("kafka.server:type=app-info");
-      return Optional.of((Integer) (mbsc.getAttribute(objectName, "id")));
+      ObjectName objectName = new ObjectName("kafka.server:*");
+      Set mbeans = mbsc.queryNames(objectName, null);
+      for (Object mbean : mbeans) {
+        ObjectName oName = (ObjectName) mbean;
+        String sName = oName.toString();
+        if(sName.contains("app-info")) {
+          int idPos = sName.indexOf("id=");
+          brokerId = Optional.of(Integer.parseInt(sName.substring(idPos + 3).trim()));
+        }
+      }
     } catch (Exception e) {
       log.error("Error getting Broker id: {}", e.getMessage(), e);
-      return Optional.empty();
+    }
+    return brokerId;
+  }
+
+  public void queryAll() {
+    try {
+      Set mbeans = mbsc.queryNames(new ObjectName("kafka.server:*"), null);
+      for (Object mbean : mbeans) {
+        writeAttributes(mbsc, (ObjectName) mbean);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void writeAttributes(MBeanServerConnection mBeanServerConnection, ObjectName objectName) {
+    try {
+      MBeanInfo mBeanInfo = mbsc.getMBeanInfo(objectName);
+      log.info("\n====================================\n");
+      log.info("Object Name: {}", objectName);
+      log.info("\n====================================\n");
+      MBeanAttributeInfo[] attributeInfos = mBeanInfo.getAttributes();
+      for (MBeanAttributeInfo attributeInfo : attributeInfos) {
+        log.info("\nAttribute Name:\t {}, \nAttribute Desc:\t {}, \nAttribute Type:\t {}",
+            attributeInfo.getName(), attributeInfo.getDescription(), attributeInfo.getType());
+      }
+    } catch (Exception e) {
+      log.error("Error processing attributes from mebean, objectName: {}, error message: {}", objectName, e.getMessage());
     }
   }
 
   /**
    * Get general topic metrics for broker
+   *
    * @return AttributeList with topic metrics from broker.
    */
   public Optional<AttributeList> getTopicMetrics() {
