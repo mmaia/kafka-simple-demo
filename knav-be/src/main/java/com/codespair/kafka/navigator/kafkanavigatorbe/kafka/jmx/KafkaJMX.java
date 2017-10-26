@@ -14,14 +14,14 @@ import javax.management.remote.JMXServiceURL;
 import java.io.IOException;
 import java.util.*;
 
+import static com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx.KafkaJMXObjectNamesAndProps.*;
+
 @Slf4j
 @Service
 @Scope("prototype")
-@Getter
 public class KafkaJMX {
 
-  private JMXServiceURL jmxServiceURL;
-  private List<String> jmxDomains;
+  @Getter
   private boolean connected;
   private MBeanServerConnection mbsc;
 
@@ -42,14 +42,33 @@ public class KafkaJMX {
     return isConnected();
   }
 
+  /**
+   * Build a Broker object with information about it's id, a list of available JMX domains and global topic metrics.
+   * @return Broker information.
+   */
   public Optional<Broker> getBrokerInfo() {
     Optional<Integer> brokerId = getBrokerId();
     Broker result = Broker.builder()
-        .id(brokerId.get())
-        .allDomains(getJmxDomains().get())
+        .id(brokerId.orElse(-1))
+        .allDomains(getJmxDomains().orElse(null))
         .topicMetrics(getTopicMetrics().orElse(null))
         .build();
     return Optional.of(result);
+  }
+
+
+  /**
+   * Query all jmx elements and loop in all returned ones printing their name / values to console.
+   */
+  public void queryAll() {
+    try {
+      Set mbeans = mbsc.queryNames(new ObjectName(KAFKA_SERVER), null);
+      for (Object mbean : mbeans) {
+        writeAttributes(mbsc, (ObjectName) mbean);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -57,11 +76,11 @@ public class KafkaJMX {
    *
    * @return a List with strings each representing a jmx domain from the kafka broker
    */
-  public Optional<List<String>> getJmxDomains() {
+  private Optional<List<String>> getJmxDomains() {
     String domains[];
     try {
       domains = mbsc.getDomains();
-      jmxDomains = Arrays.asList(domains);
+      List<String> jmxDomains = Arrays.asList(domains);
       logDomains(domains);
       return Optional.of(jmxDomains);
     } catch (IOException e) {
@@ -78,10 +97,10 @@ public class KafkaJMX {
    *
    * @return an Integer representing the Broker id
    */
-  public Optional<Integer> getBrokerId() {
+  private Optional<Integer> getBrokerId() {
     Optional<Integer> brokerId = Optional.empty();
     try {
-      ObjectName objectName = new ObjectName("kafka.server:type=app-info,*");
+      ObjectName objectName = new ObjectName(KAFKA_SERVER_APP_INFO);
       Set mbeans = mbsc.queryNames(objectName, null);
       for (Object mbean : mbeans) {
         ObjectName oName = (ObjectName) mbean;
@@ -102,10 +121,10 @@ public class KafkaJMX {
    *
    * @return AttributeList with topic metrics from broker.
    */
-  public Optional<TopicMetrics> getTopicMetrics() {
+  private Optional<TopicMetrics> getTopicMetrics() {
     Optional<TopicMetrics> result = Optional.empty();
     try {
-      ObjectName objectName = new ObjectName("kafka.server:type=BrokerTopicMetrics");
+      ObjectName objectName = new ObjectName(KAFKA_SERVER_BROKER_TOPIC_METRICS);
       AttributeList attributeList = mbsc.getAttributes(objectName, topicMetricsAttributes());
       TopicMetrics topicMetrics = buildTopicMetrics(attributeList);
       result = Optional.of(topicMetrics);
@@ -126,17 +145,6 @@ public class KafkaJMX {
     return topicMetrics;
   }
 
-  public void queryAll() {
-    try {
-      Set mbeans = mbsc.queryNames(new ObjectName("kafka.server:*"), null);
-      for (Object mbean : mbeans) {
-        writeAttributes(mbsc, (ObjectName) mbean);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
   private void writeAttributes(MBeanServerConnection mBeanServerConnection, ObjectName objectName) {
     try {
       MBeanInfo mBeanInfo = mbsc.getMBeanInfo(objectName);
@@ -153,25 +161,11 @@ public class KafkaJMX {
     }
   }
 
-  private String[] topicMetricsAttributes() {
-    final String[] attributes = {
-        "BytesInPerSec",
-        "BytesOutPerSec",
-        "BytesRejectPerSec",
-        "FailedFetchRequestsPerSec",
-        "FailedProduceRequestsPerSec",
-        "MessagesInPerSec",
-        "TotalFetchRequestsPerSec",
-        "TotalProduceRequestsPerSec"
-    };
-    return attributes;
-  }
-
 
   private MBeanServerConnection mBeanServerConnection(String url) throws IOException {
+
     log.info("connecting to mbeanserver url: {}", url);
-    jmxServiceURL = new JMXServiceURL(url);
-    JMXConnector jmxc = JMXConnectorFactory.connect(jmxServiceURL, defaultJMXConnectorProperties());
+    JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(url), defaultJMXConnectorProperties());
     return jmxc.getMBeanServerConnection();
   }
 
@@ -180,15 +174,5 @@ public class KafkaJMX {
     for (String domain : domains) {
       log.info("\tDomain = " + domain);
     }
-  }
-
-  private Map<String, String> defaultJMXConnectorProperties() {
-    Map<String, String> props = new HashMap<>();
-    props.put("jmx.remote.x.request.waiting.timeout", "3000");
-    props.put("jmx.remote.x.notification.fetch.timeout", "3000");
-    props.put("sun.rmi.transport.connectionTimeout", "3000");
-    props.put("sun.rmi.transport.tcp.handshakeTimeout", "3000");
-    props.put("sun.rmi.transport.tcp.responseTimeout", "3000");
-    return props;
   }
 }
