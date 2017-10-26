@@ -16,15 +16,19 @@
 
     <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
     <spring-boot.version>1.5.8.RELEASE</spring-boot.version>
+    <hibernate-validator.version>5.4.1.Final</hibernate-validator.version>
 
     <kafka-clients.version>0.10.2.1</kafka-clients.version>
+    <kafka-streams.version>0.10.2.1</kafka-streams.version>
     <connect-json.version>0.11.0.0</connect-json.version>
     <lombok.version>1.16.18</lombok.version>
-
+    <opencsv.version>3.9</opencsv.version>
+    <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
   </properties>
 
   <modules>
     <module>knav-be</module>
+    <module>mock-stocks</module>
   </modules>
 
   <dependencies>
@@ -35,6 +39,15 @@
       <type>pom</type>
       <scope>runtime</scope>
     </dependency>
+
+    <!-- jacoco test support -->
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>${jacoco-maven-plugin.version}</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>
@@ -57,6 +70,26 @@
             <execution>
               <goals>
                 <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.7.9</version>
+          <executions>
+            <execution>
+              <id>default-prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>default-report</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>report</goal>
               </goals>
             </execution>
           </executions>
