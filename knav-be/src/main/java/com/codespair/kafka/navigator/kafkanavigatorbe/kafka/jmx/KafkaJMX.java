@@ -1,9 +1,9 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.Broker;
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.OperatingSystem;
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.TopicMetric;
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.TopicMetricAttributeType;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
@@ -46,6 +46,7 @@ public class KafkaJMX {
 
   /**
    * Build a Broker object with information about it's id, a list of available JMX domains and global topic metrics.
+   *
    * @return Broker information.
    */
   public Optional<Broker> getBrokerInfo() {
@@ -54,6 +55,7 @@ public class KafkaJMX {
         .id(brokerId.orElse(-1))
         .jmxDomains(getJmxDomains().orElse(null))
         .topicMetricList(getBrokerTopicMetrics().orElse(null))
+        .os(getOsInfo().orElse(null))
         .build();
     return Optional.of(result);
   }
@@ -83,7 +85,6 @@ public class KafkaJMX {
     try {
       domains = mbsc.getDomains();
       List<String> jmxDomains = Arrays.asList(domains);
-      logDomains(domains);
       return Optional.of(jmxDomains);
     } catch (IOException e) {
       log.error("Error recovering JMX Domains: {}", e.getMessage(), e);
@@ -107,7 +108,7 @@ public class KafkaJMX {
       for (Object mbean : mbeans) {
         ObjectName oName = (ObjectName) mbean;
         String sName = oName.toString();
-        if(sName.contains("app-info")) {
+        if (sName.contains("app-info")) {
           int idPos = sName.indexOf("id=");
           brokerId = Optional.of(Integer.parseInt(sName.substring(idPos + 3).trim()));
         }
@@ -116,6 +117,23 @@ public class KafkaJMX {
       log.error("Error getting Broker id: {}", e.getMessage(), e);
     }
     return brokerId;
+  }
+
+  public Optional<String> getKafkaVersion() {
+    Optional<String> kafkaVersion = Optional.empty();
+    return kafkaVersion;
+  }
+
+  public Optional<OperatingSystem> getOsInfo() {
+    Optional<OperatingSystem> result = Optional.empty();
+    try {
+      ObjectName objectName = new ObjectName(HOST_OS);
+      OperatingSystem os = buildOperatingSystem(objectName);
+      result = Optional.of(os);
+    } catch (Exception e) {
+      log.error("Could not recover host name: {}", e.getMessage(), e);
+    }
+    return result;
   }
 
   /**
@@ -141,6 +159,14 @@ public class KafkaJMX {
     return Optional.of(topicMetricList);
   }
 
+  private OperatingSystem buildOperatingSystem(ObjectName objectName) throws Exception {
+    OperatingSystem operatingSystem = new OperatingSystem();
+    for (String attribute: OperatingSystem.osAttributeNames()) {
+      operatingSystem.addAttribute(attribute, mbsc.getAttribute(objectName, attribute));
+    }
+    return operatingSystem;
+  }
+
   private TopicMetric buildTopicMetric(ObjectName objectName) throws Exception {
     TopicMetric topicMetric = new TopicMetric();
     for (String attribute : TopicMetric.topicMetricAttributeNames()) {
@@ -149,18 +175,16 @@ public class KafkaJMX {
     return topicMetric;
   }
 
+  /**
+   * Starts a JMX Connection with the specified kafka server
+   * @param url $jmxUrl:$jmxPort
+   * @return a jmx connection that can be used to query the mbeans
+   * @throws IOException in case the connection can't be established
+   */
   private MBeanServerConnection mBeanServerConnection(String url) throws IOException {
-
     log.info("connecting to mbeanserver url: {}", url);
     JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(url), defaultJMXConnectorProperties());
     return jmxc.getMBeanServerConnection();
-  }
-
-  private void logDomains(String[] domains) {
-    Arrays.sort(domains);
-    for (String domain : domains) {
-      log.info("\tDomain = " + domain);
-    }
   }
 
   private void writeAttributes(MBeanServerConnection mBeanServerConnection, ObjectName objectName) {

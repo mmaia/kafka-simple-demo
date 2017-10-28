@@ -28,14 +28,26 @@
         </div>
       </div>
     </div>
+
+
     <div class="row">
-      <div class="colum-md-12">
-        <div class="card">
-          <div class="card-header" data-background-color="purple">
-            <h4 class="title">Kafka Connections</h4>
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="card card-stats">
+          <div class="card-header" data-background-color="green">
+            <h4 class="title">Kafka Broker {{broker.id}}</h4>
           </div>
           <div class="card-content">
-              <p>{{broker.id}}</p>
+            <table>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+
+            <p *ngFor="let domain of domains">
+              {{domain}}
+            </p>
+
           </div>
         </div>
       </div>

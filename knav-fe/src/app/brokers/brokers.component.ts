@@ -12,6 +12,7 @@ declare var $: any;
 export class BrokersComponent implements OnInit {
 
   public broker: Broker;
+  public domains: Array<String>;
   constructor(private kafkaService: KafkaService) {
     this.broker = new Broker();
   }
@@ -27,6 +28,7 @@ export class BrokersComponent implements OnInit {
       console.log('got broker...');
       console.log(JSON.stringify(result));
       this.broker = result;
+      this.domains = this.broker.jmxDomains;
     }).catch((error) => console.log(error));
   }
 

@@ -13,4 +13,9 @@ public class Broker {
   private Integer id;
   private List<TopicMetric> topicMetricList;
   private List<String> jmxDomains;
+  private String host;
+  private Integer port;
+  private Integer jmxPort;
+  private OperatingSystem os;
+  private String kafkaVersion;
 }
