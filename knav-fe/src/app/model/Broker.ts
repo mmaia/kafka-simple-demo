@@ -5,6 +5,7 @@ export class Broker {
   public host: string;
   public port: number;
   public jmxPort: number;
-  public topicMetrics: Array<TopicMetrics>;
+  public topicMetricList: Array<TopicMetrics>;
   public jmxDomains: Array<String>;
+  public kafkaVersion: string;
 }
