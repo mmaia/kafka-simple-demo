@@ -56,6 +56,7 @@ public class KafkaJMX {
         .jmxDomains(getJmxDomains().orElse(null))
         .topicMetricList(getBrokerTopicMetrics().orElse(null))
         .os(getOsInfo().orElse(null))
+        .kafkaVersion(getKafkaVersion().orElse(null))
         .build();
     return Optional.of(result);
   }
@@ -103,7 +104,8 @@ public class KafkaJMX {
   Optional<Integer> getBrokerId() {
     Optional<Integer> brokerId = Optional.empty();
     try {
-      ObjectName objectName = new ObjectName(KAFKA_SERVER_APP_INFO);
+      String searchString = KAFKA_SERVER_APP_INFO + ",*";
+      ObjectName objectName = new ObjectName(searchString);
       Set mbeans = mbsc.queryNames(objectName, null);
       for (Object mbean : mbeans) {
         ObjectName oName = (ObjectName) mbean;
@@ -121,6 +123,16 @@ public class KafkaJMX {
 
   public Optional<String> getKafkaVersion() {
     Optional<String> kafkaVersion = Optional.empty();
+    Integer brokerId = getBrokerId().orElse(-1);
+    String searchString = KAFKA_SERVER_APP_INFO + ",id=" + brokerId;
+    try {
+      ObjectName objectName = new ObjectName(searchString);
+      String version = (String)mbsc.getAttribute(objectName, "Version");
+      kafkaVersion = Optional.of(version);
+    } catch (Exception e) {
+      log.error("Could not recover kafka version: {}", e.getMessage(), e);
+    }
+
     return kafkaVersion;
   }
 

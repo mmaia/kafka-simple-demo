@@ -7,7 +7,7 @@ class KafkaJMXObjectNamesAndProps {
 
   final static String HOST_OS = "java.lang:type=OperatingSystem";
   final static String KAFKA_SERVER = "kafka.server:*";
-  final static String KAFKA_SERVER_APP_INFO = "kafka.server:type=app-info,*";
+  final static String KAFKA_SERVER_APP_INFO = "kafka.server:type=app-info";
 
   final static String KAFKA_SERVER_BROKER_TOPIC_METRICS = "kafka.server:type=BrokerTopicMetrics,name=";
 
