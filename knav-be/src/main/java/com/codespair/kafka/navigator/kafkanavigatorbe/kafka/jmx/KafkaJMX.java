@@ -1,7 +1,9 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.Broker;
-import com.codespair.kafka.navigator.kafkanavigatorbe.model.TopicMetrics;
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.TopicMetric;
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.TopicMetricAttributeType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
@@ -50,8 +52,8 @@ public class KafkaJMX {
     Optional<Integer> brokerId = getBrokerId();
     Broker result = Broker.builder()
         .id(brokerId.orElse(-1))
-        .allDomains(getJmxDomains().orElse(null))
-        .topicMetrics(getTopicMetrics().orElse(null))
+        .jmxDomains(getJmxDomains().orElse(null))
+        .topicMetricList(getBrokerTopicMetrics().orElse(null))
         .build();
     return Optional.of(result);
   }
@@ -97,7 +99,7 @@ public class KafkaJMX {
    *
    * @return an Integer representing the Broker id
    */
-  private Optional<Integer> getBrokerId() {
+  Optional<Integer> getBrokerId() {
     Optional<Integer> brokerId = Optional.empty();
     try {
       ObjectName objectName = new ObjectName(KAFKA_SERVER_APP_INFO);
@@ -121,28 +123,44 @@ public class KafkaJMX {
    *
    * @return AttributeList with topic metrics from broker.
    */
-  private Optional<TopicMetrics> getTopicMetrics() {
-    Optional<TopicMetrics> result = Optional.empty();
+  private Optional<List<TopicMetric>> getBrokerTopicMetrics() {
+    Optional<List<TopicMetric>> result = Optional.empty();
+    List<TopicMetric> topicMetricList = new ArrayList<>();
     try {
-      ObjectName objectName = new ObjectName(KAFKA_SERVER_BROKER_TOPIC_METRICS);
-      AttributeList attributeList = mbsc.getAttributes(objectName, topicMetricsAttributes());
-      TopicMetrics topicMetrics = buildTopicMetrics(attributeList);
-      result = Optional.of(topicMetrics);
+      for (TopicMetricAttributeType tmat : TopicMetricAttributeType.values()) {
+        final String sName = KAFKA_SERVER_BROKER_TOPIC_METRICS + tmat.toString();
+        ObjectName objectName = new ObjectName(sName);
+        TopicMetric topicMetric = buildTopicMetric(objectName);
+        topicMetric.setTopicMetricAttributeType(TopicMetricAttributeType.fromString(tmat.toString()));
+        topicMetricList.add(topicMetric);
+      }
     } catch (Exception e) {
       log.error("Error recovering Topic Metrics for Broker: {}",
           getBrokerId().get(), e.getMessage(), e);
-
     }
-    return result;
+    return Optional.of(topicMetricList);
   }
 
-  private TopicMetrics buildTopicMetrics(AttributeList attributeList) {
-    TopicMetrics topicMetrics = null;
-    for (Object obj: attributeList) {
-      Attribute attribute = (Attribute) obj;
-      log.info("attribute: {}", attribute);
+  private TopicMetric buildTopicMetric(ObjectName objectName) throws Exception {
+    TopicMetric topicMetric = new TopicMetric();
+    for (String attribute : TopicMetric.topicMetricAttributeNames()) {
+      topicMetric.addAttribute(attribute, mbsc.getAttribute(objectName, attribute));
     }
-    return topicMetrics;
+    return topicMetric;
+  }
+
+  private MBeanServerConnection mBeanServerConnection(String url) throws IOException {
+
+    log.info("connecting to mbeanserver url: {}", url);
+    JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(url), defaultJMXConnectorProperties());
+    return jmxc.getMBeanServerConnection();
+  }
+
+  private void logDomains(String[] domains) {
+    Arrays.sort(domains);
+    for (String domain : domains) {
+      log.info("\tDomain = " + domain);
+    }
   }
 
   private void writeAttributes(MBeanServerConnection mBeanServerConnection, ObjectName objectName) {
@@ -161,18 +179,4 @@ public class KafkaJMX {
     }
   }
 
-
-  private MBeanServerConnection mBeanServerConnection(String url) throws IOException {
-
-    log.info("connecting to mbeanserver url: {}", url);
-    JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(url), defaultJMXConnectorProperties());
-    return jmxc.getMBeanServerConnection();
-  }
-
-  private void logDomains(String[] domains) {
-    Arrays.sort(domains);
-    for (String domain : domains) {
-      log.info("\tDomain = " + domain);
-    }
-  }
 }

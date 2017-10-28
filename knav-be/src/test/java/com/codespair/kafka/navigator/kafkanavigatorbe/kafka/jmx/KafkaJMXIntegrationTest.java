@@ -21,7 +21,7 @@ public class KafkaJMXIntegrationTest {
   @Test
   public void shouldReturnBrokerId() {
     kafkaJMX.getBrokerId();
-//    kafkaJMX.getTopicMetrics();
+//    kafkaJMX.getTopicMetric();
 //    Optional<Integer> brokerId = kafkaJMX.getBrokerId();
 //    assertNotNull(brokerId.get());
   }

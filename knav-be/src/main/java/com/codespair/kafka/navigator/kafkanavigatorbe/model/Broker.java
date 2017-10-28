@@ -11,6 +11,6 @@ import java.util.List;
 @EqualsAndHashCode
 public class Broker {
   private Integer id;
-  private TopicMetrics topicMetrics;
-  private List<String> allDomains;
+  private List<TopicMetric> topicMetricList;
+  private List<String> jmxDomains;
 }
