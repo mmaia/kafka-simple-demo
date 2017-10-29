@@ -13,8 +13,6 @@ declare var $: any;
 })
 export class BrokersComponent implements OnInit {
 
-  public broker: Broker;
-
   constructor(private kafkaService: KafkaService, public brokerService: BrokerService) {}
 
   ngOnInit() {}
@@ -26,8 +24,7 @@ export class BrokersComponent implements OnInit {
 
     this.kafkaService.connect(hosts.value).then((result) => {
       console.log('got broker...');
-      this.broker = result;
-      this.broker.topicMetricList = this.brokerService.sortBrokerTopMetrics(this.broker.topicMetricList);
+      this.brokerService.addBroker(result);
     }).catch((error) => console.log(error));
   }
 

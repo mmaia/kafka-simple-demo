@@ -1,8 +1,27 @@
 import {Injectable} from '@angular/core';
 import {TopicMetric} from '../model/TopicMetric';
+import {Broker} from '../model/Broker';
 
 @Injectable()
 export class BrokerService {
+  private brokers: Map<string, Broker>;
+  public getBrokers(): Array<Broker> {
+    if (this.brokers) {
+      return Array.from(this.brokers.values());
+    }
+    return null;
+  }
+  public addBroker(broker: Broker) {
+    if (!this.brokers) {
+      this.brokers = new Map<string, Broker>();
+    }
+    broker.topicMetricList = this.sortBrokerTopMetrics(broker.topicMetricList);
+    this.brokers.set(broker.id, broker);
+  }
+  public getBroker(id: string): Broker {
+    return this.brokers.get(id);
+  }
+
   public getAttributeTypeText(attributeName: string): String {
     let result = '';
     switch (attributeName) {
@@ -55,4 +74,5 @@ export class BrokerService {
     });
     return result;
   }
+
 }

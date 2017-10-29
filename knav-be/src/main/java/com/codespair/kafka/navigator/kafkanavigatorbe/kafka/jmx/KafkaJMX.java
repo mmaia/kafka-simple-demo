@@ -29,7 +29,6 @@ public class KafkaJMX {
 
   /**
    * Connects with kafka jmx and return true if successful, false otherwise.
-   *
    * @param jmxUrl the url of a broker to connect with using JMX.
    * @return a list of available JMX Bean domain names to be navigated.
    */
@@ -46,7 +45,6 @@ public class KafkaJMX {
 
   /**
    * Build a Broker object with information about it's id, a list of available JMX domains and global topic metrics.
-   *
    * @return Broker information.
    */
   public Optional<Broker> getBrokerInfo() {
@@ -60,7 +58,6 @@ public class KafkaJMX {
         .build();
     return Optional.of(result);
   }
-
 
   /**
    * Query all jmx elements and loop in all returned ones printing their name / values to console.
@@ -78,7 +75,6 @@ public class KafkaJMX {
 
   /**
    * Recover a list of jmx domains of this kafka server
-   *
    * @return a List with strings each representing a jmx domain from the kafka broker
    */
   private Optional<List<String>> getJmxDomains() {
@@ -98,7 +94,6 @@ public class KafkaJMX {
    * doing this but it's the current known way of getting this done.
    * This method parses the ObjectName and look for the one containing app-info and then substring from the "id="
    * pattern position until the end, parsing it to an Integer that represents the kafka broker id.
-   *
    * @return an Integer representing the Broker id
    */
   Optional<Integer> getBrokerId() {
@@ -150,7 +145,6 @@ public class KafkaJMX {
 
   /**
    * Get general topic metrics for broker
-   *
    * @return AttributeList with topic metrics from broker.
    */
   private Optional<List<TopicMetric>> getBrokerTopicMetrics() {

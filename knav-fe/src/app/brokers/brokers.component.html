@@ -5,14 +5,14 @@
       <div class="col-md-8 col-md-offset-2">
         <div class="card">
           <div class="card-header" data-background-color="purple">
-            <h4 class="title">Kafka JMX Connection. i.e - jmxHost:jmxPort,jmxHost2:jmxPort2 ...</h4>
+            <h4 class="title">Kafka JMX Connection. i.e - jmxHost:jmxPort</h4>
           </div>
           <div class="card-content">
             <form>
               <div class="row">
                 <div class="col-md-6 col-md-offset-2">
                   <div class="form-group form-black label-floating is-empty">
-                    <label class="control-label">Kafka JMX Servers</label>
+                    <label class="control-label">Kafka JMX Server</label>
                     <input class="form-control" #hosts>
                   </div>
                 </div>
@@ -30,8 +30,8 @@
     </div>
 
 
-    <div class="row" *ngIf="broker">
-      <div class="col-lg-6 col-md-12 col-sm-12">
+    <div class="row" *ngIf="brokerService.getBrokers()">
+      <div class="col-lg-6 col-md-12 col-sm-12" *ngFor="let broker of brokerService.getBrokers()">
         <div class="card card-stats">
           <div class="card-header" data-background-color="green">
             <h4 class="title">Kafka Broker {{broker.id}}</h4>
