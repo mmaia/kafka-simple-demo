@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {KafkaService} from '../services/kafka/kafka.service';
 import {Broker} from '../model/Broker';
+import {BrokerService} from '../services/broker.service';
+import {TopicMetric} from '../model/TopicMetric';
 
 declare var $: any;
 
@@ -13,7 +15,9 @@ export class BrokersComponent implements OnInit {
 
   public broker: Broker;
   public domains: Array<String>;
-  constructor(private kafkaService: KafkaService) {
+  public topicMetrics: Array<TopicMetric>;
+
+  constructor(private kafkaService: KafkaService, public brokerService: BrokerService) {
     this.broker = new Broker();
   }
   ngOnInit() {
@@ -29,49 +33,8 @@ export class BrokersComponent implements OnInit {
       console.log(JSON.stringify(result));
       this.broker = result;
       this.domains = this.broker.jmxDomains;
+      this.topicMetrics = this.brokerService.sortBrokerTopMetrics(this.broker.topicMetricList);
     }).catch((error) => console.log(error));
-  }
-
-  public getAttributeTypeText(attributeName: string): String {
-    let result = '';
-    switch (attributeName) {
-      case ('BYTES_IN_PER_SEC'): {
-        result = 'Bytes in per sec';
-        break;
-      }
-      case ('BYTES_OUT_PER_SEC'): {
-        result = 'Bytes out per sec';
-        break;
-      }
-      case ('BYTES_REJECTED_PER_SEC'): {
-        result = 'Bytes rejected per sec';
-        break;
-      }
-      case ('FAILED_FETCH_REQUESTS_PER_SEC'): {
-        result = 'Failed fetch requests per sec';
-        break;
-      }
-      case ('FAILED_PRODUCE_REQUESTS_PER_SEC'): {
-        result = 'Failed produce requests per sec';
-        break;
-      }
-      case ('MESSAGES_IN_PER_SEC'): {
-        result = 'Messages in per sec';
-        break;
-      }
-      case ('TOTAL_FETCH_REQUESTS_PER_SEC'): {
-        result = 'Total fetch requests per sec';
-        break;
-      }
-      case ('TOTAL_PRODUCE_REQUESTS_PER_SEC'): {
-        result = 'Total produce requests per sec';
-        break;
-      }
-      default: {
-        throw new Error('could not recognize the specified attribute: ' + attributeName);
-      }
-    }
-    return result;
   }
 
   private required() {

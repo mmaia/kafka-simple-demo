@@ -53,12 +53,12 @@
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let topicMetric of broker.topicMetricList">
-                <td align="left">{{ getAttributeTypeText(topicMetric.topicMetricAttributeType) }}</td>
-                <td>{{ topicMetric.attributes.MeanRate | number }}</td>
-                <td>{{ topicMetric.attributes.OneMinuteRate | number }}</td>
-                <td>{{ topicMetric.attributes.FiveMinuteRate | number }}</td>
-                <td>{{ topicMetric.attributes.FifteenMinuteRate | number }}</td>
+              <tr *ngFor="let topicMetric of topicMetrics">
+                <td align="left">{{ brokerService.getAttributeTypeText(topicMetric.topicMetricAttributeType) }}</td>
+                <td>{{ topicMetric.attributes.MeanRate | number:'1.0-0'}}</td>
+                <td>{{ topicMetric.attributes.OneMinuteRate | number: '1.0-0'}}</td>
+                <td>{{ topicMetric.attributes.FiveMinuteRate | number: '1.0-0'}}</td>
+                <td>{{ topicMetric.attributes.FifteenMinuteRate | number: '1.0-0'}}</td>
               </tr>
               </tbody>
             </table>
