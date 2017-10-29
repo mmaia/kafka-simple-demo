@@ -22,7 +22,7 @@ public enum TopicMetricAttributeType {
         return tmat;
       }
     }
-    throw new IllegalArgumentException("There's not TopicMetricAttributeType that matches the string: " + attributeType);
+    throw new IllegalArgumentException("There's no TopicMetricAttributeType that matches the string: " + attributeType);
   }
 
   @Override
