@@ -19,7 +19,7 @@ export class KafkaService {
     return this.http.get(this.kNavUrl)
       .toPromise()
       .then((response) => {
-        return response.json() as Topic[]
+        return response.json() as Topic[];
       })
       .catch(this.handleError);
   }
@@ -29,6 +29,7 @@ export class KafkaService {
     return this.http.post(this.connectUrl, jmxHost, this.reqOptions())
       .toPromise()
       .then((response) => {
+        console.log(JSON.stringify(response));
         return response.json() as Broker;
       });
   }
@@ -39,7 +40,7 @@ export class KafkaService {
 
   private reqOptions(): RequestOptions {
     const headers = new Headers();
-    headers.append("Content-Type", "application/json");
+    headers.append('Content-Type', 'application/json');
     const options = new RequestOptions({
       method: RequestMethod.Post,
       headers: headers
