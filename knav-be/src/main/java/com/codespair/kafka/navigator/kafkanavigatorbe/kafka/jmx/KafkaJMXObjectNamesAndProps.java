@@ -10,6 +10,7 @@ class KafkaJMXObjectNamesAndProps {
   final static String KAFKA_SERVER_APP_INFO = "kafka.server:type=app-info";
 
   final static String KAFKA_SERVER_BROKER_TOPIC_METRICS = "kafka.server:type=BrokerTopicMetrics,name=";
+  final static String KAFKA_SERVER_ALL_TOPICS_METRICS = "kafka.server:type=BrokerTopicMetrics,topic=*";
 
   /**
    * Configuration used for the jmx connection with kafka

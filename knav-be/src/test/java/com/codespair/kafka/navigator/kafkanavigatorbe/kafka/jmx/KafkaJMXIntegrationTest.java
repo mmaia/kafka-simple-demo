@@ -1,13 +1,20 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.Topic;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Needs a kafka server running with JMX port enabled on kafka:9992
  */
+@Slf4j
 public class KafkaJMXIntegrationTest {
 
   private final static String KAFKA_JMX = "kafka:9992";
@@ -20,10 +27,13 @@ public class KafkaJMXIntegrationTest {
 
   @Test
   public void shouldReturnBrokerId() {
-    kafkaJMX.getBrokerId();
-//    kafkaJMX.getTopicMetric();
-//    Optional<Integer> brokerId = kafkaJMX.getBrokerId();
-//    assertNotNull(brokerId.get());
+    assertThat(kafkaJMX.getBrokerId().get(), is(0));
+  }
+
+  @Test
+  public void shouldReturAllTopics() {
+    List<Topic> topicList = kafkaJMX.getAllTopics().get();
+    log.info("TopicList: {}", topicList);
   }
 
 }

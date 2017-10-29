@@ -1,15 +1,15 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 
-import com.codespair.kafka.navigator.kafkanavigatorbe.model.Broker;
-import com.codespair.kafka.navigator.kafkanavigatorbe.model.OperatingSystem;
-import com.codespair.kafka.navigator.kafkanavigatorbe.model.TopicMetric;
-import com.codespair.kafka.navigator.kafkanavigatorbe.model.TopicMetricAttributeType;
+import com.codespair.kafka.navigator.kafkanavigatorbe.model.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import javax.management.*;
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanInfo;
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -114,6 +114,26 @@ public class KafkaJMX {
       log.error("Error getting Broker id: {}", e.getMessage(), e);
     }
     return brokerId;
+  }
+
+  public Optional<List<Topic>> getAllTopics() {
+    Optional<List<Topic>> topicList = Optional.empty();
+    String searchString = KAFKA_SERVER_ALL_TOPICS_METRICS + ",*";
+    ObjectName objectName = null;
+    try {
+      objectName = new ObjectName(searchString);
+      Set mbeans = mbsc.queryNames(objectName, null);
+      for (Object mbean : mbeans) {
+        ObjectName oName = (ObjectName) mbean;
+        String sName = oName.toString();
+        if(sName.contains("topic")) {
+          log.info("topic: {}", sName);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return topicList;
   }
 
   public Optional<String> getKafkaVersion() {
