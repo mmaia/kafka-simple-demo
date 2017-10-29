@@ -11,7 +11,7 @@ import static java.util.Arrays.asList;
 @Data
 public class OperatingSystem {
 
-  private Map<String, Object> attributes=new HashMap<>();
+  private Map<String, Object> attributes = new HashMap<>();
 
   public void addAttribute(String key,Object value){
     attributes.put(key,value);

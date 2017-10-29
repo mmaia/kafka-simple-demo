@@ -44,7 +44,6 @@ export class BrokerService {
     }
     return result;
   }
-
   public sortBrokerTopMetrics(topicMetricList: Array<TopicMetric>): Array<TopicMetric> {
     const result = new Array<TopicMetric>();
     topicMetricList.forEach((topicMetric) => {

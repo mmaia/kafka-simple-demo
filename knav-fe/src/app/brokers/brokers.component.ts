@@ -14,14 +14,10 @@ declare var $: any;
 export class BrokersComponent implements OnInit {
 
   public broker: Broker;
-  public domains: Array<String>;
-  public topicMetrics: Array<TopicMetric>;
 
-  constructor(private kafkaService: KafkaService, public brokerService: BrokerService) {
-    this.broker = new Broker();
-  }
-  ngOnInit() {
-  }
+  constructor(private kafkaService: KafkaService, public brokerService: BrokerService) {}
+
+  ngOnInit() {}
   public connect(hosts) {
     if (!(hosts.value.length >= 1)) {
       this.required();
@@ -30,10 +26,8 @@ export class BrokersComponent implements OnInit {
 
     this.kafkaService.connect(hosts.value).then((result) => {
       console.log('got broker...');
-      console.log(JSON.stringify(result));
       this.broker = result;
-      this.domains = this.broker.jmxDomains;
-      this.topicMetrics = this.brokerService.sortBrokerTopMetrics(this.broker.topicMetricList);
+      this.broker.topicMetricList = this.brokerService.sortBrokerTopMetrics(this.broker.topicMetricList);
     }).catch((error) => console.log(error));
   }
 
