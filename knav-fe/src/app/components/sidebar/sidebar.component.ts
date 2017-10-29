@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {WindowService} from "../../services/window/window.service";
 
 declare const $: any;
@@ -10,7 +10,6 @@ declare interface RouteInfo {
 }
 export const ROUTES: RouteInfo[] = [
     { path: 'brokers', title: 'Brokers',  icon: 'device_hub', class: '' },
-    { path: 'home', title: 'Home',  icon: 'dashboard', class: '' },
     { path: 'kafka-metrics', title: 'Kafka Client Metrics',  icon:'equalizer', class: '' },
     { path: 'kafka-topics', title: 'Kafka Topics',  icon:'layers', class: '' }
 ];
