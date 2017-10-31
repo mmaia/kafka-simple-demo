@@ -118,7 +118,7 @@ public class KafkaJMX {
 
   public Map<String, Topic> getAllTopics() {
     Map<String, Topic> topicMap = null;
-    String searchString = KAFKA_SERVER_ALL_TOPICS_METRICS;
+    String searchString = KAFKA_SERVER_ALL_TOPICS_METRICS + ",*";
     ObjectName objectName = null;
     try {
       objectName = new ObjectName(searchString);
@@ -146,7 +146,7 @@ public class KafkaJMX {
         String topicName = sName.substring(topicPos + 6);
         TopicMetric topicMetric = buildTopicMetric(oName);
         Topic topic;
-        if(result.get(topicName) == null) {
+        if(result.get(topicName) != null) {
           topic = result.get(topicName);
           topic.addMetric(topicMetric);
         } else {
@@ -228,6 +228,7 @@ public class KafkaJMX {
     TopicMetric topicMetric = new TopicMetric();
     for (String attribute : TopicMetric.topicMetricAttributeNames()) {
       topicMetric.addAttribute(attribute, mbsc.getAttribute(objectName, attribute));
+      topicMetric.setTopicMetricAttributeType("???"); // TODO - need fo find out how to fill this value....
     }
     return topicMetric;
   }
