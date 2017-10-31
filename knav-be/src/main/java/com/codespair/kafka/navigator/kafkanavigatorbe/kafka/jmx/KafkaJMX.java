@@ -116,24 +116,49 @@ public class KafkaJMX {
     return brokerId;
   }
 
-  public Optional<List<Topic>> getAllTopics() {
-    Optional<List<Topic>> topicList = Optional.empty();
-    String searchString = KAFKA_SERVER_ALL_TOPICS_METRICS + ",*";
+  public Map<String, Topic> getAllTopics() {
+    Map<String, Topic> topicMap = null;
+    String searchString = KAFKA_SERVER_ALL_TOPICS_METRICS;
     ObjectName objectName = null;
     try {
       objectName = new ObjectName(searchString);
       Set mbeans = mbsc.queryNames(objectName, null);
-      for (Object mbean : mbeans) {
-        ObjectName oName = (ObjectName) mbean;
-        String sName = oName.toString();
-        if(sName.contains("topic")) {
-          log.info("topic: {}", sName);
-        }
-      }
+      topicMap = processTopicData(mbeans);
     } catch (Exception e) {
-      e.printStackTrace();
+      log.info("error recovering topics: {}", e.getMessage(), e);
     }
-    return topicList;
+    return topicMap;
+  }
+
+  /**
+   * Initial and naive implementation, it does the trick by now.
+   * Definitely some work to do here in the near future
+   * @param mbeans list of mbeans
+   * @return a set with unique topic names
+   */
+  private Map<String, Topic> processTopicData(Set mbeans) throws Exception {
+    Map<String, Topic> result = new HashMap<>();
+    for (Object mbean : mbeans) {
+      ObjectName oName = (ObjectName) mbean;
+      String sName = oName.toString();
+      if(sName.contains("topic")) {
+        int topicPos = sName.lastIndexOf("topic=");
+        String topicName = sName.substring(topicPos + 6);
+        TopicMetric topicMetric = buildTopicMetric(oName);
+        Topic topic;
+        if(result.get(topicName) == null) {
+          topic = result.get(topicName);
+          topic.addMetric(topicMetric);
+        } else {
+          topic = new Topic();
+          topic.setName(topicName);
+          topic.addMetric(topicMetric);
+        }
+        result.put(topicName, topic);
+        log.info("topic: {}", result);
+      }
+    }
+    return result;
   }
 
   public Optional<String> getKafkaVersion() {
@@ -193,6 +218,12 @@ public class KafkaJMX {
     return operatingSystem;
   }
 
+  /**
+   * @param objectName The mbean object name from where all topic metrics will be collected and returned
+   * in a TopicMetric object.
+   * @return
+   * @throws Exception
+   */
   private TopicMetric buildTopicMetric(ObjectName objectName) throws Exception {
     TopicMetric topicMetric = new TopicMetric();
     for (String attribute : TopicMetric.topicMetricAttributeNames()) {

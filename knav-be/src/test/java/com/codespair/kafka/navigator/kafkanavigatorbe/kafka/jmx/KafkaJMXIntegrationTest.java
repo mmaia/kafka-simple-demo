@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -32,7 +32,7 @@ public class KafkaJMXIntegrationTest {
 
   @Test
   public void shouldReturAllTopics() {
-    List<Topic> topicList = kafkaJMX.getAllTopics().get();
+    Map<String, Topic> topicList = kafkaJMX.getAllTopics();
     log.info("TopicList: {}", topicList);
   }
 

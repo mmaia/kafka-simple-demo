@@ -1,15 +1,15 @@
 package com.codespair.kafka.navigator.kafkanavigatorbe.model;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 
 import java.util.List;
 
-@Builder
-@Getter
-@EqualsAndHashCode
+@Data
 public class Topic {
   private String name;
   private List<TopicMetric> topicMetricList;
+
+  public void addMetric(TopicMetric topicMetric) {
+    topicMetricList.add(topicMetric);
+  }
 }
