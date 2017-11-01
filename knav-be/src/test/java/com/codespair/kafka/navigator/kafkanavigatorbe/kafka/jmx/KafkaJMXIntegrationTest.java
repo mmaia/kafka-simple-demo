@@ -32,8 +32,9 @@ public class KafkaJMXIntegrationTest {
 
   @Test
   public void shouldReturAllTopics() {
-    Map<String, Topic> topicList = kafkaJMX.getAllTopics();
-    log.info("TopicList: {}", topicList);
+    Map<String, Topic> topicMap = kafkaJMX.getAllTopics();
+    assertTrue(topicMap.containsKey("__consumer_offsets") && topicMap.get("__consumer_offsets") != null);
+    log.info("TopicList: {}", topicMap);
   }
 
 }

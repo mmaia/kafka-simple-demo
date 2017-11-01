@@ -1,22 +1,23 @@
-package com.codespair.kafka.navigator.kafkanavigatorbe.resources;
+package com.codespair.kafka.navigator.kafkanavigatorbe.resources.kafka;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.TopicMeta;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.PartitionInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/topics")
-public class TopicController {
+@RequestMapping("/api/kafka/topics")
+public class TopicKafkaController {
 
   private final static List<String> hosts = Arrays.asList("kafka:9092", "kafka_1:9093");
   private TopicMeta topicMeta;
 
-  public TopicController(TopicMeta topicMeta) {
+  public TopicKafkaController(TopicMeta topicMeta) {
     this.topicMeta = topicMeta;
   }
 

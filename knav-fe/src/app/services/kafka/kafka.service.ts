@@ -8,7 +8,7 @@ import {Broker} from "../../model/Broker";
 @Injectable()
 export class KafkaService {
   public kMetrics: Array<KMetric>;
-  private connectUrl = 'http://localhost:7000/api/bus/connect';
+  private connectUrl = 'http://localhost:7000/api/jmx/bus/connect';
   private kNavUrl = 'http://localhost:7000/api/topics';
   private kHosts: Array<string>;
 

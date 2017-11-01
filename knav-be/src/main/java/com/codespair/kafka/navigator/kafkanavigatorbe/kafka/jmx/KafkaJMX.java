@@ -142,26 +142,38 @@ public class KafkaJMX {
       ObjectName oName = (ObjectName) mbean;
       String sName = oName.toString();
       if(sName.contains("topic")) {
-        int topicPos = sName.lastIndexOf("topic=");
-        int namePos = sName.lastIndexOf("name=");
-        String topicName = sName.substring(topicPos + 6);
-        String metricName = sName.substring(namePos + 5, sName.lastIndexOf(","));
-        log.info("Metric Name: {}", metricName);
+        String topicName = topicName(sName);
+        String metricName = metricName(sName);
         TopicMetric topicMetric = buildTopicMetric(oName, metricName);
-        Topic topic;
-        if(result.get(topicName) != null) {
-          topic = result.get(topicName);
-          topic.addMetric(topicMetric);
-        } else {
-          topic = new Topic();
-          topic.setName(topicName);
-          topic.addMetric(topicMetric);
-        }
+        Topic topic = buildTopic(result, topicName, topicMetric);
         result.put(topicName, topic);
         log.info("topic: {}", result);
       }
     }
     return result;
+  }
+
+  private Topic buildTopic(Map<String, Topic> result, String topicName, TopicMetric topicMetric) {
+    Topic topic;
+    if(result.get(topicName) != null) {
+      topic = result.get(topicName);
+      topic.addMetric(topicMetric);
+    } else {
+      topic = new Topic();
+      topic.setName(topicName);
+      topic.addMetric(topicMetric);
+    }
+    return topic;
+  }
+
+  private String metricName(String sName) {
+    int namePos = sName.lastIndexOf("name=");
+    return sName.substring(namePos + 5, sName.lastIndexOf(","));
+  }
+
+  private String topicName(String sName) {
+    int topicPos = sName.lastIndexOf("topic=");
+    return sName.substring(topicPos + 6);
   }
 
   public Optional<String> getKafkaVersion() {

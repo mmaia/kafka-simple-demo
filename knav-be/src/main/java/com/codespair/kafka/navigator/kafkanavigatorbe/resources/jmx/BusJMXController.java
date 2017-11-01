@@ -1,9 +1,9 @@
-package com.codespair.kafka.navigator.kafkanavigatorbe.resources;
+package com.codespair.kafka.navigator.kafkanavigatorbe.resources.jmx;
 
 import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.BusClientMetaData;
+import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx.KafkaJMX;
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.Broker;
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.KMetric;
-import com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx.KafkaJMX;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +14,13 @@ import java.util.Set;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/bus")
-public class BusController {
+@RequestMapping("/api/jmx/bus")
+public class BusJMXController {
 
   private KafkaJMX kafkaJMX;
   private BusClientMetaData busClientMetaData;
 
-  public BusController(KafkaJMX kafkaJMX, BusClientMetaData busClientMetaData) {
+  public BusJMXController(KafkaJMX kafkaJMX, BusClientMetaData busClientMetaData) {
     this.kafkaJMX = kafkaJMX;
     this.busClientMetaData = busClientMetaData;
   }
