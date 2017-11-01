@@ -3,7 +3,6 @@ package com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx;
 import com.codespair.kafka.navigator.kafkanavigatorbe.model.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.management.MBeanAttributeInfo;
@@ -20,7 +19,6 @@ import static com.codespair.kafka.navigator.kafkanavigatorbe.kafka.jmx.KafkaJMXO
 
 @Slf4j
 @Service
-@Scope("prototype")
 public class KafkaJMX {
 
   @Getter
