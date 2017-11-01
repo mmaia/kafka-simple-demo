@@ -143,8 +143,11 @@ public class KafkaJMX {
       String sName = oName.toString();
       if(sName.contains("topic")) {
         int topicPos = sName.lastIndexOf("topic=");
+        int namePos = sName.lastIndexOf("name=");
         String topicName = sName.substring(topicPos + 6);
-        TopicMetric topicMetric = buildTopicMetric(oName);
+        String metricName = sName.substring(namePos + 5, sName.lastIndexOf(","));
+        log.info("Metric Name: {}", metricName);
+        TopicMetric topicMetric = buildTopicMetric(oName, metricName);
         Topic topic;
         if(result.get(topicName) != null) {
           topic = result.get(topicName);
@@ -199,8 +202,7 @@ public class KafkaJMX {
       for (TopicMetricAttributeType tmat : TopicMetricAttributeType.values()) {
         final String sName = KAFKA_SERVER_BROKER_TOPIC_METRICS + tmat.toString();
         ObjectName objectName = new ObjectName(sName);
-        TopicMetric topicMetric = buildTopicMetric(objectName);
-        topicMetric.setTopicMetricAttributeType(TopicMetricAttributeType.fromString(tmat.toString()));
+        TopicMetric topicMetric = buildTopicMetric(objectName, tmat.toString());
         topicMetricList.add(topicMetric);
       }
     } catch (Exception e) {
@@ -221,14 +223,14 @@ public class KafkaJMX {
   /**
    * @param objectName The mbean object name from where all topic metrics will be collected and returned
    * in a TopicMetric object.
-   * @return
+   * @return TopMetric with a map containing all attributes for a specific metric
    * @throws Exception
    */
-  private TopicMetric buildTopicMetric(ObjectName objectName) throws Exception {
+  private TopicMetric buildTopicMetric(ObjectName objectName, String metric) throws Exception {
     TopicMetric topicMetric = new TopicMetric();
     for (String attribute : TopicMetric.topicMetricAttributeNames()) {
       topicMetric.addAttribute(attribute, mbsc.getAttribute(objectName, attribute));
-      topicMetric.setTopicMetricAttributeType("???"); // TODO - need fo find out how to fill this value....
+      topicMetric.setTopicMetricAttributeType(TopicMetricAttributeType.fromString(metric));
     }
     return topicMetric;
   }
