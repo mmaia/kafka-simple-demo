@@ -1,6 +1,6 @@
-import {Partition} from "./Partition";
+import {TopicMetric} from './TopicMetric';
 
 export class Topic {
   public name: string;
-  public partitions: Array<Partition>;
+  public topicMetricList: Array<TopicMetric>;
 }

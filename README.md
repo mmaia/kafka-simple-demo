@@ -4,14 +4,14 @@ This project is used to create a continuous stream of mock data that simulates, 
 the stock market, the main goal here is not focus on accurace regarding the domain of the securities market that is very 
 complex, it's on kafka, please check [this post](http://codespair.com/preview/zAzFd0PecDWdDMQ9X7/) for further details.
 
-Implemented using:
+Uses:
 
- - Kafka 0.10.2
- - Spring kafka producer
+ - Kafka 0.10.2(soon will be updated to kafka 1.0 just released)
  - Spring boot
  - Java 8
  - Docker CE
  - Docker compose
+ - Kafka consumer, producer and streams.
 
 # Running
 

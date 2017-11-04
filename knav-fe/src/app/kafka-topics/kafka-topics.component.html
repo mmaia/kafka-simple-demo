@@ -1,3 +1,40 @@
-<p>
-  kafka-topics works!
-</p>
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6" *ngFor="let topic of topics">
+        <div class="card card-stats">
+          <div class="card-header" data-background-color="purple">
+            <h4 class="title"><i class="material-icons">layers</i>{{topic.name}}</h4>
+          </div>
+          <div class="card-content">
+            <h4>Partitions: </h4>
+          </div>
+          <div class="card-content table-responsive">
+            <table class="table table-hover table-striped">
+              <thead class="text-danger">
+              <tr>
+                <th>Metric(per second)</th>
+                <th class="text-right">Mean</th>
+                <th class="text-right">1 Min</th>
+                <th class="text-right">5 Min</th>
+                <th class="text-right">15 Min</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let topicMetric of topic.topicMetricList">
+                <td align="left">{{ topicUtilsService.getAttributeTypeText(topicMetric.topicMetricAttributeType) }}</td>
+                <td>{{ topicMetric.attributes.MeanRate | number:'1.0-0'}}</td>
+                <td>{{ topicMetric.attributes.OneMinuteRate | number: '1.0-0'}}</td>
+                <td>{{ topicMetric.attributes.FiveMinuteRate | number: '1.0-0'}}</td>
+                <td>{{ topicMetric.attributes.FifteenMinuteRate | number: '1.0-0'}}</td>
+              </tr>
+              </tbody>
+            </table>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {KafkaService} from '../services/kafka/kafka.service';
-import {Broker} from '../model/Broker';
 import {BrokerService} from '../services/broker.service';
-import {TopicMetric} from '../model/TopicMetric';
+import {TopicUtilsService} from '../services/topic-utils.service';
 
 declare var $: any;
 
@@ -13,7 +12,7 @@ declare var $: any;
 })
 export class BrokersComponent implements OnInit {
 
-  constructor(private kafkaService: KafkaService, public brokerService: BrokerService) {}
+  constructor(private kafkaService: KafkaService, public brokerService: BrokerService, public topicUtilsService: TopicUtilsService) {}
 
   ngOnInit() {}
   public connect(hosts) {

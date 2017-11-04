@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import java.util.Collection;
 
 @Slf4j
 @RestController
@@ -22,8 +22,8 @@ public class TopicJMXController {
   }
 
   @GetMapping
-  public ResponseEntity<Map<String, Topic>> allTopics() {
-    Map<String, Topic> result = kafkaJMX.getAllTopics();
+  public ResponseEntity<Collection<Topic>> allTopics() {
+    Collection<Topic> result = kafkaJMX.getAllTopics().values();
     return ResponseEntity.ok(result);
   }
 

@@ -9,17 +9,17 @@ import {Broker} from "../../model/Broker";
 export class KafkaService {
   public kMetrics: Array<KMetric>;
   private connectUrl = 'http://localhost:7000/api/jmx/bus/connect';
-  private kNavUrl = 'http://localhost:7000/api/topics';
+  private kNavUrl = 'http://localhost:7000/api/jmx/topics';
   private kHosts: Array<string>;
 
   constructor(private http: Http) {
   }
 
-  getTopics(): Promise<any> {
+  public getTopics(): Promise<Array<Topic>> {
     return this.http.get(this.kNavUrl)
       .toPromise()
       .then((response) => {
-        return response.json() as Topic[];
+        return response.json() as Array<Topic>;
       })
       .catch(this.handleError);
   }

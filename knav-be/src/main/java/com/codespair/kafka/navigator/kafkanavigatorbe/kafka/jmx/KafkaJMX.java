@@ -145,7 +145,6 @@ public class KafkaJMX {
         TopicMetric topicMetric = buildTopicMetric(oName, metricName);
         Topic topic = buildTopic(result, topicName, topicMetric);
         result.put(topicName, topic);
-        log.info("topic: {}", result);
       }
     }
     return result;
