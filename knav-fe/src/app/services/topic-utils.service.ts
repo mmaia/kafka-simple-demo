@@ -53,6 +53,8 @@ export class TopicUtilsService {
         result.splice(1, 0, topicMetric);
       } else if (topicMetric.topicMetricAttributeType === 'BYTES_OUT_PER_SEC') {
         result.splice(2, 0, topicMetric);
+      } else if (topicMetric.topicMetricAttributeType === 'TOTAL_FETCH_REQUESTS_PER_SEC') {
+        result.splice(3, 0, topicMetric);
       } else {
         result.push(topicMetric);
       }
