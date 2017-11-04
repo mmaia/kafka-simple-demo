@@ -22,7 +22,6 @@ export class BrokersComponent implements OnInit {
     }
 
     this.kafkaService.connect(hosts.value).then((result) => {
-      console.log('got broker...');
       this.brokerService.addBroker(result);
     }).catch((error) => console.log(error));
   }
