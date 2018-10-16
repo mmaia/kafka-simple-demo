@@ -24,6 +24,8 @@
     <lombok.version>1.16.18</lombok.version>
     <opencsv.version>3.9</opencsv.version>
     <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
+    <logback.version>1.2.3</logback.version>
+    <log4j-over-sl4j.version>1.7.25</log4j-over-sl4j.version>
   </properties>
 
   <modules>

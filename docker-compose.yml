@@ -20,7 +20,7 @@ services:
     environment:
       JMX_PORT: 9992
       KAFKA_BROKER_ID: 0
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/kafka
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://:9092"
       KAFKA_PORT: 9092
       KAFKA_HOST_NAME: kafka
@@ -44,7 +44,7 @@ services:
     environment:
       JMX_PORT: 9993
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/kafka_1
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://:9093"
       KAFKA_PORT: 9093
       KAFKA_HOST_NAME: kafka_1

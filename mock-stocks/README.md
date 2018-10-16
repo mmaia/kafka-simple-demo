@@ -6,4 +6,4 @@ This application generates stock quotes, it was created with goal of having a st
 
 Kafka topics:
 
--
+- 
