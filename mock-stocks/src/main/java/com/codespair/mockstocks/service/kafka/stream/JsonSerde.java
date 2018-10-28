@@ -18,12 +18,12 @@ public class JsonSerde<T> implements Serde<T> {
   @Override
   public void configure(Map<String, ?> configs, boolean isKey) {
     Map<String, Object> serdeProps = new HashMap<>();
-    serdeProps.put("jsonPOJOClass", StockQuote.class);
+    serdeProps.put("jsonPOJOClass", StockQuote.class); // TODO - work on this hard coded impl.
     deserializer.configure(serdeProps, isKey);
     serializer.configure(configs, isKey);
   }
 
-  public void configureValue() {
+  public void defaultConfig() {
     this.configure(null, false);
   }
 

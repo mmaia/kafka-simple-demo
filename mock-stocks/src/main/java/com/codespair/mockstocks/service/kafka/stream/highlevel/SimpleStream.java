@@ -2,33 +2,18 @@ package com.codespair.mockstocks.service.kafka.stream.highlevel;
 
 import com.codespair.mockstocks.config.GeneratorConfigProperties;
 import com.codespair.mockstocks.config.KafkaConfigProperties;
-import com.codespair.mockstocks.model.StockQuote;
-import com.codespair.mockstocks.service.kafka.stream.JsonPojoDeserializer;
-import com.codespair.mockstocks.service.kafka.stream.JsonPojoSerializer;
 import com.codespair.mockstocks.service.kafka.stream.JsonSerde;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.serialization.Deserializer;
-import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.connect.json.JsonDeserializer;
-import org.apache.kafka.connect.json.JsonSerializer;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KStreamBuilder;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
