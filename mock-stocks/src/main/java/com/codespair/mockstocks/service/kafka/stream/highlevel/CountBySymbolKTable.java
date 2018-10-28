@@ -68,12 +68,15 @@ public class CountBySymbolKTable {
         view = streams.store(queryableStoreName, QueryableStoreTypes.keyValueStore());
     }
 
-    @Async
+  /**
+   * Dummy implementation to demonstrate it works as intended.
+   */
+  @Async
     public void printCurrentNetflixStored() {
         while(true) {
             log.info("got value for Netflix from ktable: {}", view.get("NFLX"));// add key here.
             try{
-                Thread.sleep(1000);
+                Thread.sleep(5000);
             } catch(InterruptedException ie) {
                 ie.printStackTrace();
             }
@@ -82,7 +85,7 @@ public class CountBySymbolKTable {
 
     private Properties getProperties(List<String> hosts) {
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "count-by-symbol-ktable");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, COUNT_BY_SYMBOL_STORE);
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class);

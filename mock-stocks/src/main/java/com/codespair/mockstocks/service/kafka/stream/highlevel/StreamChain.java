@@ -61,6 +61,8 @@ public class StreamChain {
                 jsonSerde ,
                 kConfig.getStreamEnrichProduce().getTopic());
 
+        // TODO - create an example with unified stream sending to different topics instead of below naive example.
+
         // AMEX exchange stock quotes stream
         KStream<String, JsonNode> amexStockQuotes =
                 stockQuoteRawStream
