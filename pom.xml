@@ -18,8 +18,8 @@
     <spring-boot.version>1.5.8.RELEASE</spring-boot.version>
     <hibernate-validator.version>5.4.1.Final</hibernate-validator.version>
 
-    <kafka-clients.version>0.10.2.1</kafka-clients.version>
-    <kafka-streams.version>0.10.2.1</kafka-streams.version>
+    <kafka-clients.version>1.1.1</kafka-clients.version>
+    <kafka-streams.version>1.1.1</kafka-streams.version>
     <connect-json.version>0.11.0.0</connect-json.version>
     <lombok.version>1.16.18</lombok.version>
     <opencsv.version>3.9</opencsv.version>

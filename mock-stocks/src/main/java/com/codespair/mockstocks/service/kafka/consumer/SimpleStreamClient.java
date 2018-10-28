@@ -25,6 +25,7 @@ public class SimpleStreamClient {
     }
 
     private String topicName() {
-        return config.getSimpleStream().getTopic();
+        // streams from stock-quote
+        return config.getStockQuote().getTopic();
     }
 }

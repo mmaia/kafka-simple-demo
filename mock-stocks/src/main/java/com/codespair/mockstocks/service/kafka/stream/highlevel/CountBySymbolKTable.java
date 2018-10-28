@@ -15,11 +15,12 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Properties;
@@ -32,25 +33,33 @@ public class CountBySymbolKTable {
 
     private final GeneratorConfigProperties generatorConfigProperties;
     private final KafkaConfigProperties kafkaConfigProperties;
+    private final KStreamBuilder kStreamBuilder;
     private KafkaStreams streams;
 
     @Autowired
     public CountBySymbolKTable(KafkaConfigProperties config, GeneratorConfigProperties generatorConfigProperties) {
         this.kafkaConfigProperties = config;
         this.generatorConfigProperties = generatorConfigProperties;
+        this.kStreamBuilder = new KStreamBuilder();
     }
 
-    private KafkaStreams createStreamsInstance(List<String> hosts) {
+    private void createStreamsInstance(List<String> hosts) {
         log.info("about to start streaming for exchange stock quote filtering...");
-        final Serde<JsonNode> jsonSerde = getJsonNodeSerde();
         final Properties props = getProperties(hosts);
-        KStreamBuilder kStreamBuilder = new KStreamBuilder();
+        streams = new KafkaStreams(kStreamBuilder, props);
+        streams.start();
+    }
 
-        //stream from amex topic...
+    private void tableCount() {
+        final Serde<JsonNode> jsonSerde = getJsonNodeSerde();
         KStream<String, JsonNode> amexStream = kStreamBuilder.stream(Serdes.String(), jsonSerde, kafkaConfigProperties.getStreamChain().getAmexTopic());
         // we create a ktable and count by key, and giving a name for the state store which will be created(locally and in a kafka topic).
         KTable<String, Long> countsBySymbol = amexStream.groupByKey(Serdes.String(), jsonSerde).count("amex-count-by-symbol");
-        return new KafkaStreams(kStreamBuilder, props);
+
+        final String queryableStoreName = countsBySymbol.queryableStoreName();
+        ReadOnlyKeyValueStore view = streams.store(queryableStoreName, QueryableStoreTypes.keyValueStore());
+
+        log.info("got value for Netflix from ktable: {}", view.get("NFLX"));// add key here.
     }
 
     private Properties getProperties(List<String> hosts) {
@@ -69,8 +78,9 @@ public class CountBySymbolKTable {
     public void startExchangeFilterStreaming() throws InterruptedException {
         log.info("trying to start streaming...");
         Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);
-        streams = createStreamsInstance(kafkaConfigProperties.getHosts());
-        streams.start();
+        createStreamsInstance(kafkaConfigProperties.getHosts());
+        Thread.sleep(5000);
+        tableCount();
     }
 
     @PreDestroy

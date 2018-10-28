@@ -12,18 +12,19 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class StockQuoteClient {
 
-    KafkaConfigProperties config;
-    StringJsonNodeClientConsumer client;
+    final KafkaConfigProperties config;
+    final StringJsonNodeClientConsumer client;
+    final String topicName;
 
     public StockQuoteClient(KafkaConfigProperties kafkaConfigProperties,
                             StringJsonNodeClientConsumer stringJsonNodeClientConsumer) {
         this.config = kafkaConfigProperties;
         this.client = stringJsonNodeClientConsumer;
+        topicName = config.getStockQuote().getTopic();
     }
 
     public void startConsumingStockQuotes() {
-        client.configure(config.getStockQuote().getTopic() +
-                "-client", config.getStockQuote().getTopic());
+        client.configure(topicName + "-client", topicName);
         client.startConsumer();
     }
 }
