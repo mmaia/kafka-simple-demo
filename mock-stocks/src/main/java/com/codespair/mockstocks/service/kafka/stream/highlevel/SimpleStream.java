@@ -84,18 +84,6 @@ public class SimpleStream {
         return result;
     }
 
-    private JsonSerde<StockQuote> jsonSerde() {
-        JsonSerde<StockQuote> jsonSerde = new JsonSerde<>();
-        Map<String, Object> serdeProps = new HashMap<>();
-        serdeProps.put("jsonPOJOClass", StockQuote.class);
-        final Serializer<StockQuote> jsonSerializer = new JsonPojoSerializer<>();
-        jsonSerde.setSerializer(jsonSerializer);
-        final Deserializer<StockQuote> jsonDeserializer = new JsonPojoDeserializer<>();
-        jsonSerde.setDeserializer(jsonDeserializer);
-        jsonSerde.configure(serdeProps, false);
-        return jsonSerde;
-    }
-
     @PreDestroy
     public void wrapUp() {
         streams.close();

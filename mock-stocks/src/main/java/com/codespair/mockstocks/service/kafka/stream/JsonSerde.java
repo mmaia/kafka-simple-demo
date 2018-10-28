@@ -23,6 +23,10 @@ public class JsonSerde<T> implements Serde<T> {
     serializer.configure(configs, isKey);
   }
 
+  public void configureValue() {
+    this.configure(null, false);
+  }
+
   @Override
   public void close() {
     serializer.close();

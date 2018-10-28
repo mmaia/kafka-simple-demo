@@ -19,7 +19,7 @@ services:
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP= LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181/kafka
       - KAFKA_INTER_BROKER_LISTENER_NAME= LISTENER_DOCKER_INTERNAL
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=2
       - JMX_PORT=9998
       - KAFKA_JMX_OPTS= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=9998
       - KAFKA_LOG4J_LOGGERS= "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
@@ -37,15 +37,35 @@ services:
     environment:
       - KAFKA_ADVERTISED_LISTENERS= LISTENER_DOCKER_INTERNAL://kafka_1:19093,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka_1}:9093
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP= LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181/kafka_1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181/kafka
       - KAFKA_INTER_BROKER_LISTENER_NAME= LISTENER_DOCKER_INTERNAL
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=2
       - JMX_PORT=9999
       - KAFKA_JMX_OPTS= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka_1 -Dcom.sun.management.jmxremote.rmi.port=9999
       - KAFKA_LOG4J_LOGGERS= "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
     ports:
       - 9093:9093
       - 9999:9999
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  kafka_2:
+    container_name: kafka_2
+    image: confluentinc/cp-kafka:5.0.0
+    environment:
+      - KAFKA_ADVERTISED_LISTENERS= LISTENER_DOCKER_INTERNAL://kafka_2:19094,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka_2}:9094
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP= LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181/kafka
+      - KAFKA_INTER_BROKER_LISTENER_NAME= LISTENER_DOCKER_INTERNAL
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=2
+      - JMX_PORT=10000
+      - KAFKA_JMX_OPTS= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka_2 -Dcom.sun.management.jmxremote.rmi.port=10000
+      - KAFKA_LOG4J_LOGGERS= "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+    ports:
+      - 9094:9094
+      - 10000:10000
     depends_on:
       - zookeeper
     volumes:
