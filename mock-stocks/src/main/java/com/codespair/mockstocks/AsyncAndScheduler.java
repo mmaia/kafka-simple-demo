@@ -3,7 +3,7 @@ package com.codespair.mockstocks;
 import com.codespair.mockstocks.service.kafka.consumer.SimpleStreamClient;
 import com.codespair.mockstocks.service.kafka.consumer.StockQuoteClient;
 import com.codespair.mockstocks.service.kafka.producer.StockQuoteGenerator;
-import com.codespair.mockstocks.service.kafka.stream.highlevel.CountBySymbolKTable;
+import com.codespair.mockstocks.service.kafka.stream.highlevel.QuoteBySymbolKTable;
 import com.codespair.mockstocks.service.kafka.stream.highlevel.SimpleStream;
 import com.codespair.mockstocks.service.kafka.stream.highlevel.StreamChain;
 import com.codespair.mockstocks.service.kafka.stream.highlevel.StreamEnrichProduce;
@@ -27,7 +27,7 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
     private StockQuoteClient stockQuoteClient;
     private StreamEnrichProduce streamEnrichProduce;
     private SimpleStream simpleStream;
-    private CountBySymbolKTable countBySymbolKTable;
+    private QuoteBySymbolKTable quoteBySymbolKTable;
 
     public AsyncAndScheduler(StockExchangeMaps stockExchangeMaps,
                              StreamChain streamChain,
@@ -36,7 +36,7 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
                              StockQuoteClient stockQuoteClient,
                              StreamEnrichProduce streamEnrichProduce,
                              SimpleStream simpleStream,
-                             CountBySymbolKTable countBySymbolKTable) {
+                             QuoteBySymbolKTable quoteBySymbolKTable) {
         this.stockExchangeMaps = stockExchangeMaps;
         this.streamChain = streamChain;
         this.simpleStreamClient = simpleStreamClient;
@@ -44,7 +44,7 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
         this.stockQuoteClient = stockQuoteClient;
         this.streamEnrichProduce = streamEnrichProduce;
         this.simpleStream = simpleStream;
-        this.countBySymbolKTable = countBySymbolKTable;
+        this.quoteBySymbolKTable = quoteBySymbolKTable;
     }
 
     @Override
@@ -58,9 +58,6 @@ public class AsyncAndScheduler implements ApplicationListener<ApplicationReadyEv
             simpleStreamClient.startConsumingStockQuotes();
             streamEnrichProduce.startStreaming();
             streamChain.startExchangeFilterStreaming();
-            countBySymbolKTable.startExchangeFilterStreaming();
-            Thread.sleep(5000);
-            countBySymbolKTable.printCurrentNetflixStored();
         } catch(Exception e) {
             log.error("Error starting kafka services: {}", e.getMessage(), e);
         }
