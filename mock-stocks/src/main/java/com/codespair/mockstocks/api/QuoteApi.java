@@ -23,12 +23,10 @@ public class QuoteApi {
 
   @GetMapping("/{symbol}")
   public ResponseEntity<StockQuote> findQuoteBySymbol(@PathVariable String symbol) {
-    log.info("searching for: {}", symbol);
     StockQuote stockQuote = quoteBySymbolKTable.quoteBySymbol(symbol);
     if(stockQuote == null) {
       return ResponseEntity.noContent().build();
     }
-    log.info("Got quote: {}", stockQuote.toString());
     return ResponseEntity.ok(stockQuote);
   }
 }
