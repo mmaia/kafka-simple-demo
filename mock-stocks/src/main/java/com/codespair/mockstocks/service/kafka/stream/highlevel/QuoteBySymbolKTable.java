@@ -20,7 +20,6 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Properties;
@@ -51,7 +50,7 @@ public class QuoteBySymbolKTable {
     stockQuoteJsonSerde.defaultConfig();
 
     final GlobalKTable<String, JsonNode> stockBySymbolGKTable = streamsBuilder
-      .globalTable(kafkaConfigProperties.getStockQuote().getTopic(), Materialized.<String, JsonNode, KeyValueStore<Bytes, byte[]>>as(COUNT_BY_SYMBOL_STORE)
+      .globalTable(kafkaConfigProperties.getStockQuote().getTopic(), Materialized.<String, JsonNode, KeyValueStore<Bytes, byte[]>>as(CURRENT_QUOTE_BY_SYMBOL_GLOBAL_KTABLE)
         .withKeySerde(Serdes.String())
         .withValueSerde(stockQuoteJsonSerde));
     final Topology topology = streamsBuilder.build();
@@ -68,7 +67,7 @@ public class QuoteBySymbolKTable {
 
   private Properties getProperties(List<String> hosts) {
     Properties props = new Properties();
-    props.put(StreamsConfig.APPLICATION_ID_CONFIG, COUNT_BY_SYMBOL_STORE);
+    props.put(StreamsConfig.APPLICATION_ID_CONFIG, CURRENT_QUOTE_BY_SYMBOL_GLOBAL_KTABLE);
     props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
     props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
     props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class);
@@ -76,7 +75,6 @@ public class QuoteBySymbolKTable {
     return props;
   }
 
-  @PostConstruct
   public void startExchangeFilterStreaming() throws InterruptedException {
     log.info("trying to start streaming for: {}", this.getClass().getCanonicalName());
     Thread.sleep(generatorConfigProperties.getStartDelayMilliseconds() + 1000);
@@ -88,5 +86,5 @@ public class QuoteBySymbolKTable {
     streams.close();
   }
 
-  private static final String COUNT_BY_SYMBOL_STORE = "count-by-symbol-global-ktable";
+  private static final String CURRENT_QUOTE_BY_SYMBOL_GLOBAL_KTABLE = "current-quote-by-symbol-global-ktable";
 }
